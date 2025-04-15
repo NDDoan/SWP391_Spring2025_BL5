@@ -46,6 +46,9 @@ public class ShippingController extends HttpServlet {
                     case "delete":
                         deleteShipping(request, response);
                         break;
+                    case "create":
+                        showCreateForm(request, response);
+                        break;
                     default:
                         listShipping(request, response);
                         break;
@@ -81,7 +84,11 @@ public class ShippingController extends HttpServlet {
         RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/editShipping.jsp");
         dispatcher.forward(request, response);
     }
-
+    private void showCreateForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/createShipping.jsp");
+        dispatcher.forward(request, response);
+    }
     private void deleteShipping(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
