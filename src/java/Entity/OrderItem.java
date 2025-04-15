@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Entity;
 
 import java.math.BigDecimal;
 
@@ -10,41 +10,41 @@ import java.math.BigDecimal;
  *
  * @author LENOVO
  */
-public class CartItem {
+public class OrderItem {
 
-    private int cartItemId;
-    private int cartId;
+    private int orderItemId;
+    private int orderId;
     private int productId;
     private int quantity;
     private BigDecimal price;
     private BigDecimal subtotal;
 
-    public CartItem() {
+    public OrderItem() {
     }
 
-    public CartItem(int cartItemId, int cartId, int productId, int quantity, BigDecimal price, BigDecimal subtotal) {
-        this.cartItemId = cartItemId;
-        this.cartId = cartId;
+    public OrderItem(int orderItemId, int orderId, int productId, int quantity, BigDecimal price, BigDecimal subtotal) {
+        this.orderItemId = orderItemId;
+        this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
         this.subtotal = subtotal;
     }
 
-    public int getCartItemId() {
-        return cartItemId;
+    public int getOrderItemId() {
+        return orderItemId;
     }
 
-    public void setCartItemId(int cartItemId) {
-        this.cartItemId = cartItemId;
+    public void setOrderItemId(int orderItemId) {
+        this.orderItemId = orderItemId;
     }
 
-    public int getCartId() {
-        return cartId;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setCartId(int cartId) {
-        this.cartId = cartId;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public int getProductId() {
