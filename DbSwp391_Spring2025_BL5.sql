@@ -397,8 +397,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Users](
 	[user_id] [int] IDENTITY(1,1) NOT NULL,
-	[google_id] [nvarchar](255) NULL,
 	[email] [nvarchar](255) NOT NULL,
+	[password] nvarchar(255) NOT NULL,
 	[full_name] [nvarchar](100) NULL,
 	[avatar_url] [nvarchar](255) NULL,
 	[phone_number] [nvarchar](15) NULL,
