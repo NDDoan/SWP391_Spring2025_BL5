@@ -66,9 +66,9 @@ public class LoginController extends HttpServlet {
             // Chuyển trang theo vai trò
             int roleId = user.getRole_id();
             if (roleId == 2) {
-                response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
+                response.sendRedirect(request.getContextPath() + "/UserPage/HomePage.jsp");
             } else if (roleId == 1 || roleId == 4) {
-                response.sendRedirect(request.getContextPath() + "/admin/customers");
+                response.sendRedirect(request.getContextPath() + "/ShippingController");
             } else {
                 response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
             }
