@@ -13,8 +13,8 @@ import java.util.Date;
 public class User {
 
     private int userId;
-    private String googleId;
     private String email;
+    private String password;
     private String fullName;
     private String avatarUrl;
     private String phoneNumber;
@@ -27,10 +27,10 @@ public class User {
     public User() {
     }
 
-    public User(int userId, String googleId, String email, String fullName, String avatarUrl, String phoneNumber, String address, int roleId, boolean isActive, Date createdAt, Date updatedAt) {
+    public User(int userId, String email, String password, String fullName, String avatarUrl, String phoneNumber, String address, int roleId, boolean isActive, Date createdAt, Date updatedAt) {
         this.userId = userId;
-        this.googleId = googleId;
         this.email = email;
+        this.password = password;
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
         this.phoneNumber = phoneNumber;
@@ -49,20 +49,20 @@ public class User {
         this.userId = userId;
     }
 
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFullName() {

@@ -10,30 +10,30 @@ package Model;
  */
 public class RolePermission {
 
-    private Integer roleId;
-    private Integer permissionId;
+    private int roleId;
+    private int permissionId;
 
     public RolePermission() {
     }
 
-    public RolePermission(Integer roleId, Integer permissionId) {
+    public RolePermission(int roleId, int permissionId) {
         this.roleId = roleId;
         this.permissionId = permissionId;
     }
 
-    public Integer getRoleId() {
+    public int getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(int roleId) {
         this.roleId = roleId;
     }
 
-    public Integer getPermissionId() {
+    public int getPermissionId() {
         return permissionId;
     }
 
-    public void setPermissionId(Integer permissionId) {
+    public void setPermissionId(int permissionId) {
         this.permissionId = permissionId;
     }
 

@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class Category {
 
-    private Integer categoryId;
+    private int categoryId;
     private String categoryName;
     private String description;
     private Date createdAt;
@@ -21,7 +21,7 @@ public class Category {
     public Category() {
     }
 
-    public Category(Integer categoryId, String categoryName, String description, Date createdAt, Date updatedAt) {
+    public Category(int categoryId, String categoryName, String description, Date createdAt, Date updatedAt) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.description = description;
@@ -29,11 +29,11 @@ public class Category {
         this.updatedAt = updatedAt;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 

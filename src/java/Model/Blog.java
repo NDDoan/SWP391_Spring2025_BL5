@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class Blog {
 
-    private Integer blogId;
+    private int blogId;
     private String title;
     private String content;
     private Date createdAt;
@@ -21,7 +21,7 @@ public class Blog {
     public Blog() {
     }
 
-    public Blog(Integer blogId, String title, String content, Date createdAt, Date updatedAt) {
+    public Blog(int blogId, String title, String content, Date createdAt, Date updatedAt) {
         this.blogId = blogId;
         this.title = title;
         this.content = content;
@@ -29,11 +29,11 @@ public class Blog {
         this.updatedAt = updatedAt;
     }
 
-    public Integer getBlogId() {
+    public int getBlogId() {
         return blogId;
     }
 
-    public void setBlogId(Integer blogId) {
+    public void setBlogId(int blogId) {
         this.blogId = blogId;
     }
 
