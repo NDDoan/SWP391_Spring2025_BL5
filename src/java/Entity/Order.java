@@ -2,39 +2,42 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  *
  * @author LENOVO
  */
-public class Cart {
+public class Order {
 
-    private int cartId;
+    private int orderId;
     private int userId;
-    private String shippingAddress;
+    private String orderStatus;
+    private BigDecimal totalAmount;
     private Date createdAt;
     private Date updatedAt;
 
-    public Cart() {
+    public Order() {
     }
 
-    public Cart(int cartId, int userId, String shippingAddress, Date createdAt, Date updatedAt) {
-        this.cartId = cartId;
+    public Order(int orderId, int userId, String orderStatus, BigDecimal totalAmount, Date createdAt, Date updatedAt) {
+        this.orderId = orderId;
         this.userId = userId;
-        this.shippingAddress = shippingAddress;
+        this.orderStatus = orderStatus;
+        this.totalAmount = totalAmount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public int getCartId() {
-        return cartId;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setCartId(int cartId) {
-        this.cartId = cartId;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public int getUserId() {
@@ -45,12 +48,20 @@ public class Cart {
         this.userId = userId;
     }
 
-    public String getShippingAddress() {
-        return shippingAddress;
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public Date getCreatedAt() {

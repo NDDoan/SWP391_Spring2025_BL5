@@ -2,42 +2,39 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  *
  * @author LENOVO
  */
-public class Order {
+public class Cart {
 
-    private int orderId;
+    private int cartId;
     private int userId;
-    private String orderStatus;
-    private BigDecimal totalAmount;
+    private String shippingAddress;
     private Date createdAt;
     private Date updatedAt;
 
-    public Order() {
+    public Cart() {
     }
 
-    public Order(int orderId, int userId, String orderStatus, BigDecimal totalAmount, Date createdAt, Date updatedAt) {
-        this.orderId = orderId;
+    public Cart(int cartId, int userId, String shippingAddress, Date createdAt, Date updatedAt) {
+        this.cartId = cartId;
         this.userId = userId;
-        this.orderStatus = orderStatus;
-        this.totalAmount = totalAmount;
+        this.shippingAddress = shippingAddress;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public int getOrderId() {
-        return orderId;
+    public int getCartId() {
+        return cartId;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
     }
 
     public int getUserId() {
@@ -48,20 +45,12 @@ public class Order {
         this.userId = userId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public String getShippingAddress() {
+        return shippingAddress;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 
     public Date getCreatedAt() {

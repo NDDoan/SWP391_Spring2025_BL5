@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Entity;
 
 import java.util.Date;
 
@@ -10,41 +10,39 @@ import java.util.Date;
  *
  * @author LENOVO
  */
-public class Brand {
+public class Category {
 
-    private int brandId;
-    private String brandName;
+    private int categoryId;
+    private String categoryName;
     private String description;
-    private String logoUrl;
     private Date createdAt;
     private Date updatedAt;
 
-    public Brand() {
+    public Category() {
     }
 
-    public Brand(int brandId, String brandName, String description, String logoUrl, Date createdAt, Date updatedAt) {
-        this.brandId = brandId;
-        this.brandName = brandName;
+    public Category(int categoryId, String categoryName, String description, Date createdAt, Date updatedAt) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
         this.description = description;
-        this.logoUrl = logoUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public int getBrandId() {
-        return brandId;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setBrandId(int brandId) {
-        this.brandId = brandId;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public String getBrandName() {
-        return brandName;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getDescription() {
@@ -53,14 +51,6 @@ public class Brand {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
     }
 
     public Date getCreatedAt() {
@@ -78,5 +68,4 @@ public class Brand {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Entity;
 
 import java.util.Date;
 
@@ -10,39 +10,41 @@ import java.util.Date;
  *
  * @author LENOVO
  */
-public class Role {
+public class Brand {
 
-    private int roleId;
-    private String roleName;
+    private int brandId;
+    private String brandName;
     private String description;
+    private String logoUrl;
     private Date createdAt;
     private Date updatedAt;
 
-    public Role() {
+    public Brand() {
     }
 
-    public Role(int roleId, String roleName, String description, Date createdAt, Date updatedAt) {
-        this.roleId = roleId;
-        this.roleName = roleName;
+    public Brand(int brandId, String brandName, String description, String logoUrl, Date createdAt, Date updatedAt) {
+        this.brandId = brandId;
+        this.brandName = brandName;
         this.description = description;
+        this.logoUrl = logoUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public int getRoleId() {
-        return roleId;
+    public int getBrandId() {
+        return brandId;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public void setBrandId(int brandId) {
+        this.brandId = brandId;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getBrandName() {
+        return brandName;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 
     public String getDescription() {
@@ -51,6 +53,14 @@ public class Role {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     public Date getCreatedAt() {

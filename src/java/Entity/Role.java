@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Entity;
 
 import java.util.Date;
 
@@ -10,39 +10,39 @@ import java.util.Date;
  *
  * @author LENOVO
  */
-public class Category {
+public class Role {
 
-    private int categoryId;
-    private String categoryName;
+    private int roleId;
+    private String roleName;
     private String description;
     private Date createdAt;
     private Date updatedAt;
 
-    public Category() {
+    public Role() {
     }
 
-    public Category(int categoryId, String categoryName, String description, Date createdAt, Date updatedAt) {
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
+    public Role(int roleId, String roleName, String description, Date createdAt, Date updatedAt) {
+        this.roleId = roleId;
+        this.roleName = roleName;
         this.description = description;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public int getRoleId() {
+        return roleId;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public String getDescription() {
@@ -68,4 +68,5 @@ public class Category {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
 }
