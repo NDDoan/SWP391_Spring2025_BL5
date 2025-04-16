@@ -457,32 +457,36 @@ public class UserDao {
     }
 
     public boolean insertUser(User user) {
-        String sql = "INSERT INTO [dbo].[Users] "
-                + "([email], [full_name], [Gender], [avatar_url], [phone_number], [address], [role_id], [created_at], [updated_at], [is_active], [password_hash], [is_verified], [reset_token], [reset_token_expiry], [last_login]) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, NULL)";
+        String sql = "INSERT INTO Users "
+                + "(email, full_name, gender, avatar_url, phone_number, address, role_id, created_at, updated_at, is_active, password_hash, is_verified, reset_token, reset_token_expiry, last_login) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getFull_name());
             ps.setString(3, user.getGender());
-            ps.setString(4, user.getAvatar_url());  // Avatar URL
+            ps.setString(4, null);
             ps.setString(5, user.getPhone_number());
             ps.setString(6, user.getAddress());
             ps.setInt(7, user.getRole_id());
-            ps.setBoolean(8, user.isIs_active());  // is_active (True/False)
-            ps.setString(9, user.getPassword_hash());
-            ps.setBoolean(10, user.isIs_active());  // is_verified
-            ps.setString(11, user.getReset_token());  // reset_token (nếu có)
+            ps.setTimestamp(8, null); // reset_token_expiry
+            ps.setTimestamp(9, null); // last_login
+            ps.setBoolean(10, user.isIs_active());
+            ps.setString(11, null); // Đừng để null nếu cột yêu cầu NOT NULL
+            ps.setBoolean(12, user.isIs_verified());
+            ps.setString(13, null); // reset_token
+            ps.setTimestamp(14, null); // reset_token_expiry
+            ps.setTimestamp(15, null); // last_login
 
-            // Execute update and check if insertion was successful
             int rowsAffected = ps.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Lỗi SQL khi chèn người dùng mới", e);
+            LOGGER.log(Level.SEVERE, "Lỗi SQL khi chèn người dùng mới: " + e.getMessage(), e);
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi chèn người dùng mới", e);
+            LOGGER.log(Level.SEVERE, "Lỗi khi chèn người dùng mới: " + e.getMessage(), e);
         }
 
         return false;

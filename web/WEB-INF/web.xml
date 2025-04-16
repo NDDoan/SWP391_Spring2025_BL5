@@ -40,6 +40,7 @@
         <servlet-name>UserController</servlet-name>
         <url-pattern>/UserController</url-pattern>
     </servlet-mapping>
+</web-app>
     <servlet>
         <servlet-name>LoginController</servlet-name>
         <servlet-class>Controller.LoginController</servlet-class>
@@ -56,5 +57,4 @@
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/registercontroller</url-pattern>
     </servlet-mapping>
-   
 </web-app>
