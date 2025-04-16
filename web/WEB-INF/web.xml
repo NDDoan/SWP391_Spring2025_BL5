@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
-        <servlet-name>ProductForMarketingListController</servlet-name>
-        <servlet-class>Controller.ProductForMarketingListController</servlet-class>
+        <servlet-name>ProductForManagerListController</servlet-name>
+        <servlet-class>Controller.ProductForManagerListController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProductForManagerDetailController</servlet-name>
+        <servlet-class>Controller.ProductForManagerDetailController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ShippingController</servlet-name>
@@ -17,8 +21,12 @@
         <servlet-class>Controller.UserController</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ProductForMarketingListController</servlet-name>
-        <url-pattern>/ProductForMarketingListController</url-pattern>
+        <servlet-name>ProductForManagerListController</servlet-name>
+        <url-pattern>/ProductForManagerListController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductForManagerDetailController</servlet-name>
+        <url-pattern>/ProductForManagerDetailController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ShippingController</servlet-name>
