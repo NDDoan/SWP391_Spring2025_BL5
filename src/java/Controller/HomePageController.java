@@ -8,7 +8,7 @@ import Entity.Slider;
 import dao.SliderDAO;
 import dao.PostDAO;
 import dao.ProductDAO;
-import model.Slider;
+import Entity.Slider;
 import model.Post;
 import model.Product;
 import jakarta.servlet.RequestDispatcher;
@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
-@WebServlet(name = "HomePageServlet", urlPatterns = {"/home"})
-public class HomePageServlet extends HttpServlet {
+@WebServlet(name = "HomePageServlet", urlPatterns = {"/homepage"})
+public class HomePageController extends HttpServlet {
 
     // Database connection details
     private static final String dbURL = "jdbc:sqlserver://localhost:1433;databaseName=swp391_spring2025_bl5";
