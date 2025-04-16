@@ -56,7 +56,7 @@
 
         <h2>Danh sách đơn hàng đang giao</h2>
 
-        <a href="shipping?action=edit" class="button add-btn">+ Thêm giao hàng mới</a>
+        <a href="shipping?action=create" class="button add-btn">+ Thêm giao hàng mới</a>
         <form method="get" action="shipping">
             <label for="status">Lọc theo trạng thái:</label>
             <select name="status" id="status">
