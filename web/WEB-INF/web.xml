@@ -8,6 +8,14 @@
         <servlet-name>ShippingController</servlet-name>
         <servlet-class>Controller.ShippingController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ShipperController</servlet-name>
+        <servlet-class>Controller.ShipperController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserController</servlet-name>
+        <servlet-class>Controller.UserController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ProductForMarketingListController</servlet-name>
         <url-pattern>/ProductForMarketingListController</url-pattern>
@@ -15,5 +23,13 @@
     <servlet-mapping>
         <servlet-name>ShippingController</servlet-name>
         <url-pattern>/ShippingController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShipperController</servlet-name>
+        <url-pattern>/ShipperController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserController</servlet-name>
+        <url-pattern>/UserController</url-pattern>
     </servlet-mapping>
 </web-app>

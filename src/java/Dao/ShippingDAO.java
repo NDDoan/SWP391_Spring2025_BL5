@@ -99,6 +99,28 @@ public class ShippingDAO {
         return list;
     }
 
+    public List<Shipping> getShippingByShipper(int shipperId) throws SQLException {
+        List<Shipping> list = new ArrayList<>();
+        String sql = "SELECT * FROM Shipping WHERE shipperId = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, shipperId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(extractShipping(rs));
+            }
+        }
+        return list;
+    }
+
+    public void updateShippingStatus(int id, String status) throws SQLException {
+        String sql = "UPDATE Shipping SET shipping_status = ?, updated_at = GETDATE() WHERE shipping_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        }
+    }
+
     private Shipping extractShipping(ResultSet rs) throws SQLException {
         return new Shipping(
             rs.getInt("shipping_id"),
@@ -112,4 +134,4 @@ public class ShippingDAO {
             rs.getDate("updated_at")
         );
     }
-}
+} 
