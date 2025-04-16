@@ -227,6 +227,27 @@ public class UserDao {
         return user;
     }
 
+        public boolean isPhoneNumberRegistered(String phone) {
+    String sql = "SELECT COUNT(*) FROM Users WHERE phone_number = ?";
+    
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setString(1, phone);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt(1) > 0; // Trả về true nếu số điện thoại đã tồn tại
+        }
+    } catch (SQLException e) {
+        LOGGER.log(Level.SEVERE, "Lỗi SQL khi kiểm tra số điện thoại", e);
+    } catch (Exception e) {
+        LOGGER.log(Level.SEVERE, "Lỗi chung khi kiểm tra số điện thoại", e);
+    }
+    return false;
+}
+    
+    
     public boolean updateUserProfile(User user) {
         String sql = "UPDATE Users SET full_name = ?, gender = ?, phone_number = ?, address = ? WHERE user_id = ?";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
