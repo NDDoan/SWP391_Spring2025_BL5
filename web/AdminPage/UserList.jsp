@@ -38,7 +38,13 @@
                             <td>${user.email}</td>
                             <td>${user.gender}</td>
                             <td>${user.phone_number}</td>
-                            <td>${user.role_id == 1 ? 'Admin' : 'Staff'}</td>
+                            <td>
+                                ${user.role_id == 1 ? 'Admin' :
+                                  user.role_id == 2 ? 'Customer' :
+                                  user.role_id == 3 ? 'Manager' :
+                                  user.role_id == 4 ? 'Shipper' : 'Unknown'}
+                            </td>
+
                             <td>${user.is_active ? 'Yes' : 'No'}</td>
                             <td>${user.is_verified ? 'Yes' : 'No'}</td>
                             <td>
@@ -99,7 +105,9 @@
                             <label>Role</label>
                             <select class="form-control" name="role_id" id="role_id">
                                 <option value="1">Admin</option>
-                                <option value="3">Shipper</option>
+                                <option value="2">Customer</option>
+                                <option value="3">Manager</option>
+                                <option value="4">Shipper</option>
                             </select>
                         </div>
 

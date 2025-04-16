@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-
 @WebServlet("/user")
 public class UserController extends HttpServlet {
 
@@ -49,8 +48,8 @@ public class UserController extends HttpServlet {
         String phone = request.getParameter("phone_number");
         String address = request.getParameter("address");
         int role = Integer.parseInt(request.getParameter("role_id"));
-        boolean isActive = request.getParameter("is_active") != null;
-        boolean isVerified = request.getParameter("is_verified") != null;
+        boolean isActive = "true".equals(request.getParameter("is_active"));
+        boolean isVerified = "true".equals(request.getParameter("is_verified"));
 
         UserDao dao = new UserDao();
 
@@ -68,8 +67,9 @@ public class UserController extends HttpServlet {
             dao.updateUser(user);
         } else {
             // Insert
-            User newUser = new User(name, gender, email, "123456", phone, address, role, isActive, isVerified);
-            dao.insertUser(newUser);
+           // User newUser = new User(name, gender, email, "12345", phone, address, role, isActive, isVerified);
+            User insertUser = new User(100, name, gender, email, null, phone, address, null, role, isActive, isVerified, null, null, null, null, null);
+            dao.insertUser(insertUser);
         }
 
         response.sendRedirect("user");
