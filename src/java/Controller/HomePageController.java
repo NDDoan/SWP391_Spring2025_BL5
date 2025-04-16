@@ -1,24 +1,13 @@
-@ -0,0 +1,76 @@
 package controller;
 
-import Dao.PostDAO;
 import Dao.SliderDAO;
-import Entity.Post;
 import Entity.Slider;
-import dao.SliderDAO;
-import dao.PostDAO;
-import dao.ProductDAO;
-import Entity.Slider;
-import model.Post;
-import model.Product;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.*;
@@ -39,19 +28,14 @@ public class HomePageController extends HttpServlet {
             // Lấy dữ liệu từ cơ sở dữ liệu
             Connection conn = DriverManager.getConnection(dbURL, user, pass);
             SliderDAO sliderDAO = new SliderDAO(conn);
-            PostDAO postDAO = new PostDAO(conn);
-            ProductDAO productDAO = new ProductDAO(conn);
+            
 
             List<Slider> sliders = sliderDAO.getActiveSliders();
-            List<Post> hotPosts = postDAO.getFeaturedPosts();
-            List<Post> latestPosts = postDAO.getLatestPosts();
-            List<Product> featuredProducts = productDAO.getFeaturedProducts();
+            
 
             // Đưa dữ liệu vào request
             request.setAttribute("sliders", sliders);
-            request.setAttribute("hotPosts", hotPosts);
-            request.setAttribute("latestPosts", latestPosts);
-            request.setAttribute("featuredProducts", featuredProducts);
+            
 
             conn.close();
 
