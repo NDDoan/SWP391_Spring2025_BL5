@@ -31,8 +31,17 @@ public class UserController extends HttpServlet {
             return;
         }
 
-        List<User> userList = dao.getAllUsers();
+        String keyword = request.getParameter("keyword");
+        String roleFilter = request.getParameter("roleFilter");
+
+        // Gọi hàm lọc người dùng từ DAO
+        List<User> userList = dao.getFilteredUsers(keyword, roleFilter);
+
+        // Gửi lại các giá trị tìm kiếm về view để giữ nguyên khi reload
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("roleFilter", roleFilter);
         request.setAttribute("userList", userList);
+
         request.getRequestDispatcher("/AdminPage/UserList.jsp").forward(request, response);
     }
 
@@ -67,7 +76,7 @@ public class UserController extends HttpServlet {
             dao.updateUser(user);
         } else {
             // Insert
-           // User newUser = new User(name, gender, email, "12345", phone, address, role, isActive, isVerified);
+            // User newUser = new User(name, gender, email, "12345", phone, address, role, isActive, isVerified);
             User insertUser = new User(100, name, gender, email, null, phone, address, null, role, isActive, isVerified, null, null, null, null, null);
             dao.insertUser(insertUser);
         }
