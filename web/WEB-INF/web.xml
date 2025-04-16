@@ -8,4 +8,21 @@
         <servlet-name>ProductForMarketingListController</servlet-name>
         <url-pattern>/ProductForMarketingListController</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>LoginController</servlet-name>
+        <servlet-class>Controller.LoginController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginController</servlet-name>
+        <url-pattern>/logincontroller</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>RegisterController</servlet-name>
+        <servlet-class>Controller.RegisterController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterController</servlet-name>
+        <url-pattern>/registercontroller</url-pattern>
+    </servlet-mapping>
+   
 </web-app>
