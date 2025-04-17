@@ -7,10 +7,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
-
 
 @WebServlet("/user")
 public class UserController extends HttpServlet {
@@ -18,6 +18,13 @@ public class UserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User users = (User) session.getAttribute("user");
+
+        if (users == null || users.getRole_id() != 1) {
+            response.sendRedirect("logincontroller");
+            return;
+        }
         String action = request.getParameter("action");
         UserDao dao = new UserDao();
 
@@ -32,14 +39,30 @@ public class UserController extends HttpServlet {
             return;
         }
 
-        List<User> userList = dao.getAllUsers();
+        String keyword = request.getParameter("keyword");
+        String roleFilter = request.getParameter("roleFilter");
+
+        // Gọi hàm lọc người dùng từ DAO
+        List<User> userList = dao.getFilteredUsers(keyword, roleFilter);
+
+        // Gửi lại các giá trị tìm kiếm về view để giữ nguyên khi reload
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("roleFilter", roleFilter);
         request.setAttribute("userList", userList);
+
         request.getRequestDispatcher("/AdminPage/UserList.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User users = (User) session.getAttribute("user");
+
+        if (users == null || users.getRole_id() != 1) {
+            response.sendRedirect("logincontroller");
+            return;
+        }
         int id = request.getParameter("user_id") != null && !request.getParameter("user_id").isEmpty()
                 ? Integer.parseInt(request.getParameter("user_id")) : 0;
 
@@ -49,8 +72,8 @@ public class UserController extends HttpServlet {
         String phone = request.getParameter("phone_number");
         String address = request.getParameter("address");
         int role = Integer.parseInt(request.getParameter("role_id"));
-        boolean isActive = request.getParameter("is_active") != null;
-        boolean isVerified = request.getParameter("is_verified") != null;
+        boolean isActive = "true".equals(request.getParameter("is_active"));
+        boolean isVerified = "true".equals(request.getParameter("is_verified"));
 
         UserDao dao = new UserDao();
 
@@ -68,8 +91,9 @@ public class UserController extends HttpServlet {
             dao.updateUser(user);
         } else {
             // Insert
-            User newUser = new User(name, gender, email, "123456", phone, address, role, isActive, isVerified);
-            dao.insertUser(newUser);
+            // User newUser = new User(name, gender, email, "12345", phone, address, role, isActive, isVerified);
+            User insertUser = new User(100, name, gender, email, null, phone, address, null, role, isActive, isVerified, null, null, null, null, null);
+            dao.insertUser(insertUser);
         }
 
         response.sendRedirect("user");

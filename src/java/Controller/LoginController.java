@@ -114,7 +114,6 @@ public class LoginController extends HttpServlet {
 //            CartDetailDao cartDao = new CartDetailDao();
 //            int cartCount = cartDao.getCartItemCount(user.getUser_id());
 //            session.setAttribute("cartCount", cartCount);
-
             // 🔥 Nếu Remember Me được chọn, lưu email + password + rememberMe vào cookie
             if ("on".equals(rememberMe)) {
                 Cookie emailCookie = new Cookie("rememberedEmail", email);
@@ -156,13 +155,14 @@ public class LoginController extends HttpServlet {
             if (roleId == 2) { // Customer role
                 response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
                 return;
-            } else if (roleId == 1 || roleId == 3 || roleId == 2 ) { // Admin , Marketing or shpippng role
+            } else if (roleId == 1 ||  roleId == 2) { // Admin , Marketing or shpippng role
                 response.sendRedirect(request.getContextPath() + "/AdminPage/AdminDashboard.jsp"); // Chuyển hướng đến giao diện Admin
                 return;
             } else {
-                response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
+             response.sendRedirect(request.getContextPath() + "/ShipperController");
                 return;
             }
+   
 
 //        // Remember Me (lưu email vào cookie)
 //        if ("on".equals(rememberMe)) {
@@ -175,21 +175,27 @@ public class LoginController extends HttpServlet {
 //            cookie.setMaxAge(0);
 //            response.addCookie(cookie);
 //        }
-            // response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
-        } else {
+                    // response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
+                }
+                else {
             request.setAttribute("errorMessage", "Invalid email or password.");
             request.getRequestDispatcher("/UserPage/Login.jsp").forward(request, response);
         }
-    }
+            }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
+            /**
+             * Returns a short description of the servlet.
+             *
+             * @return a String containing servlet description
+             */
+            @Override
+            public String getServletInfo
+            
+            
+                () {
         return "Short description";
-    }// </editor-fold>
+            }// </editor-fold>
 
-}
+        }
+    
+

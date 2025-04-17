@@ -1,114 +1,134 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-<html>
+<!DOCTYPE html>
+<html lang="vi">
 <head>
+    <meta charset="UTF-8">
     <title>Thêm đơn giao hàng mới</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 30px auto;
-            max-width: 600px;
-            background-color: #f9f9f9;
+            background-color: #f4f6f9;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            bottom: 0;
+            width: 250px;
+            background-color: #ffffff;
+            border-right: 1px solid #dee2e6;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            z-index: 100;
         }
 
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-        }
-
-        form {
+        .dashboard-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee2e6;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 101;
         }
 
-        label {
-            font-weight: bold;
-            margin-top: 10px;
+        .content-container {
+            margin-left: 250px;
+            padding: 100px 20px 40px 20px;
         }
 
-        input[type="text"],
-        input[type="number"],
-        input[type="date"],
-        select,
-        textarea {
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                border-right: none;
+            }
 
-        textarea {
-            resize: vertical;
-        }
+            .dashboard-header {
+                position: static;
+                height: auto;
+            }
 
-        input[type="submit"] {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #2980b9;
-        }
-
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #2c3e50;
-        }
-
-        a:hover {
-            text-decoration: underline;
+            .content-container {
+                margin-left: 0;
+                padding-top: 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <h2>Thêm đơn giao hàng mới</h2>
+<!-- Sidebar -->
+<div class="sidebar">
+    <jsp:include page="/AdminPage/dashboard-sidebar.jsp"/>
+</div>
 
-    <form action="shipping" method="post">
-        <label for="orderId">Mã đơn hàng:</label>
-        <input type="number" name="orderId" id="orderId" required>
+<!-- Header -->
+<div class="dashboard-header">
+    <jsp:include page="/AdminPage/dashboard-header.jsp"/>
+</div>
 
-        <label for="shippingAddress">Địa chỉ:</label>
-        <input type="text" name="shippingAddress" id="shippingAddress" required>
+<!-- Main Content -->
+<div class="content-container">
+    <div class="container bg-white rounded shadow p-4">
+        <h3 class="text-center mb-4">Thêm đơn giao hàng mới</h3>
 
-        <label for="shippingStatus">Trạng thái:</label>
-        <select name="shippingStatus" id="shippingStatus" required>
-            <option value="Pending">Pending</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Canceled">Canceled</option>
-            <option value="Returned">Returned</option>
-        </select>
+        <form action="shipping" method="post">
+            <div class="mb-3">
+                <label for="orderId" class="form-label">Mã đơn hàng:</label>
+                <input type="number" class="form-control" name="orderId" id="orderId" required>
+            </div>
 
-        <label for="trackingNumber">Mã tracking:</label>
-        <input type="text" name="trackingNumber" id="trackingNumber">
+            <div class="mb-3">
+                <label for="shippingAddress" class="form-label">Địa chỉ:</label>
+                <input type="text" class="form-control" name="shippingAddress" id="shippingAddress" required>
+            </div>
 
-        <label for="shippingDate">Ngày giao:</label>
-        <input type="date" name="shippingDate" id="shippingDate">
+            <div class="mb-3">
+                <label for="shippingStatus" class="form-label">Trạng thái:</label>
+                <select class="form-select" name="shippingStatus" id="shippingStatus" required>
+                    <option value="Pending">Pending</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Canceled">Canceled</option>
+                    <option value="Returned">Returned</option>
+                </select>
+            </div>
 
-        <label for="estimatedDelivery">Ngày dự kiến:</label>
-        <input type="date" name="estimatedDelivery" id="estimatedDelivery">
+            <div class="mb-3">
+                <label for="trackingNumber" class="form-label">Mã tracking:</label>
+                <input type="text" class="form-control" name="trackingNumber" id="trackingNumber">
+            </div>
 
-        <label for="deliveryNotes">Ghi chú:</label>
-        <textarea name="deliveryNotes" id="deliveryNotes" rows="4"></textarea>
+            <div class="mb-3">
+                <label for="shippingDate" class="form-label">Ngày giao:</label>
+                <input type="date" class="form-control" name="shippingDate" id="shippingDate">
+            </div>
 
-        <input type="submit" value="Tạo mới">
-    </form>
+            <div class="mb-3">
+                <label for="estimatedDelivery" class="form-label">Ngày dự kiến:</label>
+                <input type="date" class="form-control" name="estimatedDelivery" id="estimatedDelivery">
+            </div>
 
-    <a href="shipping">⬅ Quay lại danh sách</a>
+            <div class="mb-3">
+                <label for="deliveryNotes" class="form-label">Ghi chú:</label>
+                <textarea class="form-control" name="deliveryNotes" id="deliveryNotes" rows="4"></textarea>
+            </div>
 
+            <div class="d-flex justify-content-between">
+                <a href="shipping" class="btn btn-secondary">⬅ Quay lại</a>
+                <input type="submit" class="btn btn-primary" value="Tạo mới">
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
