@@ -6,6 +6,8 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -204,48 +206,79 @@
             <div class="card mb-4">
                 <div class="card-header">Media</div>
                 <div class="card-body">
-                    <div class="media-preview">
+                    <div class="row g-3">
+                        <!-- Loop through each media item -->
                         <c:forEach var="m" items="${product.mediaList}">
-                            <c:choose>
-                                <c:when test="${m.mediaType == 'image'}">
-                                    <img src="${m.mediaUrl}" class="img-thumbnail">
-                                </c:when>
-                                <c:otherwise>
-                                    <video controls class="img-thumbnail">
-                                        <source src="${m.mediaUrl}" type="video/mp4">
-                                    </video>
-                                </c:otherwise>
-                            </c:choose>
+                            <div class="col-md-3 text-center position-relative">
+                                <c:choose>
+                                    <c:when test="${m.mediaType == 'image'}">
+                                        <img src="${m.mediaUrl}" class="img-fluid img-thumbnail" alt="Product Image">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <!-- Video: YouTube embed or file video -->
+                                        <div class="ratio ratio-16x9">
+                                            <c:choose>
+                                                <c:when test="${m.mediaUrl.contains('youtu')}">
+                                                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/${m.mediaUrl.substring(m.mediaUrl.lastIndexOf('/')+1)}" allowfullscreen></iframe>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                    <video controls class="w-100 h-auto">
+                                                        <source src="${m.mediaUrl}" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <!-- Overlay action buttons -->
+                                <div class="mt-2">
+                                    <!-- Set/Unset Primary -->
+                                    <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=setPrimary"
+                                       class="btn btn-sm ${m.primary ? 'btn-outline-secondary' : 'btn-outline-primary'} me-1">
+                                        <c:choose>
+                                            <c:when test="${m.primary}">Unset Primary</c:when>
+                                            <c:otherwise>Set Primary</c:otherwise>
+                                        </c:choose>
+                                    </a>
+                                    <!-- Delete -->
+                                    <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=delete"
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Delete this media?');">
+                                        Delete
+                                    </a>
+                                </div>
+                            </div>
                         </c:forEach>
                         <c:if test="${empty product.mediaList}">
-                            <p class="text-muted">No media uploaded.</p>
+                            <p class="text-muted text-center w-100">No media uploaded.</p>
                         </c:if>
                     </div>
 
-                    <div class="add-media-section mt-3">
+                    <!-- Upload Form for single media item -->
+                    <div class="add-media-section mt-4">
                         <h5>Add Media</h5>
-                        <form action="${pageContext.request.contextPath}/MediaUploadController" method="post" enctype="multipart/form-data">
+                        <form action="${pageContext.request.contextPath}/MediaUploadController" method="post" enctype="multipart/form-data" class="row g-3">
                             <input type="hidden" name="productId" value="${product.productId}">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <select name="mediaType" class="form-select" required>
-                                        <option value="image">Image</option>
-                                        <option value="video">Video</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="file" name="mediaFile" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="url" name="mediaUrl" class="form-control" placeholder="Or enter URL">
-                                </div>
-                                <div class="col-12 form-check">
-                                    <input type="checkbox" name="isPrimary" id="isPrimary" class="form-check-input">
-                                    <label for="isPrimary" class="form-check-label">Primary media</label>
-                                </div>
-                                <div class="col-12 text-end">
-                                    <button type="submit" class="btn btn-primary">Upload</button>
-                                </div>
+                            <div class="col-md-2">
+                                <select name="mediaType" class="form-select" required>
+                                    <option value="image">Image</option>
+                                    <option value="video">Video</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="file" name="mediaFile" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="url" name="mediaUrl" class="form-control" placeholder="Or enter URL (YouTube/Image)">
+                            </div>
+                            <div class="col-md-2 form-check">
+                                <input type="checkbox" name="isPrimary" id="isPrimary" class="form-check-input">
+                                <label for="isPrimary" class="form-check-label">Primary</label>
+                            </div>
+                            <div class="col-md-1 text-end">
+                                <button type="submit" class="btn btn-primary">Upload</button>
                             </div>
                         </form>
                     </div>
@@ -305,12 +338,12 @@
         <!-- Bootstrap JS bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                                   window.addEventListener('DOMContentLoaded', () => {
+                                           window.addEventListener('DOMContentLoaded', () => {
             <c:if test="${not empty variantToEdit}">
-                                                       const modal = new bootstrap.Modal(document.getElementById('variantModal'));
-                                                       modal.show();
+                                               const modal = new bootstrap.Modal(document.getElementById('variantModal'));
+                                               modal.show();
             </c:if>
-                                                   });
+                                           });
         </script>
     </body>
 </html>
