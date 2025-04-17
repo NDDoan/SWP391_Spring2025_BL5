@@ -10,10 +10,9 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Chi tiết Sản phẩm</title>
-        <!-- Bootstrap CSS CDN (phiên bản 5) -->
+        <title>Product Detail – Manager</title>
+        <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- CSS Tùy chỉnh -->
         <style>
             body {
                 background-color: #f8f9fa;
@@ -22,112 +21,117 @@
             .container {
                 max-width: 1100px;
             }
-            .section-header {
-                margin-top: 30px;
-                margin-bottom: 15px;
+            .modal-backdrop.show {
+                opacity: .1;
             }
-            .variant-actions button {
-                margin-right: 5px;
-            }
-            .media-preview img,
-            .media-preview video {
+            .media-preview img, .media-preview video {
                 max-width: 150px;
-                margin-right: 10px;
-            }
-            .add-media-section {
-                margin-top: 20px;
+                margin: .5rem;
             }
         </style>
     </head>
     <body>
 
         <div class="container">
-            <!-- Header -->
-            <div class="row mb-3">
-                <div class="col">
-                    <h1 class="text-center">
-                        <c:choose>
-                            <c:when test="${mode == 'view'}">Thông tin Sản phẩm</c:when>
-                            <c:when test="${mode == 'edit'}">Chỉnh sửa Sản phẩm</c:when>
-                            <c:when test="${mode == 'add'}">Thêm Sản phẩm mới</c:when>
-                        </c:choose>
-                    </h1>
+
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <c:choose>
+                        <c:when test="${mode == 'view'}">View Product</c:when>
+                        <c:when test="${mode == 'edit'}">Edit Product</c:when>
+                        <c:when test="${mode == 'add'}">Add New Product</c:when>
+                    </c:choose>
+                </h1>
+                <div>
+                    <!-- Nút chuyển từ view → edit -->
+                    <c:if test="${mode == 'view'}">
+                        <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=edit"
+                           class="btn btn-warning me-2">Edit Product</a>
+                    </c:if>
+                    <a href="${pageContext.request.contextPath}/ProductForManagerListController" class="btn btn-secondary">
+                        &larr; Back to List
+                    </a>
                 </div>
             </div>
 
-            <!-- Hiển thị thông báo (nếu có) -->
+
+
+            <!-- ALERT MESSAGE -->
             <c:if test="${not empty message}">
                 <div class="alert alert-info">${message}</div>
             </c:if>
 
-            <!-- Form Product: Nếu ở chế độ view thì hiển thị thông tin, nếu ở chế độ edit hoặc add thì cho phép chỉnh sửa -->
+            <!-- PRODUCT FORM -->
             <form action="${pageContext.request.contextPath}/ProductForManagerDetailController" method="post">
-                <!-- Chuyển mode tới controller -->
                 <input type="hidden" name="mode" value="${mode}" />
                 <c:if test="${mode != 'add'}">
                     <input type="hidden" name="productId" value="${product.productId}" />
                 </c:if>
 
                 <div class="card mb-4">
-                    <div class="card-header">Thông tin Sản phẩm</div>
+                    <div class="card-header">Product Info</div>
                     <div class="card-body">
-                        <!-- Tên sản phẩm -->
-                        <div class="mb-3 row">
-                            <label for="productName" class="col-sm-2 col-form-label">Tên sản phẩm</label>
+                        <!-- Name -->
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Name</label>
                             <div class="col-sm-10">
                                 <c:choose>
                                     <c:when test="${mode == 'view'}">
                                         <p class="form-control-plaintext">${product.productName}</p>
                                     </c:when>
                                     <c:otherwise>
-                                        <input type="text" class="form-control" id="productName" name="productName" value="${product.productName}" required />
+                                        <input type="text" name="productName" class="form-control" value="${product.productName}" required>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
                         </div>
-
-                        <!-- Thương hiệu: Hiển thị tên thay vì Id -->
-                        <div class="mb-3 row">
-                            <label for="brandName" class="col-sm-2 col-form-label">Thương hiệu</label>
+                        <!-- Brand -->
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Brand</label>
                             <div class="col-sm-10">
                                 <c:choose>
                                     <c:when test="${mode == 'view'}">
                                         <p class="form-control-plaintext">${product.brandName}</p>
                                     </c:when>
                                     <c:otherwise>
-                                        <!-- Nếu có danh sách thương hiệu, bạn có thể dùng select để lựa chọn -->
-                                        <input type="text" class="form-control" id="brandName" name="brandName" value="${product.brandName}" required />
+                                        <select name="brandName" class="form-select" required>
+                                            <c:forEach var="b" items="${brandList}">
+                                                <option value="${b}" ${b == product.brandName ? 'selected' : ''}>${b}</option>
+                                            </c:forEach>
+                                        </select>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
                         </div>
-
-                        <!-- Danh mục: Hiển thị tên danh mục -->
-                        <div class="mb-3 row">
-                            <label for="categoryName" class="col-sm-2 col-form-label">Danh mục</label>
+                        <!-- Category -->
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Category</label>
                             <div class="col-sm-10">
                                 <c:choose>
                                     <c:when test="${mode == 'view'}">
                                         <p class="form-control-plaintext">${product.categoryName}</p>
                                     </c:when>
                                     <c:otherwise>
-                                        <!-- Nếu có danh sách danh mục, bạn có thể chuyển sang select dropdown -->
-                                        <input type="text" class="form-control" id="categoryName" name="categoryName" value="${product.categoryName}" required />
+                                        <select name="categoryName" class="form-select" required>
+                                            <c:forEach var="c" items="${categoryList}">
+                                                <option value="${c}" ${c == product.categoryName ? 'selected' : ''}>${c}</option>
+                                            </c:forEach>
+                                        </select>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
                         </div>
-
-                        <!-- Mô tả -->
-                        <div class="mb-3 row">
-                            <label for="description" class="col-sm-2 col-form-label">Mô tả</label>
+                        <!-- Description -->
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Description</label>
                             <div class="col-sm-10">
                                 <c:choose>
                                     <c:when test="${mode == 'view'}">
                                         <p class="form-control-plaintext">${product.description}</p>
                                     </c:when>
                                     <c:otherwise>
-                                        <textarea class="form-control" id="description" name="description" rows="4" required>${product.description}</textarea>
+                                        <textarea name="description" class="form-control" rows="4" required>${product.description}</textarea>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -135,170 +139,161 @@
                     </div>
                 </div>
 
-                <!-- Nút Lưu / Hủy: chỉ hiển thị nếu ở chế độ edit hoặc add -->
+                <!-- SAVE / CANCEL -->
                 <c:if test="${mode != 'view'}">
                     <div class="mb-4 text-end">
-                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                        <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=view" class="btn btn-secondary">Hủy</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=view" class="btn btn-secondary">Cancel</a>
                     </div>
                 </c:if>
             </form>
 
-            <!-- Phần Variant & Media (giữ nguyên phần trước) -->
 
-            <!-- Danh sách Variant -->
+            <!-- VARIANT SECTION -->
             <div class="card mb-4">
-                <div class="card-header">
-                    Danh sách Variant 
-                    <c:if test="${mode == 'view'}">
-                        <button class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#addVariantModal">Thêm Variant</button>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Variants</span>
+                    <!-- Chỉ hiện nút Add Variant khi đang ở edit hoặc add mode -->
+                    <c:if test="${mode != 'view'}">
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#variantModal">Add Variant</button>
                     </c:if>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered align-middle">
-                            <thead class="table-light">
+                <div class="card-body p-0">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th><th>CPU</th><th>RAM</th><th>Screen</th><th>Storage</th>
+                                <th>Color</th><th>Price</th><th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="v" items="${product.variants}">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>CPU</th>
-                                    <th>RAM</th>
-                                    <th>Screen</th>
-                                    <th>Storage</th>
-                                    <th>Color</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Hành động</th>
+                                    <td>${v.variantId}</td>
+                                    <td>${v.cpu}</td>
+                                    <td>${v.ram}</td>
+                                    <td>${v.screen}</td>
+                                    <td>${v.storage}</td>
+                                    <td>${v.color}</td>
+                                    <td>${v.price}</td>
+                                    <td>${v.stockQuantity}</td>
+                                    <td>
+                                        <!-- Chỉ show Edit/Delete khi mode != view -->
+                                        <c:if test="${mode != 'view'}">
+                                            <a href="?productId=${product.productId}&editVariantId=${v.variantId}&mode=${mode}"
+                                               class="btn btn-warning btn-sm">Edit</a>
+                                            <a href="?productId=${product.productId}&deleteVariantId=${v.variantId}&mode=${mode}"
+                                               class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Delete this variant?');">Delete</a>
+                                        </c:if>
+                                        <!-- Khi đang ở view, chỉ show nothing -->
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="variant" items="${product.variants}">
-                                    <tr>
-                                        <td>${variant.variantId}</td>
-                                        <td>${variant.cpu}</td>
-                                        <td>${variant.ram}</td>
-                                        <td>${variant.screen}</td>
-                                        <td>${variant.storage}</td>
-                                        <td>${variant.color}</td>
-                                        <td>${variant.price}</td>
-                                        <td>${variant.stockQuantity}</td>
-                                        <td class="variant-actions">
-                                            <a href="${pageContext.request.contextPath}/VariantActionController?action=view&variantId=${variant.variantId}" class="btn btn-info btn-sm">Xem</a>
-                                            <a href="${pageContext.request.contextPath}/VariantActionController?action=edit&variantId=${variant.variantId}" class="btn btn-warning btn-sm">Sửa</a>
-                                            <a href="${pageContext.request.contextPath}/VariantActionController?action=delete&variantId=${variant.variantId}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa Variant này?');">Xóa</a>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                                <c:if test="${empty product.variants}">
-                                    <tr>
-                                        <td colspan="9" class="text-center">Chưa có Variant nào</td>
-                                    </tr>
-                                </c:if>
-                            </tbody>
-                        </table>
-                    </div>
+                            </c:forEach>
+                            <c:if test="${empty product.variants}">
+                                <tr><td colspan="9" class="text-center">No variants</td></tr>
+                            </c:if>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Quản lý Media -->
+
+            <!-- MEDIA SECTION -->
             <div class="card mb-4">
-                <div class="card-header">Quản lý Media</div>
+                <div class="card-header">Media</div>
                 <div class="card-body">
-                    <div class="media-preview mb-3">
-                        <c:forEach var="media" items="${product.mediaList}">
+                    <div class="media-preview">
+                        <c:forEach var="m" items="${product.mediaList}">
                             <c:choose>
-                                <c:when test="${media.mediaType eq 'image'}">
-                                    <img src="${media.mediaUrl}" alt="Image" class="img-thumbnail">
+                                <c:when test="${m.mediaType == 'image'}">
+                                    <img src="${m.mediaUrl}" class="img-thumbnail">
                                 </c:when>
-                                <c:when test="${media.mediaType eq 'video'}">
+                                <c:otherwise>
                                     <video controls class="img-thumbnail">
-                                        <source src="${media.mediaUrl}" type="video/mp4">
-                                        Trình duyệt không hỗ trợ video.
+                                        <source src="${m.mediaUrl}" type="video/mp4">
                                     </video>
-                                </c:when>
+                                </c:otherwise>
                             </c:choose>
                         </c:forEach>
                         <c:if test="${empty product.mediaList}">
-                            <p class="text-muted">Chưa có Media nào</p>
+                            <p class="text-muted">No media uploaded.</p>
                         </c:if>
                     </div>
 
-                    <!-- Form thêm Media -->
-                    <div class="add-media-section">
-                        <h5>Thêm Media</h5>
+                    <div class="add-media-section mt-3">
+                        <h5>Add Media</h5>
                         <form action="${pageContext.request.contextPath}/MediaUploadController" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="productId" value="${product.productId}" />
-                            <div class="mb-3">
-                                <label class="form-label">Loại Media</label>
-                                <select class="form-select" name="mediaType" required>
-                                    <option value="image">Ảnh</option>
-                                    <option value="video">Video</option>
-                                </select>
+                            <input type="hidden" name="productId" value="${product.productId}">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <select name="mediaType" class="form-select" required>
+                                        <option value="image">Image</option>
+                                        <option value="video">Video</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="file" name="mediaFile" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="url" name="mediaUrl" class="form-control" placeholder="Or enter URL">
+                                </div>
+                                <div class="col-12 form-check">
+                                    <input type="checkbox" name="isPrimary" id="isPrimary" class="form-check-input">
+                                    <label for="isPrimary" class="form-check-label">Primary media</label>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                </div>
                             </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Tải file từ máy</label>
-                                <input type="file" class="form-control" name="mediaFile">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Hoặc nhập URL</label>
-                                <input type="url" class="form-control" name="mediaUrl" placeholder="http://">
-                            </div>
-
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" name="isPrimary" id="isPrimary">
-                                <label class="form-check-label" for="isPrimary">Đánh dấu là Media chính</label>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Thêm Media</button>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- Modal cho Variant: dùng để Thêm Variant -->
-            <div class="modal fade" id="addVariantModal" tabindex="-1" aria-labelledby="addVariantModalLabel" aria-hidden="true">
+
+            <!-- VARIANT MODAL -->
+            <div class="modal fade" id="variantModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
-                    <form action="${pageContext.request.contextPath}/VariantActionController" method="post">
+                    <form action="${pageContext.request.contextPath}/ProductForManagerDetailController" method="post">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="addVariantModalLabel">Thêm Variant</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                <h5 class="modal-title">
+                                    <c:choose>
+                                        <c:when test="${not empty variantToEdit}">Edit Variant</c:when>
+                                        <c:otherwise>Add Variant</c:otherwise>
+                                    </c:choose>
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" name="productId" value="${product.productId}">
-                                <div class="mb-3">
-                                    <label class="form-label">CPU</label>
-                                    <input type="text" class="form-control" name="cpu" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">RAM</label>
-                                    <input type="text" class="form-control" name="ram" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Screen</label>
-                                    <input type="text" class="form-control" name="screen" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Storage</label>
-                                    <input type="text" class="form-control" name="storage" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Color</label>
-                                    <input type="text" class="form-control" name="color" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Price</label>
-                                    <input type="number" step="0.01" class="form-control" name="price" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Stock</label>
-                                    <input type="number" class="form-control" name="stockQuantity" required>
-                                </div>
+                                <c:if test="${not empty variantToEdit}">
+                                    <input type="hidden" name="variantId" value="${variantToEdit.variantId}">
+                                    <input type="hidden" name="variantAction" value="update">
+                                </c:if>
+                                <c:if test="${empty variantToEdit}">
+                                    <input type="hidden" name="variantAction" value="add">
+                                </c:if>
+                                <div class="mb-3"><label>CPU</label>
+                                    <input type="text" name="cpu" class="form-control" value="${variantToEdit.cpu}" required></div>
+                                <div class="mb-3"><label>RAM</label>
+                                    <input type="text" name="ram" class="form-control" value="${variantToEdit.ram}" required></div>
+                                <div class="mb-3"><label>Screen</label>
+                                    <input type="text" name="screen" class="form-control" value="${variantToEdit.screen}" required></div>
+                                <div class="mb-3"><label>Storage</label>
+                                    <input type="text" name="storage" class="form-control" value="${variantToEdit.storage}" required></div>
+                                <div class="mb-3"><label>Color</label>
+                                    <input type="text" name="color" class="form-control" value="${variantToEdit.color}" required></div>
+                                <div class="mb-3"><label>Price</label>
+                                    <input type="number" step="0.01" name="price" class="form-control" value="${variantToEdit.price}" required></div>
+                                <div class="mb-3"><label>Stock</label>
+                                    <input type="number" name="stockQuantity" class="form-control" value="${variantToEdit.stockQuantity}" required></div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                <button type="submit" class="btn btn-primary">Lưu Variant</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
                         </div>
                     </form>
@@ -307,18 +302,15 @@
 
         </div>
 
-        <!-- Bootstrap JS Bundle CDN (bao gồm Popper) -->
+        <!-- Bootstrap JS bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                                function editVariant(variantId) {
-                                                    alert("Chức năng sửa Variant ID: " + variantId);
-                                                }
-
-                                                function deleteVariant(variantId) {
-                                                    if (confirm("Bạn có chắc chắn muốn xóa Variant này?")) {
-                                                        window.location.href = "${pageContext.request.contextPath}/VariantActionController?action=delete&variantId=" + variantId;
-                                                    }
-                                                }
+                                                   window.addEventListener('DOMContentLoaded', () => {
+            <c:if test="${not empty variantToEdit}">
+                                                       const modal = new bootstrap.Modal(document.getElementById('variantModal'));
+                                                       modal.show();
+            </c:if>
+                                                   });
         </script>
     </body>
 </html>

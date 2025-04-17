@@ -35,7 +35,8 @@ public class ProductDao {
      */
     public int addProduct(ProductDto productDto) {
         int generatedProductId = -1;
-        String insertProductSQL = "INSERT INTO Products (product_name, brand_name, category_name, description, created_at, updated_at) VALUES (?, ?, ?, ?, GETDATE(), GETDATE())";
+        String insertProductSQL = "INSERT INTO Products (product_name, brand_id, category_id, description, created_at, updated_at)"
+                + "VALUES (?, (SELECT brand_id FROM Brands WHERE brand_name = ?), (SELECT category_id FROM Categories WHERE category_name = ?), ?, GETDATE(), GETDATE())";
 
         // Sẽ chèn variants và media sau khi insert thành công Product
         try (Connection conn = new DBContext().getConnection()) {
@@ -113,7 +114,9 @@ public class ProductDao {
      */
     public boolean updateProduct(ProductDto productDto) {
         boolean updated = false;
-        String updateProductSQL = "UPDATE Products SET product_name = ?, brand_name = ?, category_name = ?, description = ?, updated_at = GETDATE() WHERE product_id = ?";
+        String updateProductSQL = "UPDATE Products SET product_name = ?, brand_id = (SELECT brand_id FROM Brands WHERE brand_name = ?),"
+                + "category_id = (SELECT category_id FROM Categories WHERE category_name = ?), description = ?, updated_at = GETDATE()"
+                + "WHERE product_id = ?";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(updateProductSQL)) {
 
@@ -142,7 +145,7 @@ public class ProductDao {
      */
     public ProductDto getProductById(int productId) {
         ProductDto productDto = null;
-        String selectProductSQL = "SELECT p.product_id, p.product_name, p.brand_id, p.category_id, p.description, p.created_at, p.updated_at, "
+        String selectProductSQL = "SELECT p.product_id, p.product_name, b.brand_name, c.category_name, p.description, p.created_at, p.updated_at, "
                 + "       b.brand_name, c.category_name "
                 + "FROM Products p "
                 + "LEFT JOIN Brands b ON p.brand_id = b.brand_id "
@@ -229,5 +232,31 @@ public class ProductDao {
             }
         }
         return mediaList;
+    }
+
+    public List<String> getAllBrandNames() {
+        List<String> brandNames = new ArrayList<>();
+        String query = "SELECT brand_name FROM Brands";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                brandNames.add(rs.getString("brand_name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return brandNames;
+    }
+
+    public List<String> getAllCategoryNames() {
+        List<String> categoryNames = new ArrayList<>();
+        String query = "SELECT category_name FROM Categories";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                categoryNames.add(rs.getString("category_name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return categoryNames;
     }
 }
