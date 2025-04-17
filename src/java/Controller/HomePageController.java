@@ -13,13 +13,13 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
-@WebServlet(name = "HomePageServlet", urlPatterns = {"/homepage"})
+@WebServlet(name = "HomePageServlet", urlPatterns = {"/HomePage"})
 public class HomePageController extends HttpServlet {
 
     // Database connection details
     private static final String dbURL = "jdbc:sqlserver://localhost:1433;databaseName=swp391_spring2025_bl5";
-    private static final String user = "your_user";
-    private static final String pass = "your_pass";
+    private static final String user = "sa";
+    private static final String pass = "123";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,7 +40,7 @@ public class HomePageController extends HttpServlet {
             conn.close();
 
             // Chuyển hướng đến JSP hiển thị
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/home.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/HomePage.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
