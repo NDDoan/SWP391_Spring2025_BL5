@@ -58,7 +58,7 @@ public class ShipperController extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        if ("updateStatus".equals(action)) {
+        if ("updateShippingStatus".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
             String status = request.getParameter("status");
 

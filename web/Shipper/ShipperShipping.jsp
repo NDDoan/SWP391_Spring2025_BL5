@@ -65,8 +65,9 @@
                     <td>${s.shippingDate}</td>
                     <td>${s.estimatedDelivery}</td>
                     <td>
-                        <form action="updateShippingStatus" method="post">
-                            <input type="hidden" name="id" value="${s.id}" />
+                        <form action="shipper" method="post">
+                            <input type="hidden" name="action" value="updateShippingStatus" />
+                             <input type="hidden" name="id" value="${s.id}" />
                             <select name="status">
                                 <option value="Shipped" ${s.shippingStatus == 'Shipped' ? 'selected' : ''}>Shipped</option>
                                 <option value="Delivered" ${s.shippingStatus == 'Delivered' ? 'selected' : ''}>Delivered</option>
