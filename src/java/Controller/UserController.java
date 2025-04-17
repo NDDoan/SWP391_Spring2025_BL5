@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +18,13 @@ public class UserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User users = (User) session.getAttribute("user");
+
+        if (users == null || users.getRole_id() != 1) {
+            response.sendRedirect("logincontroller");
+            return;
+        }
         String action = request.getParameter("action");
         UserDao dao = new UserDao();
 
@@ -48,6 +56,13 @@ public class UserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User users = (User) session.getAttribute("user");
+
+        if (users == null || users.getRole_id() != 1) {
+            response.sendRedirect("logincontroller");
+            return;
+        }
         int id = request.getParameter("user_id") != null && !request.getParameter("user_id").isEmpty()
                 ? Integer.parseInt(request.getParameter("user_id")) : 0;
 

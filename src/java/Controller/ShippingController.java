@@ -3,6 +3,7 @@ package Controller;
 import Dao.ShippingDAO;
 import Entity.Shipping;
 import DBContext.DBContext;
+import Entity.User;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,6 +34,13 @@ public class ShippingController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         HttpSession session = request.getSession();
+        User users = (User) session.getAttribute("user");
+
+        if (users == null || users.getRole_id() != 1) {
+            response.sendRedirect("logincontroller");
+            return;
+        }
         String action = request.getParameter("action");
 
         try {
@@ -99,6 +107,13 @@ public class ShippingController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         HttpSession session = request.getSession();
+        User users = (User) session.getAttribute("user");
+
+        if (users == null || users.getRole_id() != 1) {
+            response.sendRedirect("logincontroller");
+            return;
+        }
         try {
             int orderId = Integer.parseInt(request.getParameter("orderId"));
             String address = request.getParameter("shippingAddress");
