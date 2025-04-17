@@ -34,8 +34,17 @@ public class DBContext {
 
     public static void main(String[] args) {
         try {
-            System.out.println(new DBContext().getConnection());
+            Connection conn = new DBContext().getConnection();
+            if (conn != null) {
+                System.out.println("✅ Kết nối đến database thành công!");
+                conn.close(); // đóng kết nối sau khi test
+            } else {
+                System.out.println("❌ Không thể kết nối đến database!");
+            }
         } catch (Exception e) {
+            System.out.println("❌ Lỗi khi kết nối database: " + e.getMessage());
+            e.printStackTrace(); // in chi tiết lỗi nếu cần debug
         }
     }
+
 }

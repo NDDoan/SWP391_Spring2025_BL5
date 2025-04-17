@@ -44,14 +44,26 @@
         <servlet-name>UserController</servlet-name>
         <url-pattern>/UserController</url-pattern>
     </servlet-mapping>
+    
+        <servlet>
+        <servlet-name>MyOrderController</servlet-name>
+        <servlet-class>Controller.MyOrderController</servlet-class>
     <servlet>
         <servlet-name>LoginController</servlet-name>
         <servlet-class>Controller.LoginController</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>LoginController</servlet-name>
-        <url-pattern>/logincontroller</url-pattern>
+    <servlet>
+        <servlet-name>MyOrderController</servlet-name>
+        <servlet-class>Controller.MyOrderController</servlet-class>
+    </servlet>
+        <servlet-mapping>
+        <servlet-name>MyOrderController</servlet-name>
+        <url-pattern>/myordercontroller</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>UserProfile</servlet-name>
+        <servlet-class>Controller.UserProfile</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>RegisterController</servlet-name>
         <servlet-class>Controller.RegisterController</servlet-class>
@@ -61,6 +73,13 @@
         <url-pattern>/registercontroller</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>LoginController</servlet-name>
+        <url-pattern>/logincontroller</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LoginController</servlet-name>
+        <servlet-class>Controller.LoginController</servlet-class>
+    </servlet>
         <servlet-name>MediaUploadController</servlet-name>
         <url-pattern>/MediaUploadController</url-pattern>
     </servlet-mapping>

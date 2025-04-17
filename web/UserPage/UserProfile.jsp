@@ -3,24 +3,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Change Password - Electro Mart</title>
+    <title>User Profile - Electro Mart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font + Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-    <!-- CSS Tổng -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(to right, #1e3c72, #2a5298);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            color: #333;
         }
 
         /* HEADER */
@@ -80,92 +78,109 @@
             }
         }
 
-        /* FORM ĐỔI MẬT KHẨU */
-        .container {
+        /* PROFILE CONTENT */
+        .profile-container {
             background-color: #ffffff;
             padding: 40px 30px;
             border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
             width: 100%;
-            max-width: 420px;
-            margin: 60px auto 30px auto;
+            margin: 60px auto;
+            animation: fadeIn 0.6s ease-in-out;
         }
 
-        .container h1 {
-            font-size: 26px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-container h1 {
             color: #1e3c72;
+            font-size: 26px;
             font-weight: 600;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: center;
+        }
+
+        .profile-container img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1e3c72;
+            margin: 10px auto 20px auto;
+            display: block;
         }
 
         .input-group {
-            position: relative;
             margin-bottom: 20px;
         }
 
-        .input-group input {
+        .input-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .input-group input, .input-group select {
             width: 100%;
-            padding: 14px 15px 14px 45px;
+            padding: 12px 14px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            font-size: 16px;
-            transition: 0.3s ease;
+            font-size: 15px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s ease;
         }
 
-        .input-group input:focus {
+        .input-group input:focus, .input-group select:focus {
             border-color: #1e3c72;
             outline: none;
-            box-shadow: 0 0 5px rgba(30, 60, 114, 0.3);
         }
 
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #888;
-        }
-
-        .container input[type="submit"] {
+        input[type="submit"], .btn {
             background-color: #1e3c72;
-            color: #fff;
+            color: white;
+            padding: 12px;
             border: none;
-            padding: 14px;
             border-radius: 8px;
-            width: 100%;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 600;
+            width: 100%;
             cursor: pointer;
+            margin-top: 10px;
             transition: background-color 0.3s ease;
         }
 
-        .container input[type="submit"]:hover {
-            background-color: #163062;
+        .btn:hover, input[type="submit"]:hover {
+            background-color: #0f2a5f;
         }
 
-        .container a {
-            display: block;
-            margin-top: 18px;
-            color: #1e3c72;
-            text-decoration: none;
-            font-weight: 500;
-            text-align: center;
-            transition: color 0.3s ease;
+        .btn-orange { background-color: #ff6600; }
+        .btn-orange:hover { background-color: #e65c00; }
+
+        .btn-green { background-color: #28a745; }
+        .btn-green:hover { background-color: #218838; }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
         }
 
-        .container a:hover {
-            color: #2a5298;
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 6px solid #17a2b8;
         }
 
-        .message {
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-align: center;
+        .alert i {
+            margin-right: 10px;
         }
-
-        .message.error { color: #d62828; }
-        .message.success { color: #2a9d8f; }
 
         /* FOOTER */
         .footer {
@@ -173,6 +188,7 @@
             color: #fff;
             padding: 40px 20px;
             font-size: 14px;
+            margin-top: auto;
         }
 
         .footer-container {
@@ -230,43 +246,84 @@
         </nav>
         <div class="user-actions">
             <a href="profile.jsp"><i class="fas fa-user-circle"></i> Profile</a>
-            <a href="cart.jsp"><i class="fas fa-shopping-cart"></i> Cart</a>
             <a href="logout.jsp"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </div>
 </header>
 
-<!-- NỘI DUNG CHÍNH -->
-<div class="container">
-    <h1>Change Your Password</h1>
-    <%
-        String errorMessagePassChanging = (String) request.getAttribute("errorMessagePassChanging");
-        String successMessageChanging = (String) request.getAttribute("successMessageChanging");
-    %>
-    <% if (errorMessagePassChanging != null) { %>
-        <div class="message error"><%= errorMessagePassChanging %></div>
-    <% } %>
-    <% if (successMessageChanging != null) { %>
-        <div class="message success"><%= successMessageChanging %></div>
-    <% } %>
+<!-- PROFILE CONTENT -->
+<div class="profile-container">
 
-    <form action="${pageContext.request.contextPath}/changepasswordcontroller" method="post">
+    <h1>User Profile</h1>
+
+    <!-- Avatar -->
+    <img src="${user.avatar_url != null ? user.avatar_url : 'default-avatar.png'}" alt="Avatar">
+
+    <!-- Alert -->
+    <%
+        String updateMessage = (String) session.getAttribute("updateMessage");
+        if (updateMessage != null) {
+    %>
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <%= updateMessage %>
+        <button onclick="this.parentElement.style.display='none'" style="margin-left:auto;background:none;border:none;color:#0c5460;cursor:pointer;">
+            <i class="fas fa-times-circle"></i>
+        </button>
+    </div>
+    <script>
+        setTimeout(() => {
+            document.querySelector('.alert').style.display = 'none';
+        }, 4000);
+    </script>
+    <%
+        session.removeAttribute("updateMessage");
+        }
+    %>
+
+    <!-- Update Avatar -->
+    <form action="${pageContext.request.contextPath}/uploadavatarcontroller" method="post" enctype="multipart/form-data">
         <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" name="currentPassword" placeholder="Current Password" required>
+            <label>Update Avatar</label>
+            <input type="file" name="avatar" accept="image/*" required>
         </div>
-        <div class="input-group">
-            <i class="fas fa-key"></i>
-            <input type="password" name="newPassword" placeholder="New Password" required>
-        </div>
-        <div class="input-group">
-            <i class="fas fa-key"></i>
-            <input type="password" name="confirmPassword" placeholder="Confirm New Password" required>
-        </div>
-        <input type="submit" value="Change Password">
+        <button type="submit" class="btn btn-orange">Update Avatar</button>
     </form>
 
-    <a href="home.jsp"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    <!-- Change Password -->
+    <button type="button" class="btn btn-green"
+            onclick="window.location.href = '${pageContext.request.contextPath}/UserPage/ChangePassword.jsp'">
+        Change Password
+    </button>
+
+    <!-- User Info -->
+    <form action="${pageContext.request.contextPath}/userprofile" method="post">
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" name="full_name" value="${user.full_name}" required>
+        </div>
+        <div class="input-group">
+            <label>Gender</label>
+            <select name="gender" required>
+                <option value="Male" ${user.gender == "Male" ? "selected" : ""}>Male</option>
+                <option value="Female" ${user.gender == "Female" ? "selected" : ""}>Female</option>
+                <option value="Other" ${user.gender == "Other" ? "selected" : ""}>Other</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" name="email" value="${user.email}" readonly style="background-color: #e9ecef; cursor: not-allowed;">
+        </div>
+        <div class="input-group">
+            <label>Phone Number</label>
+            <input type="text" name="phone_number" value="${user.phone_number}" required>
+        </div>
+        <div class="input-group">
+            <label>Address</label>
+            <input type="text" name="address" value="${user.address}" required>
+        </div>
+        <input type="submit" value="Save Changes">
+    </form>
 </div>
 
 <!-- FOOTER -->

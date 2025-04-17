@@ -74,6 +74,11 @@ public class UserProfile extends HttpServlet {
             response.sendRedirect("userprofile");
             return;
         }
+        if (userDAO.isPhoneNumberRegistered(phoneNumber, userId)) {
+    session.setAttribute("updateMessage", "❌ Số điện thoại đã được sử dụng bởi tài khoản khác!");
+    response.sendRedirect("userprofile");
+    return;
+}
         
         if (!address.matches(addressRegex)) {
             session.setAttribute("updateMessage", "❌ Địa chỉ phải có ít nhất 5 ký tự!");
