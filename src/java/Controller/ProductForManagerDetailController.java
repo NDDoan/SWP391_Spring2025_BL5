@@ -44,33 +44,49 @@ public class ProductForManagerDetailController extends HttpServlet {
         if (mode == null) {
             mode = "view";
         }
-        int productId;
-        try {
-            productId = Integer.parseInt(request.getParameter("productId"));
-        } catch (Exception e) {
-            request.setAttribute("errorMessage", "ProductId không hợp lệ.");
-            RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/error.jsp");
-            rd.forward(request, response);
-            return;
+
+        ProductDto product;
+        if ("add".equalsIgnoreCase(mode)) {
+            product = new ProductDto();
+        } else {
+            String productIdParam = request.getParameter("productId");
+            int productId = 0;
+            try {
+                productId = Integer.parseInt(productIdParam);
+            } catch (Exception e) {
+                request.setAttribute("errorMessage", "ProductId không hợp lệ.");
+                RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
+            product = productDao.getProductById(productId);
+            if (product == null) {
+                request.setAttribute("errorMessage", "Không tìm thấy thông tin sản phẩm.");
+                RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
         }
-        ProductDto product = mode.equals("add")
-                ? new ProductDto()
-                : productDao.getProductById(productId);
-        List<String> brands = productDao.getAllBrandNames();
-        List<String> categories = productDao.getAllCategoryNames();
-        String editVariantId = request.getParameter("editVariantId");
-        ProductVariant editVariant = editVariantId != null
-                ? variantDao.getVariantById(Integer.parseInt(editVariantId))
-                : null;
 
-        // fetch updated variant list
-        product.setVariants(variantDao.getVariantsByProductId(productId));
-
+        // Common attributes
         request.setAttribute("product", product);
         request.setAttribute("mode", mode);
-        request.setAttribute("brandList", brands);
-        request.setAttribute("categoryList", categories);
-        request.setAttribute("variantToEdit", editVariant);
+        request.setAttribute("brandList", productDao.getAllBrandNames());
+        request.setAttribute("categoryList", productDao.getAllCategoryNames());
+
+        // Variant editing if requested
+        String editVariantId = request.getParameter("editVariantId");
+        if (editVariantId != null) {
+            ProductVariant editVariant = variantDao.getVariantById(Integer.parseInt(editVariantId));
+            request.setAttribute("variantToEdit", editVariant);
+        }
+
+        // Load variants for view/edit
+        if ("add".equalsIgnoreCase(mode)) {
+            product.setVariants(List.of());
+        } else {
+            product.setVariants(variantDao.getVariantsByProductId(product.getProductId()));
+        }
 
         RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/ProductDetail.jsp");
         rd.forward(request, response);
@@ -118,51 +134,37 @@ public class ProductForManagerDetailController extends HttpServlet {
             throws ServletException, IOException {
         // Xử lý submit của form trong chế độ edit hoặc add: gọi method updateProduct hoặc addProduct từ ProductDao.
         // Ví dụ đơn giản dưới đây chỉ demo, bạn cần bổ sung kiểm tra và thông báo đầy đủ.
-
-        // Lấy chế độ từ request (edit hoặc add)
+        request.setCharacterEncoding("UTF-8");
         String mode = request.getParameter("mode");
-        ProductDao dao = new ProductDao();
-        if ("edit".equalsIgnoreCase(mode)) {
-            // Thực hiện cập nhật sản phẩm
-            // Lấy dữ liệu form và xây dựng ProductDto
+        // Handle product add/edit
+        if ("add".equalsIgnoreCase(mode) || "edit".equalsIgnoreCase(mode)) {
             ProductDto product = new ProductDto();
-            product.setProductId(Integer.parseInt(request.getParameter("productId")));
+            if ("edit".equalsIgnoreCase(mode)) {
+                product.setProductId(Integer.parseInt(request.getParameter("productId")));
+            }
             product.setProductName(request.getParameter("productName"));
             product.setBrandName(request.getParameter("brandName"));
             product.setCategoryName(request.getParameter("categoryName"));
             product.setDescription(request.getParameter("description"));
-            // Các xử lý variants và media có thể thêm ở đây (ví dụ, xử lý danh sách từ các input)
 
-            boolean updated = dao.updateProduct(product);
-            if (updated) {
-                request.setAttribute("message", "Cập nhật sản phẩm thành công.");
+            int prodId;
+            if ("add".equalsIgnoreCase(mode)) {
+                prodId = productDao.addProduct(product);
             } else {
-                request.setAttribute("message", "Cập nhật sản phẩm thất bại.");
+                productDao.updateProduct(product);
+                prodId = product.getProductId();
             }
-        } else if ("add".equalsIgnoreCase(mode)) {
-            // Thực hiện thêm mới sản phẩm
-            ProductDto product = new ProductDto();
-            product.setProductName(request.getParameter("productName"));
-            product.setBrandName(request.getParameter("brandName"));
-            product.setCategoryName(request.getParameter("categoryName"));
-            product.setDescription(request.getParameter("description"));
-            // Các xử lý variants và media có thể thêm ở đây
-
-            int newId = dao.addProduct(product);
-            if (newId > 0) {
-                request.setAttribute("message", "Thêm sản phẩm thành công.");
-                product = dao.getProductById(newId);
-            } else {
-                request.setAttribute("message", "Thêm sản phẩm thất bại.");
-            }
-            request.setAttribute("product", product);
+            response.sendRedirect(request.getContextPath()
+                    + "/ProductForManagerDetailController?productId=" + prodId + "&mode=view");
+            return;
         }
 
+        // Handle variant add/update via POST
         String variantAction = request.getParameter("variantAction");
-        int productId = Integer.parseInt(request.getParameter("productId"));
         if (variantAction != null) {
+            int prodId = Integer.parseInt(request.getParameter("productId"));
             ProductVariant v = new ProductVariant();
-            v.setProductId(productId);
+            v.setProductId(prodId);
             v.setCpu(request.getParameter("cpu"));
             v.setRam(request.getParameter("ram"));
             v.setScreen(request.getParameter("screen"));
@@ -170,27 +172,18 @@ public class ProductForManagerDetailController extends HttpServlet {
             v.setColor(request.getParameter("color"));
             v.setPrice(Double.parseDouble(request.getParameter("price")));
             v.setStockQuantity(Integer.parseInt(request.getParameter("stockQuantity")));
-            if (variantAction.equals("add")) {
-                variantDao.addVariant(v);
-            } else if (variantAction.equals("update")) {
+            if ("update".equalsIgnoreCase(variantAction)) {
                 v.setVariantId(Integer.parseInt(request.getParameter("variantId")));
                 variantDao.updateVariant(v);
+            } else {
+                variantDao.addVariant(v);
             }
             response.sendRedirect(request.getContextPath()
-                    + "/ProductForManagerDetailController?productId=" + productId + "&mode=view");
-            return;
-        }
-        // handle delete via GET param
-        String deleteId = request.getParameter("deleteVariantId");
-        if (deleteId != null) {
-            variantDao.deleteVariant(Integer.parseInt(deleteId));
-            response.sendRedirect(request.getContextPath()
-                    + "/ProductForManagerDetailController?productId=" + request.getParameter("productId") + "&mode=view");
+                    + "/ProductForManagerDetailController?productId=" + prodId + "&mode=view");
             return;
         }
 
-        // Sau khi xử lý POST, chuyển sang chế độ view
-        // (Có thể chuyển đổi sang edit nếu cần)
+        // Default: forward to view
         processRequest(request, response);
     }
 

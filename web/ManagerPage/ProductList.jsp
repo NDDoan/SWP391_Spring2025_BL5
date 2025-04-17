@@ -48,7 +48,9 @@
                     <h1 class="page-header text-center">Danh sách Sản phẩm Product</h1>
                 </div>
                 <div class="col-md-4 text-end">
-                    <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?mode=add" class="btn btn-success">Thêm Product</a>
+                    <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?mode=add" class="btn btn-success">
+                        Thêm Sản phẩm
+                    </a>
                 </div>
             </div>
 
