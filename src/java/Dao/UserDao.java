@@ -7,6 +7,8 @@ package Dao;
 import DBContext.DBContext;
 import Entity.User;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -225,27 +227,45 @@ public class UserDao {
         return user;
     }
 
-        public boolean isPhoneNumberRegistered(String phone) {
-    String sql = "SELECT COUNT(*) FROM Users WHERE phone_number = ?";
-    
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public boolean isPhoneNumberRegistered(String phone) {
+        String sql = "SELECT COUNT(*) FROM Users WHERE phone_number = ?";
 
-        stmt.setString(1, phone);
-        ResultSet rs = stmt.executeQuery();
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        if (rs.next()) {
-            return rs.getInt(1) > 0; // Trả về true nếu số điện thoại đã tồn tại
+            stmt.setString(1, phone);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu số điện thoại đã tồn tại
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi SQL khi kiểm tra số điện thoại", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi chung khi kiểm tra số điện thoại", e);
         }
-    } catch (SQLException e) {
-        LOGGER.log(Level.SEVERE, "Lỗi SQL khi kiểm tra số điện thoại", e);
-    } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Lỗi chung khi kiểm tra số điện thoại", e);
+        return false;
     }
-    return false;
-}
-    
-    
+
+    public boolean isPhoneNumberRegistered(String phone, Integer userId) {
+        String sql = "SELECT COUNT(*) FROM Users WHERE phone_number = ? AND user_id <> ?";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, phone);
+            stmt.setInt(2, (userId == null || userId <= 0) ? -1 : userId); // Nếu userId không hợp lệ, gán giá trị -1 để không khớp với user nào
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu số điện thoại đã tồn tại (trừ chính userId đó)
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi SQL khi kiểm tra số điện thoại", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi chung khi kiểm tra số điện thoại", e);
+        }
+        return false;
+    }
+
     public boolean updateUserProfile(User user) {
         String sql = "UPDATE Users SET full_name = ?, gender = ?, phone_number = ?, address = ? WHERE user_id = ?";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -387,4 +407,103 @@ public class UserDao {
 //        }
 //        scanner.close();
     }
+
+    public List<User> getAllUsers() {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM Users";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                User u = extractUser(rs);
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi SQL khi lấy danh sách người dùng", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi kết nối CSDL", e);
+        }
+
+        return list;
     }
+
+    public boolean deleteUser(int userId) {
+        String sql = "DELETE FROM Users WHERE user_id = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi SQL khi xóa người dùng", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi kết nối CSDL", e);
+        }
+        return false;
+    }
+
+    public boolean updateUser(User user) {
+        String sql = "UPDATE [dbo].[Users] SET "
+                + "[full_name] = ?, "
+                + "[gender] = ?, "
+                + "[email] = ?, "
+                + "[phone_number] = ?, "
+                + "[address] = ?, "
+                + "[role_id] = ?, "
+                + "[is_active] = ?, "
+                + "[is_verified] = ?, "
+                + "[updated_at] = ? "
+                + "WHERE [user_id] = ?";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, user.getFull_name());
+            stmt.setString(2, user.getGender());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getPhone_number());
+            stmt.setString(5, user.getAddress());
+            stmt.setInt(6, user.getRole_id());
+            stmt.setBoolean(7, user.isIs_active());
+            stmt.setBoolean(8, user.isIs_verified());
+            stmt.setTimestamp(9, new Timestamp(System.currentTimeMillis()));  // Cập nhật thời gian
+            stmt.setInt(10, user.getUser_id());  // Điều kiện WHERE
+
+            return stmt.executeUpdate() > 0;  // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi SQL khi cập nhật người dùng", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi kết nối CSDL", e);
+        }
+        return false;  // Trả về false nếu có lỗi
+    }
+
+    public boolean insertUser(User user) {
+        String sql = "INSERT INTO [dbo].[Users] "
+                + "([email], [full_name], [Gender], [avatar_url], [phone_number], [address], [role_id], [created_at], [updated_at], [is_active], [password_hash], [is_verified], [reset_token], [reset_token_expiry], [last_login]) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, NULL)";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getFull_name());
+            ps.setString(3, user.getGender());
+            ps.setString(4, user.getAvatar_url());  // Avatar URL
+            ps.setString(5, user.getPhone_number());
+            ps.setString(6, user.getAddress());
+            ps.setInt(7, user.getRole_id());
+            ps.setBoolean(8, user.isIs_active());  // is_active (True/False)
+            ps.setString(9, user.getPassword_hash());
+            ps.setBoolean(10, user.isIs_active());  // is_verified
+            ps.setString(11, user.getReset_token());  // reset_token (nếu có)
+
+            // Execute update and check if insertion was successful
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi SQL khi chèn người dùng mới", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi chèn người dùng mới", e);
+        }
+
+        return false;
+    }
+
+}
