@@ -227,27 +227,25 @@ public class UserDao {
         return user;
     }
 
-        public boolean isPhoneNumberRegistered(String phone) {
-    String sql = "SELECT COUNT(*) FROM Users WHERE phone_number = ?";
-    
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public boolean isPhoneNumberRegistered(String phone) {
+        String sql = "SELECT COUNT(*) FROM Users WHERE phone_number = ?";
 
-        stmt.setString(1, phone);
-        ResultSet rs = stmt.executeQuery();
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        if (rs.next()) {
-            return rs.getInt(1) > 0; // Trả về true nếu số điện thoại đã tồn tại
+            stmt.setString(1, phone);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu số điện thoại đã tồn tại
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi SQL khi kiểm tra số điện thoại", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi chung khi kiểm tra số điện thoại", e);
         }
-    } catch (SQLException e) {
-        LOGGER.log(Level.SEVERE, "Lỗi SQL khi kiểm tra số điện thoại", e);
-    } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Lỗi chung khi kiểm tra số điện thoại", e);
+        return false;
     }
-    return false;
-}
-    
-    
+
     public boolean updateUserProfile(User user) {
         String sql = "UPDATE Users SET full_name = ?, gender = ?, phone_number = ?, address = ? WHERE user_id = ?";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -490,6 +488,46 @@ public class UserDao {
         }
 
         return false;
+    }
+
+    public List<User> getFilteredUsers(String keyword, String roleFilter) {
+        List<User> userList = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
+
+        List<Object> parameters = new ArrayList<>();
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND full_name LIKE ?");
+            parameters.add("%" + keyword.trim() + "%");
+        }
+        if (roleFilter != null && !roleFilter.trim().isEmpty()) {
+            try {
+                int roleId = Integer.parseInt(roleFilter);
+                sql.append(" AND role_id = ?");
+                parameters.add(roleId);
+            } catch (NumberFormatException e) {
+                System.out.println("roleFilter không hợp lệ: " + roleFilter);
+                // Có thể return danh sách rỗng hoặc bỏ qua bộ lọc role
+                return userList;
+            }
+        }
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User u = extractUser(rs);
+                userList.add(u);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return userList;
     }
 
 }
