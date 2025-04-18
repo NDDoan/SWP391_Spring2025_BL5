@@ -12,7 +12,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Product Detail – Manager</title>
+        <title>Chi Tiết Sản Phẩm – Quản Lí</title>
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
@@ -60,19 +60,19 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>
                     <c:choose>
-                        <c:when test="${mode == 'view'}">View Product</c:when>
-                        <c:when test="${mode == 'edit'}">Edit Product</c:when>
-                        <c:when test="${mode == 'add'}">Add New Product</c:when>
+                        <c:when test="${mode == 'view'}">Xem Sản Phẩm</c:when>
+                        <c:when test="${mode == 'edit'}">Chỉnh Sửa Sản Phẩm</c:when>
+                        <c:when test="${mode == 'add'}">Thêm 1 Sản Phẩm Mới</c:when>
                     </c:choose>
                 </h1>
                 <div>
                     <!-- Nút chuyển từ view → edit -->
                     <c:if test="${mode == 'view'}">
                         <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=edit"
-                           class="btn btn-warning me-2">Edit Product</a>
+                           class="btn btn-warning me-2">Chỉnh Sửa Sản Phẩm</a>
                     </c:if>
                     <a href="${pageContext.request.contextPath}/ProductForManagerListController" class="btn btn-secondary">
-                        &larr; Back to List
+                        &larr; Trở về danh sách
                     </a>
                 </div>
             </div>
@@ -90,11 +90,11 @@
                 </c:if>
 
                 <div class="card mb-4">
-                    <div class="card-header">Product Info</div>
+                    <div class="card-header">Thông tin sản phẩm</div>
                     <div class="card-body">
                         <!-- Name -->
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Name</label>
+                            <label class="col-sm-2 col-form-label">Tên</label>
                             <div class="col-sm-10">
                                 <c:choose>
                                     <c:when test="${mode == 'view'}">
@@ -108,7 +108,7 @@
                         </div>
                         <!-- Brand -->
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Brand</label>
+                            <label class="col-sm-2 col-form-label">Thương hiệu</label>
                             <div class="col-sm-10">
                                 <c:choose>
                                     <c:when test="${mode == 'view'}">
@@ -126,7 +126,7 @@
                         </div>
                         <!-- Category -->
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Category</label>
+                            <label class="col-sm-2 col-form-label">Danh mục</label>
                             <div class="col-sm-10">
                                 <c:choose>
                                     <c:when test="${mode == 'view'}">
@@ -144,7 +144,7 @@
                         </div>
                         <!-- Description -->
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Description</label>
+                            <label class="col-sm-2 col-form-label">Mô tả</label>
                             <div class="col-sm-10">
                                 <c:choose>
                                     <c:when test="${mode == 'view'}">
@@ -162,8 +162,8 @@
                 <!-- SAVE / CANCEL -->
                 <c:if test="${mode != 'view'}">
                     <div class="mb-4 text-end">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=view" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                        <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=view" class="btn btn-secondary">Hủy</a>
                     </div>
                 </c:if>
             </form>
@@ -174,16 +174,16 @@
                     <span>Variants</span>
                     <!-- Chỉ hiện nút Add Variant khi đang ở edit hoặc add mode -->
                     <c:if test="${mode != 'view'}">
-                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#variantModal">Add Variant</button>
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#variantModal">Thêm Phiên bản</button>
                     </c:if>
                 </div>
                 <div class="card-body p-0">
                     <table class="table align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th><th>CPU</th><th>RAM</th><th>Screen</th><th>Storage</th>
-                                <th>Color</th><th>Price</th><th>Stock</th>
-                                <th>Actions</th>
+                                <th>ID</th><th>CPU</th><th>RAM</th><th>Màn hình</th><th>Dung lượng</th>
+                                <th>Màu</th><th>Giá</th><th>Tồn kho</th>
+                                <th>Khác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -201,17 +201,17 @@
                                         <!-- Chỉ show Edit/Delete khi mode != view -->
                                         <c:if test="${mode != 'view'}">
                                             <a href="?productId=${product.productId}&editVariantId=${v.variantId}&mode=${mode}"
-                                               class="btn btn-warning btn-sm">Edit</a>
+                                               class="btn btn-warning btn-sm">Sửa</a>
                                             <a href="?productId=${product.productId}&deleteVariantId=${v.variantId}&mode=${mode}"
                                                class="btn btn-danger btn-sm"
-                                               onclick="return confirm('Delete this variant?');">Delete</a>
+                                               onclick="return confirm('Delete this variant?');">Xóa</a>
                                         </c:if>
                                         <!-- Khi đang ở view, chỉ show nothing -->
                                     </td>
                                 </tr>
                             </c:forEach>
                             <c:if test="${empty product.variants}">
-                                <tr><td colspan="9" class="text-center">No variants</td></tr>
+                                <tr><td colspan="9" class="text-center">Hiện không có phiên bản</td></tr>
                             </c:if>
                         </tbody>
                     </table>
@@ -240,7 +240,7 @@
                                                         <c:otherwise>
                                                         <video controls class="w-100 h-auto">
                                                             <source src="${m.mediaUrl}" type="video/mp4">
-                                                            Your browser does not support the video tag.
+                                                            Browser của bạn không hỗ trợ video tag này.
                                                         </video>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -252,22 +252,22 @@
                                 <!-- Only show actions in edit/add mode -->
                                 <c:if test="${mode != 'view'}">
                                     <div class="actions position-absolute top-0 end-0 p-2">
-                                        <a href="${pageContext.request.contextPath}/MediaActionController?productId=${product.productId}&mediaId=${m.mediaId}&action=setPrimary"
+                                        <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=setPrimary"
                                            class="btn btn-sm ${m.primary ? 'btn-outline-secondary' : 'btn-outline-primary'} me-1">
                                             <c:choose>
-                                                <c:when test="${m.primary}">Unset</c:when>
-                                                <c:otherwise>Primary</c:otherwise>
+                                                <c:when test="${m.primary}">Đã ưu tiên</c:when>
+                                                <c:otherwise>Chọn ưu tiên</c:otherwise>
                                             </c:choose>
                                         </a>
-                                        <a href="${pageContext.request.contextPath}/MediaActionController?productId=${product.productId}&mediaId=${m.mediaId}&action=delete"
+                                        <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=delete"
                                            class="btn btn-sm btn-outline-danger"
-                                           onclick="return confirm('Delete this media?');">×</a>
+                                           onclick="return confirm('Xóa media này bạn chắc chứ?');">×</a>
                                     </div>
                                 </c:if>
                             </div>
                         </c:forEach>
                         <c:if test="${empty product.mediaList}">
-                            <p class="text-muted text-center w-100">No media uploaded.</p>
+                            <p class="text-muted text-center w-100">Không có media uploaded.</p>
                         </c:if>
                     </div>
 
@@ -279,7 +279,7 @@
                                 <input type="hidden" name="productId" value="${product.productId}">
                                 <div class="col-md-2">
                                     <select name="mediaType" class="form-select" required>
-                                        <option value="image">Image</option>
+                                        <option value="image">Ảnh</option>
                                         <option value="video">Video</option>
                                     </select>
                                 </div>
@@ -287,14 +287,14 @@
                                     <input type="file" name="mediaFile" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="url" name="mediaUrl" class="form-control" placeholder="Or enter URL (YouTube/Image)">
+                                    <input type="url" name="mediaUrl" class="form-control" placeholder="Hoặc Nhập URL (YouTube/Image)">
                                 </div>
                                 <div class="col-md-2 form-check">
                                     <input type="checkbox" name="isPrimary" id="isPrimary" class="form-check-input">
-                                    <label for="isPrimary" class="form-check-label">Primary</label>
+                                    <label for="isPrimary" class="form-check-label">Ưu tiên?</label>
                                 </div>
                                 <div class="col-md-1 text-end">
-                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                    <button type="submit" class="btn btn-primary">Tải Lên</button>
                                 </div>
                             </form>
                         </div>
