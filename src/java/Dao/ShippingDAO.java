@@ -136,7 +136,7 @@ public class ShippingDAO {
     }
      public List<Shipping> getShippingByCustomerId(int customerId) throws SQLException {
         List<Shipping> list = new ArrayList<>();
-        String sql = "SELECT s.* FROM Shipping s JOIN Orders o ON s.order_id = o.order_id WHERE o.customer_id = ?";
+        String sql = "SELECT s.* FROM Shipping s JOIN Orders o ON s.order_id = o.order_id WHERE o.user_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -147,4 +147,5 @@ public class ShippingDAO {
         }
         return list;
     }
+     
 } 

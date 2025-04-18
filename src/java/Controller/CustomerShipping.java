@@ -3,49 +3,52 @@ package Controller;
 import Dao.ShippingDAO;
 import Entity.Shipping;
 import DBContext.DBContext;
+import Entity.User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+@WebServlet("/customershipping")
 public class CustomerShipping extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        // Lấy customer_id từ session
+            throws ServletException, IOException {
+
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("customer_id") == null) {
-            // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
-            response.sendRedirect("logincontroller");
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("logincontroller"); // Redirect to login
             return;
         }
 
-        int customerId = (int) session.getAttribute("customer_id");
+        User user = (User) session.getAttribute("user");
+        int customerId = user.getUser_id();
 
         try (Connection conn = new DBContext().getConnection()) {
             ShippingDAO shippingDAO = new ShippingDAO(conn);
             List<Shipping> shippingList = shippingDAO.getShippingByCustomerId(customerId);
 
-            // Gửi danh sách đến JSP để hiển thị
             request.setAttribute("shippingList", shippingList);
             request.getRequestDispatcher("/CustomerPage/CustomerShipping.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Something went wrong.");
+            request.setAttribute("errorMessage", "Không thể tải thông tin giao hàng.");
+            request.getRequestDispatcher("/CustomerPage/CustomerShipping.jsp").forward(request, response);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        doGet(request, response); // Hoặc xử lý riêng nếu cần
+            throws ServletException, IOException {
+        doGet(request, response); // Cho phép POST cũng trả về danh sách
     }
 
     @Override
     public String getServletInfo() {
-        return "Displays customer's shipping information";
+        return "Hiển thị thông tin giao hàng của khách hàng.";
     }
 }
