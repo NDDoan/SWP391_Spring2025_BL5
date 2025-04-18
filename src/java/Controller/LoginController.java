@@ -158,7 +158,7 @@ public class LoginController extends HttpServlet {
             } else if (roleId == 1 ||  roleId == 2) { // Admin , Marketing or shpippng role
                 response.sendRedirect(request.getContextPath() + "/AdminPage/AdminDashboard.jsp"); // Chuyển hướng đến giao diện Admin
                 return;
-            } else {
+            } else if (roleId == 3) { 
              response.sendRedirect(request.getContextPath() + "/ShipperController");
                 return;
             }

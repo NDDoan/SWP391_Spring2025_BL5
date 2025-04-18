@@ -1,69 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <!-- Product Controllers -->
     <servlet>
         <servlet-name>ProductForManagerListController</servlet-name>
         <servlet-class>Controller.ProductForManagerListController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ProductForManagerDetailController</servlet-name>
-        <servlet-class>Controller.ProductForManagerDetailController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ShippingController</servlet-name>
-        <servlet-class>Controller.ShippingController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ShipperController</servlet-name>
-        <servlet-class>Controller.ShipperController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>UserController</servlet-name>
-        <servlet-class>Controller.UserController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MediaUploadController</servlet-name>
-        <servlet-class>Controller.MediaUploadController</servlet-class>
+        <servlet-name>CustomerShipping</servlet-name>
+        <servlet-class>Controller.CustomerShipping</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ProductForManagerListController</servlet-name>
         <url-pattern>/ProductForManagerListController</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ProductForManagerDetailController</servlet-name>
+        <servlet-class>Controller.ProductForManagerDetailController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ProductForManagerDetailController</servlet-name>
         <url-pattern>/ProductForManagerDetailController</url-pattern>
     </servlet-mapping>
+    <!-- Shipping -->
+    <servlet>
+        <servlet-name>ShippingController</servlet-name>
+        <servlet-class>Controller.ShippingController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ShippingController</servlet-name>
         <url-pattern>/ShippingController</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ShipperController</servlet-name>
+        <servlet-class>Controller.ShipperController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ShipperController</servlet-name>
         <url-pattern>/ShipperController</url-pattern>
     </servlet-mapping>
+    <!-- User -->
+    <servlet>
+        <servlet-name>UserController</servlet-name>
+        <servlet-class>Controller.UserController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserController</servlet-name>
         <url-pattern>/UserController</url-pattern>
-    </servlet-mapping>
-    
-        <servlet>
-        <servlet-name>MyOrderController</servlet-name>
-        <servlet-class>Controller.MyOrderController</servlet-class>
-    <servlet>
-        <servlet-name>LoginController</servlet-name>
-        <servlet-class>Controller.LoginController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MyOrderController</servlet-name>
-        <servlet-class>Controller.MyOrderController</servlet-class>
-    </servlet>
-        <servlet-mapping>
-        <servlet-name>MyOrderController</servlet-name>
-        <url-pattern>/myordercontroller</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>UserProfile</servlet-name>
         <servlet-class>Controller.UserProfile</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>UserProfile</servlet-name>
+        <url-pattern>/UserProfile</url-pattern>
+    </servlet-mapping>
+    <!-- Media Upload -->
+    <servlet>
+        <servlet-name>MediaUploadController</servlet-name>
+        <servlet-class>Controller.MediaUploadController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MediaUploadController</servlet-name>
+        <url-pattern>/MediaUploadController</url-pattern>
+    </servlet-mapping>
+    <!-- Auth -->
+    <servlet>
+        <servlet-name>LoginController</servlet-name>
+        <servlet-class>Controller.LoginController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginController</servlet-name>
+        <url-pattern>/logincontroller</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>RegisterController</servlet-name>
         <servlet-class>Controller.RegisterController</servlet-class>
@@ -72,15 +81,17 @@
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/registercontroller</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoginController</servlet-name>
-        <url-pattern>/logincontroller</url-pattern>
-    </servlet-mapping>
+    <!-- Order -->
     <servlet>
-        <servlet-name>LoginController</servlet-name>
-        <servlet-class>Controller.LoginController</servlet-class>
+        <servlet-name>MyOrderController</servlet-name>
+        <servlet-class>Controller.MyOrderController</servlet-class>
     </servlet>
-        <servlet-name>MediaUploadController</servlet-name>
-        <url-pattern>/MediaUploadController</url-pattern>
+    <servlet-mapping>
+        <servlet-name>MyOrderController</servlet-name>
+        <url-pattern>/myordercontroller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CustomerShipping</servlet-name>
+        <url-pattern>/CustomerShipping</url-pattern>
     </servlet-mapping>
 </web-app>
