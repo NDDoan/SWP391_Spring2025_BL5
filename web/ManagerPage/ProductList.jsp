@@ -124,9 +124,6 @@
 
                                             <!-- Edit: Chuyển sang trang chi tiết, nhưng chuyển sang chế độ edit thông qua tham số -->
                                             <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=edit" class="btn btn-warning btn-sm">Sửa</a>
-
-                                            <!-- Xóa: Tùy vào logic của bạn, bạn có thể có nút xóa trên danh sách sản phẩm -->
-                                            <a href="${pageContext.request.contextPath}/ProductDeleteController?productId=${product.productId}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">Xóa</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
