@@ -131,6 +131,35 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Pagination -->
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Button -->
+                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="user?page=${currentPage - 1}&keyword=${param.keyword}&roleFilter=${param.roleFilter}">
+                            Previous
+                        </a>
+                    </li>
+
+                    <!-- Page Number Buttons -->
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                            <a class="page-link" href="user?page=${i}&keyword=${param.keyword}&roleFilter=${param.roleFilter}">
+                                ${i}
+                            </a>
+                        </li>
+                    </c:forEach>
+
+                    <!-- Next Button -->
+                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                        <a class="page-link" href="user?page=${currentPage + 1}&keyword=${param.keyword}&roleFilter=${param.roleFilter}">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+
 
             <!-- Bootstrap Modal -->
             <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">

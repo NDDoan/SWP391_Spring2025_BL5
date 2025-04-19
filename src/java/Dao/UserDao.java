@@ -246,7 +246,6 @@ public class UserDao {
         return false;
     }
 
-
     public boolean isPhoneNumberRegistered(String phone, Integer userId) {
         String sql = "SELECT COUNT(*) FROM Users WHERE phone_number = ? AND user_id <> ?";
 
@@ -266,7 +265,6 @@ public class UserDao {
         }
         return false;
     }
-
 
     public boolean updateUserProfile(User user) {
         String sql = "UPDATE Users SET full_name = ?, gender = ?, phone_number = ?, address = ? WHERE user_id = ?";
@@ -354,60 +352,6 @@ public class UserDao {
                 rs.getTimestamp("updated_at"),
                 rs.getTimestamp("last_login")
         );
-    }
-
-    public static void main(String[] args) {
-        // Tạo một đối tượng User để kiểm thử
-        User testUser = new User();
-        testUser.setFull_name("Nguyen Van A");
-        testUser.setGender("Male");
-        testUser.setEmail("testuser@example.com");
-        testUser.setPassword_hash("hashedpassword123"); // Giả sử đã mã hóa
-        testUser.setPhone_number("0123456789");
-        testUser.setAddress("123 Đường ABC, TP.HCM");
-        testUser.setRole_id(2); // Vai trò mặc định của user bình thường
-
-        // Khởi tạo đối tượng chứa phương thức register
-        UserDao userService = new UserDao();
-        // Kiểm tra đăng ký
-        boolean isRegistered = userService.register(testUser);
-
-        // In kết quả ra console
-        if (isRegistered) {
-            System.out.println("Đăng ký thành công!");
-        } else {
-            System.out.println("Đăng ký thất bại!");
-        }
-
-//        //testupdate
-//        UserDao userDAO = new UserDao();
-//
-//        // Giả sử userId là 1, bạn cần kiểm tra ID này có trong DB không
-//        int userId = 3;
-//        User testUser = new User(userId, "Nguyễn Văn A", "Male", "0123456789", "Hà Nội");
-//
-//        boolean result = userDAO.updateUserProfile(testUser);
-//        if (result) {
-//            System.out.println("✅ Cập nhật thông tin thành công!");
-//        } else {
-//            System.out.println("❌ Cập nhật thông tin thất bại!");
-//        }
-//Scanner scanner = new Scanner(System.in);
-//        UserDao userDao = new UserDao();
-//
-//        System.out.print("Nhập email để tìm kiếm: ");
-//        String email = scanner.nextLine();
-//
-//        User user = userDao.getUserByEmail(email);
-//        if (user != null) {
-//            System.out.println("Người dùng tìm thấy: ");
-//            System.out.println("ID: " + user.getUser_id());
-//            System.out.println("Email: " + user.getEmail());
-//            System.out.println("Password Hash: " + user.getPassword_hash());
-//        } else {
-//            System.out.println("Không tìm thấy người dùng với email này.");
-//        }
-//        scanner.close();
     }
 
     public List<User> getAllUsers() {
@@ -512,26 +456,99 @@ public class UserDao {
         return false;
     }
 
-    public List<User> getFilteredUsers(String keyword, String roleFilter) {
-        List<User> userList = new ArrayList<>();
+//    public List<User> getFilteredUsers(String keyword, String roleFilter) {
+//        List<User> userList = new ArrayList<>();
+//        StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
+//
+//        List<Object> parameters = new ArrayList<>();
+//
+//        if (keyword != null && !keyword.trim().isEmpty()) {
+//            sql.append(" AND full_name LIKE ?");
+//            parameters.add("%" + keyword.trim() + "%");
+//        }
+//        if (roleFilter != null && !roleFilter.trim().isEmpty()) {
+//            try {
+//                int roleId = Integer.parseInt(roleFilter);
+//                sql.append(" AND role_id = ?");
+//                parameters.add(roleId);
+//            } catch (NumberFormatException e) {
+//                System.out.println("roleFilter không hợp lệ: " + roleFilter);
+//                // Có thể return danh sách rỗng hoặc bỏ qua bộ lọc role
+//                return userList;
+//            }
+//        }
+//
+//        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+//
+//            for (int i = 0; i < parameters.size(); i++) {
+//                ps.setObject(i + 1, parameters.get(i));
+//            }
+//
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                User u = extractUser(rs);
+//                userList.add(u);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return userList;
+//    }
+    public List<User> getFilteredUsers(String keyword, String roleFilter, int offset, int limit) {
+        List<User> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
 
         List<Object> parameters = new ArrayList<>();
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
+        // Thêm điều kiện tìm kiếm theo tên người dùng nếu có
+        if (keyword != null && !keyword.isEmpty()) {
             sql.append(" AND full_name LIKE ?");
-            parameters.add("%" + keyword.trim() + "%");
+            parameters.add("%" + keyword + "%");
         }
-        if (roleFilter != null && !roleFilter.trim().isEmpty()) {
-            try {
-                int roleId = Integer.parseInt(roleFilter);
-                sql.append(" AND role_id = ?");
-                parameters.add(roleId);
-            } catch (NumberFormatException e) {
-                System.out.println("roleFilter không hợp lệ: " + roleFilter);
-                // Có thể return danh sách rỗng hoặc bỏ qua bộ lọc role
-                return userList;
+
+        // Thêm điều kiện lọc theo vai trò nếu có
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+            parameters.add(Integer.parseInt(roleFilter));
+        }
+
+        // Sử dụng OFFSET-FETCH cho SQL Server
+        sql.append(" ORDER BY user_id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        parameters.add(offset);  // OFFSET bắt đầu từ vị trí này
+        parameters.add(limit);   // FETCH NEXT lấy số lượng này
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            // Thiết lập các tham số vào câu lệnh PreparedStatement
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setObject(i + 1, parameters.get(i));
             }
+
+            // Thực thi truy vấn
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(extractUser(rs)); // Lấy dữ liệu và thêm vào danh sách
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public int countFilteredUsers(String keyword, String roleFilter) {
+        int count = 0;
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM users WHERE 1=1");
+        List<Object> parameters = new ArrayList<>();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            sql.append(" AND full_name LIKE ?");
+            parameters.add("%" + keyword + "%");
+        }
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+            parameters.add(Integer.parseInt(roleFilter));
         }
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
@@ -541,15 +558,37 @@ public class UserDao {
             }
 
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                User u = extractUser(rs);
-                userList.add(u);
+            if (rs.next()) {
+                count = rs.getInt(1);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return userList;
+
+        return count;
     }
 
+    public static void main(String[] args) {
+        UserDao userDao = new UserDao();
+
+        // Tham số truyền vào cho phương thức getFilteredUsers
+        String keyword = "";  // Thử tìm kiếm theo tên "John"
+        String roleFilter = "";  // Lọc theo vai trò User (role_id = 2)
+        int offset = 0;           // Offset cho phân trang
+        int limit = 5;            // Số lượng kết quả tối đa
+
+        // Lấy danh sách người dùng đã lọc
+        List<User> users = userDao.getFilteredUsers(keyword, roleFilter, offset, limit);
+
+        // Duyệt qua danh sách người dùng và in ra thông tin
+        for (User user : users) {
+            System.out.println("User ID: " + user.getUser_id());
+            System.out.println("Name: " + user.getFull_name());
+            System.out.println("Email: " + user.getEmail());
+            System.out.println("Phone: " + user.getPhone_number());
+            System.out.println("Role ID: " + user.getRole_id());
+
+            System.out.println("----------------------------");
+        }
+    }
 }

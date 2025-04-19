@@ -40,15 +40,34 @@ public class UserController extends HttpServlet {
         }
 
         String keyword = request.getParameter("keyword");
+        if (keyword == null) {
+            keyword = ""; // Default to empty string if no search query
+        }
         String roleFilter = request.getParameter("roleFilter");
+         if (roleFilter == null) {
+            roleFilter = ""; // Default to empty string if no role is selected
+        }
+        int page = 1;
+        int limit = 5;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+        int offset = (page - 1) * limit;
 
-        // Gọi hàm lọc người dùng từ DAO
-        List<User> userList = dao.getFilteredUsers(keyword, roleFilter);
+        List<User> userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit);
+        int totalUsers = dao.countFilteredUsers(keyword, roleFilter);
+        int totalPages = (int) Math.ceil((double) totalUsers / limit);
 
-        // Gửi lại các giá trị tìm kiếm về view để giữ nguyên khi reload
+        request.setAttribute("userList", userList);
         request.setAttribute("keyword", keyword);
         request.setAttribute("roleFilter", roleFilter);
-        request.setAttribute("userList", userList);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
 
         request.getRequestDispatcher("/AdminPage/UserList.jsp").forward(request, response);
     }
