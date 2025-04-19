@@ -93,7 +93,7 @@
                 <table class="table table-bordered table-hover bg-white">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th><th>Full Name</th><th>Email</th><th>Gender</th><th>Phone</th>
+                            <th>ID</th><th>Full Name</th><th>Avatar</th><th>Email</th><th>Gender</th><th>Phone</th>
                             <th>Role</th><th>Active</th><th>Verified</th><th>Edit</th><th>Delete</th>
                         </tr>
                     </thead>
@@ -102,6 +102,9 @@
                             <tr>
                                 <td>${user.user_id}</td>
                                 <td>${user.full_name}</td>
+                                <td>
+                                    <img src="${user.avatar_url}" alt="Avatar" width="50" height="50" style="object-fit: cover; border-radius: 50%;">
+                                </td>
                                 <td>${user.email}</td>
                                 <td>${user.gender}</td>
                                 <td>${user.phone_number}</td>
