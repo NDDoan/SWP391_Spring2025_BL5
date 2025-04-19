@@ -81,6 +81,20 @@
             <c:if test="${not empty message}">
                 <div class="alert alert-info">${message}</div>
             </c:if>
+            <!-- Nếu có lỗi tên Product -->
+            <c:if test="${not empty errorName}">
+                <div class="alert alert-warning">
+                    <strong>Warning:</strong> ${errorName}
+                </div>
+            </c:if>
+
+            <!-- Nếu có lỗi Variant -->
+            <c:if test="${not empty errorVariant}">
+                <div class="alert alert-warning">
+                    <strong>Warning:</strong> ${errorVariant}
+                </div>
+            </c:if>
+
 
             <!-- PRODUCT FORM -->
             <form action="${pageContext.request.contextPath}/ProductForManagerDetailController" method="post">

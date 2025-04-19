@@ -259,4 +259,26 @@ public class ProductDao {
         }
         return categoryNames;
     }
+
+    public boolean isNameExistsExceptId(String name, int excludeId) {
+        String sql;
+        if (excludeId > 0) {
+            sql = "SELECT COUNT(*) FROM Products WHERE product_name = ? AND product_id <> ?";
+        } else {
+            sql = "SELECT COUNT(*) FROM Products WHERE product_name = ?";
+        }
+        try (Connection con = new DBContext().getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, name);
+            if (excludeId > 0) {
+                ps.setInt(2, excludeId);
+            }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

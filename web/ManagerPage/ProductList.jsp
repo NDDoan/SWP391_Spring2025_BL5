@@ -63,6 +63,7 @@
                         </div>
                         <div class="col-md-3">
                             <select class="form-select" name="sortField">
+                                <option value="p.product_id" ${param.sortField == 'p.product_id' ? 'selected' : ''}>Id</option>
                                 <option value="p.product_name" ${param.sortField == 'p.product_name' ? 'selected' : ''}>Tên sản phẩm</option>
                                 <option value="b.brand_name" ${param.sortField == 'b.brand_name' ? 'selected' : ''}>Thương hiệu</option>
                                 <option value="c.category_name" ${param.sortField == 'c.category_name' ? 'selected' : ''}>Danh mục</option>

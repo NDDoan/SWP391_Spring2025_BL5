@@ -56,7 +56,7 @@ public class ProductForManagerListController extends HttpServlet {
 
             // Nếu không cung cấp tham số sắp xếp thì thiết lập giá trị mặc định.
             if (sortField == null || sortField.trim().isEmpty()) {
-                sortField = "p.product_name";
+                sortField = "p.product_id";
             }
             if (sortDir == null || sortDir.trim().isEmpty()) {
                 sortDir = "ASC";
