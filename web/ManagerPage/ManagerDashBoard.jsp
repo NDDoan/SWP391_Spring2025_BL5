@@ -10,7 +10,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Admin Dashboard</title>
+        <title>Manager Dashboard</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
@@ -94,14 +94,14 @@
 
         <!-- Header -->
         <div class="dashboard-header">
-            <jsp:include page="dashboard-header.jsp"/>
+            <jsp:include page="Manager-header.jsp"/>
         </div>
 
         <!-- Sidebar + Content -->
         <div class="main-layout">
             <!-- Sidebar -->
             <div class="sidebar">
-                <jsp:include page="dashboard-sidebar.jsp"/>
+                <jsp:include page="Manager-sidebar.jsp"/>
             </div>
 
             <!-- Main Content -->
@@ -113,9 +113,9 @@
                         <div class="col-md-4">
                             <div class="card border-success">
                                 <div class="card-body">
-                                    <h5 class="card-title">Đơn hàng</h5>
-                                    <p class="card-text">Xem và quản lý tất cả đơn hàng.</p>
-                                    <a href="order" class="btn btn-success">Xem chi tiết</a>
+                                    <h5 class="card-title">Sản Phẩm</h5>
+                                    <p class="card-text">Xem và quản lý tất cả Sản phẩm.</p>
+                                    <a href="/Swp391_Spring2025_BL5/ProductForManagerListController" class="btn btn-success">Xem chi tiết</a>
                                 </div>
                             </div>
                         </div>
