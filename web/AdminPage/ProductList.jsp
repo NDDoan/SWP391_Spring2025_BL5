@@ -108,10 +108,29 @@
                     <div class="row">
                         <div class="col-md-12">
                             <form class="search-form row g-2" action="${pageContext.request.contextPath}/ProductForManagerListController" method="get">
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <input type="text" name="search" class="form-control" placeholder="Tìm kiếm sản phẩm..." value="${param.search}">
                                 </div>
-                                <div class="col-md-3">
+                                <!-- Thêm lọc Brand -->
+                                <div class="col-md-2">
+                                    <select name="brand" class="form-select">
+                                        <option value="">Tất cả thương hiệu</option>
+                                        <c:forEach var="b" items="${brand}">
+                                            <option value="${b}" ${param.brand==b?'selected':''}>${b}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <!-- Thêm lọc Category -->
+                                <div class="col-md-2">
+                                    <select name="category" class="form-select">
+                                        <option value="">Tất cả danh mục</option>
+                                        <c:forEach var="c" items="${category}">
+                                            <option value="${c}" ${param.category==c?'selected':''}>${c}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
                                     <select class="form-select" name="sortField">
                                         <option value="p.product_id" ${param.sortField == 'p.product_id' ? 'selected' : ''}>Id</option>
                                         <option value="p.product_name" ${param.sortField == 'p.product_name' ? 'selected' : ''}>Tên sản phẩm</option>
@@ -120,7 +139,7 @@
                                         <option value="totalStockQuantity" ${param.sortField == 'totalStockQuantity' ? 'selected' : ''}>Tồn kho</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <select class="form-select" name="sortDir">
                                         <option value="ASC" ${param.sortDir == 'ASC' ? 'selected' : ''}>Tăng dần</option>
                                         <option value="DESC" ${param.sortDir == 'DESC' ? 'selected' : ''}>Giảm dần</option>

@@ -40,6 +40,8 @@ public class ProductForManagerListController extends HttpServlet {
 
             // Đọc các tham số từ request
             String search = request.getParameter("search"); // từ khóa tìm kiếm
+            String brand = request.getParameter("brand"); // lọc theo thương hiệu
+            String category = request.getParameter("category"); // lọc theo danh mục
             String pageParam = request.getParameter("page");  // số trang
             String sortField = request.getParameter("sortField"); // trường sắp xếp
             String sortDir = request.getParameter("sortDir");  // hướng sắp xếp
@@ -64,10 +66,16 @@ public class ProductForManagerListController extends HttpServlet {
 
             // Gọi DAO để lấy dữ liệu theo các tham số
             ProductForManagerListDao dao = new ProductForManagerListDao();
-            List<ProductForManagerListDto> productList = dao.getProductForMarketingList(search, page, sortField, sortDir);
+            List<ProductForManagerListDto> productList = dao.getProductForMarketingList(search, brand, category, page, sortField, sortDir);
+
+            // Lấy danh sách dropdown filter
+            List<String> brandList = dao.getAllBrandNames();
+            List<String> categoryList = dao.getAllCategoryNames();
 
             // Đưa dữ liệu vào request attribute để JSP có thể truy xuất
             request.setAttribute("productList", productList);
+            request.setAttribute("brand", brandList);
+            request.setAttribute("category", categoryList);
             // Bạn có thể set thêm các attribute khác như dữ liệu phân trang, tham số tìm kiếm, sắp xếp, ... nếu cần
 
             // Forward tới JSP ManagerPage/ProductList.jsp
