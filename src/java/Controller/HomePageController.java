@@ -2,9 +2,8 @@ package Controller;
 
 import Dao.CategoryDao;
 import Dao.ProductDao;
-import Dao.PostDao;
-import Dao.SliderDAO;
-import Entity.Slider;
+import Entity.Category;
+import Entity.Product;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -15,37 +14,20 @@ import java.util.List;
 
 @WebServlet(name = "HomepageController", urlPatterns = {"/home"})
 public class HomePageController extends HttpServlet {
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        try {
-            // Khởi tạo DAO
-            ProductDao productDao = new ProductDao();
-            SliderDAO sliderDao = new SliderDAO();
-            CategoryDao categoryDao = new CategoryDao();
-            PostDao postDao = new PostDao();
+        ProductDao productDAO = new ProductDao();
+        CategoryDao categoryDAO = new CategoryDao();
 
-            
+        
+        List<Category> categories = categoryDAO.getAllCategories();
 
-            // Lấy danh sách slider
-            List<Slider> sliders = sliderDao.getAllSliders();
+        
+        request.setAttribute("categories", categories);
 
-            
-
-            // Truyền dữ liệu sang JSP
-            
-            request.setAttribute("sliders", sliders);
-            
-
-            // Forward sang trang JSP
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/UserPage/HomePage.jsp");
-            dispatcher.forward(request, response);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp");
-        }
+        request.getRequestDispatcher("homepage.jsp").forward(request, response);
     }
 }
+

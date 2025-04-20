@@ -1,14 +1,24 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.util.List" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ page import="java.util.*" %>
 <%@ page import="Entity.Product" %>
+<%@ page import="Entity.Category" %>
 <%
     List<Product> newProducts = (List<Product>) request.getAttribute("newProducts");
+    List<Category> categories = (List<Category>) request.getAttribute("categories");
+
+    // Map<CategoryId, CategoryName>
+    Map<Integer, String> categoryMap = new HashMap<>();
+    for (Category cat : categories) {
+        categoryMap.put(cat.getId(), cat.getName());
+    }
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Electro - Home</title>
+    <title>Electro - Trang Chủ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -138,6 +148,12 @@
         .stars {
             color: gold;
         }
+
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -145,10 +161,11 @@
 <!-- Top bar -->
 <div class="top-bar">
     <div>
-        <span>+021-95-51-84</span> | <span>email@email.com</span> | <span>1734 Stonecoal Road</span>
+        <span>+021-95-51-84</span> | <span>email@email.com</span> | <span>1734 Đường Stonecoal</span>
     </div>
     <div>
-        USD | <a href="#" style="color: white;">My Account</a>
+        <a href="#" title="Đăng nhập"><i class="fas fa-user"></i> Đăng nhập</a>
+        <a href="#" title="Giỏ hàng"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a>
     </div>
 </div>
 
@@ -156,50 +173,51 @@
 <header>
     <h1>Electro<span>.</span></h1>
     <div class="search-bar">
-        <input type="text" placeholder="Search here...">
-        <button>Search</button>
+        <input type="text" placeholder="Tìm kiếm sản phẩm...">
+        <button>Tìm</button>
     </div>
 </header>
 
 <!-- Navigation -->
 <nav>
-    <a href="#">Home</a>
-    <a href="#">Hot Deals</a>
-    <a href="#">Categories</a>
-    <a href="#">Laptops</a>
-    <a href="#">Smartphones</a>
-    <a href="#">Cameras</a>
-    <a href="#">Accessories</a>
+    <a href="#">Trang chủ</a>
+    <a href="#">Khuyến mãi HOT</a>
+    <a href="#">Tất cả sản phẩm</a>
+    <% if (categories != null) {
+        for (Category c : categories) { %>
+            <a href="category?cid=<%=c.getId()%>"><%= c.getName() %></a>
+    <% }
+       } %>
 </nav>
 
 <!-- Banner -->
 <div class="banner">
-    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8" alt="Laptop Collection">
-    <img src="https://ares.shiftdelete.net/2023/10/iphone-16-pro-pro-max-buyuk-ekran.jpg" alt="Iphone">
-    <img src="https://pngimg.com/uploads/photo_camera/photo_camera_PNG101601.png" alt="Cameras Collection">
+    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8" alt="Laptop">
+    <img src="https://ares.shiftdelete.net/2023/10/iphone-16-pro-pro-max-buyuk-ekran.jpg" alt="iPhone">
+    <img src="https://pngimg.com/uploads/photo_camera/photo_camera_PNG101601.png" alt="Máy ảnh">
 </div>
 
 <!-- New Products -->
-<h2 class="section-title">NEW PRODUCTS</h2>
+<h2 class="section-title">SẢN PHẨM MỚI</h2>
 <div class="products">
     <% if (newProducts != null && !newProducts.isEmpty()) {
         for (Product p : newProducts) { %>
             <div class="product-card">
                 <img src="<%= p.getImage() %>" alt="<%= p.getName() %>">
-                <p style="font-size: 13px;">Category</p>
+                <p style="font-size: 13px;"><%= categoryMap.get(p.getCategoryId()) %></p>
                 <h4><%= p.getName() %></h4>
                 <p class="price">$<%= p.getPrice() %></p>
                 <p class="stars">★★★★★</p>
             </div>
     <%  }
        } else { %>
-        <p style="grid-column: 1 / -1; text-align: center;">No products found.</p>
+        <p style="grid-column: 1 / -1; text-align: center;">Không có sản phẩm nào.</p>
     <% } %>
 </div>
 
 <!-- Footer -->
 <footer>
-    © 2025 Electro. All rights reserved.
+    © 2025 Electro. Bản quyền đã được bảo hộ.
 </footer>
 
 </body>
