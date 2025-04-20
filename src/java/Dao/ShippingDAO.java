@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.*;
 
 public class ShippingDAO {
+
     private Connection conn;
 
     public ShippingDAO(Connection conn) {
@@ -14,8 +15,7 @@ public class ShippingDAO {
     public List<Shipping> getAllShipping() throws SQLException {
         List<Shipping> list = new ArrayList<>();
         String sql = "SELECT * FROM Shipping";
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 list.add(extractShipping(rs));
             }
@@ -123,18 +123,19 @@ public class ShippingDAO {
 
     private Shipping extractShipping(ResultSet rs) throws SQLException {
         return new Shipping(
-            rs.getInt("shipping_id"),
-            rs.getInt("order_id"),
-            rs.getString("shipping_address"),
-            rs.getString("shipping_status"),
-            rs.getString("tracking_number"),
-            rs.getDate("shipping_date"),
-            rs.getDate("estimated_delivery"),
-            rs.getString("delivery_notes"),
-            rs.getDate("updated_at")
+                rs.getInt("shipping_id"),
+                rs.getInt("order_id"),
+                rs.getString("shipping_address"),
+                rs.getString("shipping_status"),
+                rs.getString("tracking_number"),
+                rs.getDate("shipping_date"),
+                rs.getDate("estimated_delivery"),
+                rs.getString("delivery_notes"),
+                rs.getDate("updated_at")
         );
     }
-     public List<Shipping> getShippingByCustomerId(int customerId) throws SQLException {
+
+    public List<Shipping> getShippingByCustomerId(int customerId) throws SQLException {
         List<Shipping> list = new ArrayList<>();
         String sql = "SELECT s.* FROM Shipping s JOIN Orders o ON s.order_id = o.order_id WHERE o.user_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -147,5 +148,22 @@ public class ShippingDAO {
         }
         return list;
     }
-     
-} 
+
+    public List<Shipping> getShippingByCustomerIdStatus(int customerId, String status) throws SQLException {
+        List<Shipping> list = new ArrayList<>();
+        String sql = "SELECT s.* FROM Shipping s "
+                + "JOIN Orders o ON s.order_id = o.order_id "
+                + "WHERE o.user_id = ? AND s.shipping_status LIKE ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            ps.setString(2, "%" + status + "%"); // Thêm lọc theo trạng thái
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(extractShipping(rs));
+                }
+            }
+        }
+        return list;
+    }
+
+}
