@@ -94,25 +94,37 @@
 
         <!-- Header -->
         <div class="dashboard-header">
-            <jsp:include page="Manager-header.jsp"/>
+            <jsp:include page="Shipper-Header.jsp"/>
         </div>
 
         <!-- Sidebar + Content -->
         <div class="main-layout">
             <!-- Sidebar -->
             <div class="sidebar">
-                <jsp:include page="Manager-sidebar.jsp"/>
+                <jsp:include page="Shipper-Sidebar.jsp"/>
             </div>
 
             <!-- Main Content -->
             <div class="content-container">
                 <div class="container-fluid">
-                    <h2 class="mb-4">Chào mừng bạn đến với trang quản lí</h2>
+                    <h2 class="mb-4">Chào mừng bạn đến với trang đơn hàng</h2>
+
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title">Sản Phẩm</h5>
+                                    <p class="card-text">Xem tất cả đơn hàng cần giao.</p>
+                                    <a href="${pageContext.request.contextPath}/ShipperController" class="btn btn-success">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- More cards if needed -->
                     </div>
                 </div>
             </div>
+        </div>
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

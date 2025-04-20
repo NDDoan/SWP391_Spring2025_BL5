@@ -34,38 +34,41 @@ public class ProductForManagerListDao {
      * @param sortDir Hướng sắp xếp ("ASC" hoặc "DESC").
      * @return Danh sách các đối tượng ProductForManagerListDto.
      */
-    public List<ProductForManagerListDto> getProductForMarketingList(String search, int page, String sortField, String sortDir) {
+    public List<ProductForManagerListDto> getProductForMarketingList(String search, String brand, String category, int page, String sortField, String sortDir) {
         List<ProductForManagerListDto> list = new ArrayList<>();
-        String sql = buildDynamicQuery(search, sortField, sortDir);
+        String sql = buildDynamicQuery(search, brand, category, sortField, sortDir);
         int offset = (page - 1) * PAGE_SIZE;
-
-//        LOGGER.log(Level.INFO, "Dynamic SQL Query: {0}", sql);
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            int paramIndex = 1;
-            // Nếu có từ khóa tìm kiếm, gán tham số cho câu lệnh.
+            int idx = 1;
+            // WHERE 1=1 để dễ gắn điều kiện
             if (search != null && !search.trim().isEmpty()) {
-                ps.setString(paramIndex++, "%" + search.trim() + "%");
+                ps.setString(idx++, "%" + search.trim() + "%");
             }
-            // Gán tham số cho phân trang.
-            ps.setInt(paramIndex++, offset);
-            ps.setInt(paramIndex++, PAGE_SIZE);
+            if (brand != null && !brand.trim().isEmpty()) {
+                ps.setString(idx++, brand.trim());
+            }
+            if (category != null && !category.trim().isEmpty()) {
+                ps.setString(idx++, category.trim());
+            }
+            // Phân trang
+            ps.setInt(idx++, offset);
+            ps.setInt(idx, PAGE_SIZE);
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ProductForManagerListDto dto = new ProductForManagerListDto(
+                list.add(new ProductForManagerListDto(
                         rs.getInt("product_id"),
                         rs.getString("product_name"),
                         rs.getString("brand_name"),
                         rs.getString("category_name"),
                         rs.getInt("totalStockQuantity"),
                         rs.getString("primaryMediaUrl")
-                );
-                list.add(dto);
+                ));
             }
         } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error fetching product marketing list", ex);
+            LOGGER.log(Level.SEVERE, "Error fetching product list", ex);
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Connection error", ex);
         }
@@ -81,35 +84,37 @@ public class ProductForManagerListDao {
      * @return Một câu lệnh SQL dạng String hoàn chỉnh với phần LIMIT và OFFSET
      * để phân trang.
      */
-    private String buildDynamicQuery(String search, String sortField, String sortDir) {
-        StringBuilder sql = new StringBuilder();
-
-        // Phần SELECT và JOIN các bảng liên quan
-        sql.append("SELECT p.product_id, p.product_name, b.brand_name, c.category_name, ")
-                .append("       ISNULL(SUM(v.stock_quantity), 0) as totalStockQuantity, ")
-                .append("       pm.media_url as primaryMediaUrl ")
+    private String buildDynamicQuery(String search, String brand, String category, String sortField, String sortDir) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT p.product_id, p.product_name, b.brand_name, c.category_name, ")
+                .append("ISNULL(SUM(v.stock_quantity),0) as totalStockQuantity, ")
+                .append("pm.media_url as primaryMediaUrl ")
                 .append("FROM Products p ")
                 .append("LEFT JOIN Brands b ON p.brand_id = b.brand_id ")
                 .append("LEFT JOIN Categories c ON p.category_id = c.category_id ")
                 .append("LEFT JOIN ProductVariants v ON p.product_id = v.product_id ")
-                .append("LEFT JOIN ProductMedia pm ON p.product_id = pm.product_id AND pm.is_primary = 1 ");
+                .append("LEFT JOIN ProductMedia pm ON p.product_id = pm.product_id AND pm.is_primary = 1 ")
+                // Dùng WHERE 1=1 để dễ thêm AND
+                .append("WHERE 1=1 ");
 
-        // Thêm điều kiện tìm kiếm nếu có
         if (search != null && !search.trim().isEmpty()) {
-            sql.append("WHERE p.product_name LIKE ? ");
+            sb.append("AND p.product_name LIKE ? ");
+        }
+        if (brand != null && !brand.trim().isEmpty()) {
+            sb.append("AND b.brand_name = ? ");
+        }
+        if (category != null && !category.trim().isEmpty()) {
+            sb.append("AND c.category_name = ? ");
         }
 
-        // Nhóm các sản phẩm để tính tổng số lượng tồn kho
-        sql.append("GROUP BY p.product_id, p.product_name, b.brand_name, c.category_name, pm.media_url ");
+        sb.append("GROUP BY p.product_id, p.product_name, b.brand_name, c.category_name, pm.media_url ");
 
-        // Thêm điều kiện sắp xếp
-        sql.append("ORDER BY ").append(resolveSortField(sortField)).append(" ")
+        sb.append("ORDER BY ")
+                .append(resolveSortField(sortField)).append(" ")
                 .append(resolveSortDirection(sortDir)).append(" ");
 
-        // Phân trang với OFFSET và FETCH (SQL Server 2012+)
-        sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
-        return sql.toString();
+        sb.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        return sb.toString();
     }
 
     /**
@@ -141,12 +146,37 @@ public class ProductForManagerListDao {
         return "DESC";
     }
 
+    /** Lấy danh sách tên brand để fill dropdown filter */
+    public List<String> getAllBrandNames() {
+        List<String> brands = new ArrayList<>();
+        String sql = "SELECT brand_name FROM Brands";
+        try (Connection con = new DBContext().getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                brands.add(rs.getString("brand_name"));
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error fetching brands", e);
+        }
+        return brands;
+    }
+
+    /** Lấy danh sách tên category để fill dropdown filter */
+    public List<String> getAllCategoryNames() {
+        List<String> cats = new ArrayList<>();
+        String sql = "SELECT category_name FROM Categories";
+        try (Connection con = new DBContext().getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                cats.add(rs.getString("category_name"));
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error fetching categories", e);
+        }
+        return cats;
+    }
+
     // Ví dụ main để test
     public static void main(String[] args) {
         ProductForManagerListDao dao = new ProductForManagerListDao();
-        List<ProductForManagerListDto> products = dao.getProductForMarketingList("Laptop", 1, "p.product_name", "ASC");
-        for (ProductForManagerListDto dto : products) {
-            System.out.println(dto);
-        }
+
     }
 }

@@ -38,24 +38,58 @@ public class ProductMediaDao {
     }
 
     public boolean addMedia(ProductMedia pm) {
-        String sql = "INSERT INTO ProductMedia (product_id, media_url, media_type, is_primary, created_at, updated_at) "
+        String resetSql = "UPDATE ProductMedia SET is_primary = 0 WHERE product_id = ?";
+        String insertSql = "INSERT INTO ProductMedia (product_id, media_url, media_type, is_primary, created_at, updated_at) "
                 + "VALUES (?, ?, ?, ?, GETDATE(), GETDATE())";
-        try (Connection con = new DBContext().getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, pm.getProductId());
-            ps.setString(2, pm.getMediaUrl());
-            ps.setString(3, pm.getMediaType());
-            ps.setBoolean(4, pm.isPrimary());
-            return ps.executeUpdate() > 0;
+        Connection con = null;
+        try {
+            con = new DBContext().getConnection();
+            con.setAutoCommit(false);
+
+            // Nếu muốn set làm primary, reset tất cả bản trước
+            if (pm.isPrimary()) {
+                try (PreparedStatement resetPs = con.prepareStatement(resetSql)) {
+                    resetPs.setInt(1, pm.getProductId());
+                    resetPs.executeUpdate();
+                }
+            }
+
+            // Chèn bản ghi mới
+            try (PreparedStatement ps = con.prepareStatement(insertSql)) {
+                ps.setInt(1, pm.getProductId());
+                ps.setString(2, pm.getMediaUrl());
+                ps.setString(3, pm.getMediaType());
+                ps.setBoolean(4, pm.isPrimary());
+                ps.executeUpdate();
+            }
+
+            con.commit();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
         return false;
     }
-    
+
     public boolean deleteMedia(int mediaId) {
         String sql = "DELETE FROM ProductMedia WHERE media_id = ?";
-        try (Connection con = new DBContext().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = new DBContext().getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, mediaId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -63,7 +97,7 @@ public class ProductMediaDao {
         }
         return false;
     }
-    
+
     public boolean setPrimaryMedia(int mediaId, int productId) {
         String resetSql = "UPDATE ProductMedia SET is_primary = 0 WHERE product_id = ?";
         String setSql = "UPDATE ProductMedia SET is_primary = 1 WHERE media_id = ?";

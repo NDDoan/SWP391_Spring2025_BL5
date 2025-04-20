@@ -55,14 +55,14 @@ public class ProductForManagerDetailController extends HttpServlet {
                 productId = Integer.parseInt(productIdParam);
             } catch (Exception e) {
                 request.setAttribute("errorMessage", "ProductId không hợp lệ.");
-                RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/error.jsp");
+                RequestDispatcher rd = request.getRequestDispatcher("AdminPage/error.jsp");
                 rd.forward(request, response);
                 return;
             }
             product = productDao.getProductById(productId);
             if (product == null) {
                 request.setAttribute("errorMessage", "Không tìm thấy thông tin sản phẩm.");
-                RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/error.jsp");
+                RequestDispatcher rd = request.getRequestDispatcher("AdminPage/error.jsp");
                 rd.forward(request, response);
                 return;
             }
@@ -88,7 +88,7 @@ public class ProductForManagerDetailController extends HttpServlet {
             product.setVariants(variantDao.getVariantsByProductId(product.getProductId()));
         }
 
-        RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/ProductDetail.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("AdminPage/ProductDetail.jsp");
         rd.forward(request, response);
     }
 
@@ -136,16 +136,38 @@ public class ProductForManagerDetailController extends HttpServlet {
         // Ví dụ đơn giản dưới đây chỉ demo, bạn cần bổ sung kiểm tra và thông báo đầy đủ.
         request.setCharacterEncoding("UTF-8");
         String mode = request.getParameter("mode");
-        // Handle product add/edit
+
+        // ===== Validate and handle product add/edit =====
         if ("add".equalsIgnoreCase(mode) || "edit".equalsIgnoreCase(mode)) {
+            // Extract form values
+            String name = request.getParameter("productName").trim();
+            String brand = request.getParameter("brandName").trim();
+            String category = request.getParameter("categoryName").trim();
+            String desc = request.getParameter("description").trim();
+            int currentId = 0;
+            if ("edit".equalsIgnoreCase(mode)) {
+                currentId = Integer.parseInt(request.getParameter("productId"));
+            }
+            // Validate unique product name
+            if (productDao.isNameExistsExceptId(name, currentId)) {
+                request.setAttribute("errorName", "Tên sản phẩm đã tồn tại rồi.");
+                // Preserve form inputs
+                request.setAttribute("productName", name);
+                request.setAttribute("brandName", brand);
+                request.setAttribute("categoryName", category);
+                request.setAttribute("description", desc);
+                processRequest(request, response);
+                return;
+            }
+            // Build DTO
             ProductDto product = new ProductDto();
             if ("edit".equalsIgnoreCase(mode)) {
-                product.setProductId(Integer.parseInt(request.getParameter("productId")));
+                product.setProductId(currentId);
             }
-            product.setProductName(request.getParameter("productName"));
-            product.setBrandName(request.getParameter("brandName"));
-            product.setCategoryName(request.getParameter("categoryName"));
-            product.setDescription(request.getParameter("description"));
+            product.setProductName(name);
+            product.setBrandName(brand);
+            product.setCategoryName(category);
+            product.setDescription(desc);
 
             int prodId;
             if ("add".equalsIgnoreCase(mode)) {
@@ -159,10 +181,23 @@ public class ProductForManagerDetailController extends HttpServlet {
             return;
         }
 
-        // Handle variant add/update via POST
+        // ===== Validate and handle variant add/update =====
         String variantAction = request.getParameter("variantAction");
         if (variantAction != null) {
             int prodId = Integer.parseInt(request.getParameter("productId"));
+            // Validate quantity
+            String qtyStr = request.getParameter("stockQuantity").trim();
+            int qty;
+            try {
+                qty = Integer.parseInt(qtyStr);
+            } catch (NumberFormatException e) {
+                qty = -1;
+            }
+            if (qty < 0) {
+                request.setAttribute("errorVariant", "Bạn không thể để tồn kho nhỏ hơn không 🐧.");
+                processRequest(request, response);
+                return;
+            }
             ProductVariant v = new ProductVariant();
             v.setProductId(prodId);
             v.setCpu(request.getParameter("cpu"));
@@ -171,7 +206,7 @@ public class ProductForManagerDetailController extends HttpServlet {
             v.setStorage(request.getParameter("storage"));
             v.setColor(request.getParameter("color"));
             v.setPrice(Double.parseDouble(request.getParameter("price")));
-            v.setStockQuantity(Integer.parseInt(request.getParameter("stockQuantity")));
+            v.setStockQuantity(qty);
             if ("update".equalsIgnoreCase(variantAction)) {
                 v.setVariantId(Integer.parseInt(request.getParameter("variantId")));
                 variantDao.updateVariant(v);
