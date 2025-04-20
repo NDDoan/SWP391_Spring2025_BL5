@@ -38,7 +38,7 @@ public class ShipperController extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        if (user != null && user.getRole_id()== 3) {
+        if (user != null && user.getRole_id()== 4) {
             // Lấy danh sách đơn hàng của shipper hiện tại
             try {
                 List<Shipping> list = shippingDAO.getShippingByShipper(user.getUser_id());
