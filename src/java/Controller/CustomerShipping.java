@@ -18,20 +18,35 @@ public class CustomerShipping extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("logincontroller"); // Redirect to login
+        HttpSession session = request.getSession();  // Không tạo session mới, sử dụng session hiện tại
+        User users = (User) session.getAttribute("user");
+
+        // Kiểm tra nếu người dùng chưa đăng nhập hoặc không phải khách hàng
+        if (users == null || users.getRole_id() != 2) {
+            response.sendRedirect("logincontroller");
             return;
         }
 
-        User user = (User) session.getAttribute("user");
-        int customerId = user.getUser_id();
+        int customerId = users.getUser_id();
 
         try (Connection conn = new DBContext().getConnection()) {
             ShippingDAO shippingDAO = new ShippingDAO(conn);
-            List<Shipping> shippingList = shippingDAO.getShippingByCustomerId(customerId);
+            String status = request.getParameter("status");
+            List<Shipping> shippingList;
 
+            // Tìm kiếm theo trạng thái nếu có
+            if (status != null && !status.trim().isEmpty()) {
+                shippingList = shippingDAO.getShippingByCustomerIdStatus(customerId, status);
+            } else {
+                shippingList = shippingDAO.getShippingByCustomerId(customerId);
+            }
+
+            // Đưa danh sách giao hàng vào request
             request.setAttribute("shippingList", shippingList);
+            // Truyền tham số status vào lại view để duy trì trạng thái tìm kiếm
+            request.setAttribute("statusFilter", status);
+
+            // Forward request và response tới JSP
             request.getRequestDispatcher("/CustomerPage/CustomerShipping.jsp").forward(request, response);
 
         } catch (Exception e) {

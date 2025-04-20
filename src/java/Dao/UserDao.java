@@ -437,7 +437,7 @@ public class UserDao {
             ps.setTimestamp(8, null); // reset_token_expiry
             ps.setTimestamp(9, null); // last_login
             ps.setBoolean(10, user.isIs_active());
-            ps.setString(11, null); // Đừng để null nếu cột yêu cầu NOT NULL
+            ps.setString(11, user.getPassword_hash()); // Đừng để null nếu cột yêu cầu NOT NULL
             ps.setBoolean(12, user.isIs_verified());
             ps.setString(13, null); // reset_token
             ps.setTimestamp(14, null); // reset_token_expiry
