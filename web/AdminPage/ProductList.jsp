@@ -84,13 +84,13 @@
     <body>
         <!-- Header -->
         <div class="dashboard-header">
-            <jsp:include page="Manager-header.jsp" />
+            <jsp:include page="dashboard-header.jsp" />
         </div>
 
         <div class="main-layout">
             <!-- Sidebar -->
             <div class="sidebar">
-                <jsp:include page="Manager-sidebar.jsp" />
+                <jsp:include page="dashboard-sidebar.jsp" />
             </div>
 
             <!-- Content -->

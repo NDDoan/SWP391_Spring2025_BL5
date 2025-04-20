@@ -71,7 +71,7 @@ public class ProductForManagerListController extends HttpServlet {
             // Bạn có thể set thêm các attribute khác như dữ liệu phân trang, tham số tìm kiếm, sắp xếp, ... nếu cần
 
             // Forward tới JSP ManagerPage/ProductList.jsp
-            RequestDispatcher dispatcher = request.getRequestDispatcher("ManagerPage/ProductList.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("AdminPage/ProductList.jsp");
             dispatcher.forward(request, response);
         }
     }

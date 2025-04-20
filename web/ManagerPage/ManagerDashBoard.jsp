@@ -109,22 +109,10 @@
                 <div class="container-fluid">
                     <h2 class="mb-4">Chào mừng bạn đến với trang quản lí</h2>
 
-                    <div class="row g-4">
-                        <div class="col-md-4">
-                            <div class="card border-success">
-                                <div class="card-body">
-                                    <h5 class="card-title">Sản Phẩm</h5>
-                                    <p class="card-text">Xem và quản lý tất cả Sản phẩm.</p>
-                                    <a href="/Swp391_Spring2025_BL5/ProductForManagerListController" class="btn btn-success">Xem chi tiết</a>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- More cards if needed -->
                     </div>
                 </div>
             </div>
-        </div>
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

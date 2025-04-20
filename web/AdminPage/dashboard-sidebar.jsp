@@ -36,7 +36,7 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="product">
+                        <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ProductForManagerListController">
                             <i class="bi bi-box-seam me-2"></i> Quản lý sản phẩm
                         </a>
                     </li>

@@ -97,13 +97,13 @@
     <body>
         <!-- Header -->
         <div class="dashboard-header">
-            <jsp:include page="Manager-header.jsp"/>
+            <jsp:include page="dashboard-header.jsp"/>
         </div>
         <!-- Sidebar + Content -->
         <div class="main-layout">
             <!-- Sidebar -->
             <div class="sidebar">
-                <jsp:include page="Manager-sidebar.jsp"/>
+                <jsp:include page="dashboard-sidebar.jsp"/>
             </div>
             <div class="content-container">
                 <div class="container-fluid">
@@ -239,7 +239,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Variants</span>
                             <!-- Chỉ hiện nút Add Variant khi đang ở edit hoặc add mode -->
-                            <c:if test="${mode != 'view'}">
+                            <c:if test="${mode == 'edit'}">
                                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#variantModal">Thêm Phiên bản</button>
                             </c:if>
                         </div>
@@ -247,9 +247,15 @@
                             <table class="table align-middle mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th><th>CPU</th><th>RAM</th><th>Màn hình</th><th>Dung lượng</th>
-                                        <th>Màu</th><th>Giá</th><th>Tồn kho</th>
-                                        <th>Khác</th>
+                                        <th>ID</th>
+                                        <th>CPU</th>
+                                        <th>RAM</th>
+                                        <th>Màn hình</th>
+                                        <th>Dung lượng</th>
+                                        <th>Màu</th>
+                                        <th>Giá</th>
+                                        <th>Tồn kho</th>
+                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -338,7 +344,7 @@
                             </div>
 
                             <!-- Only show upload form in edit/add mode -->
-                            <c:if test="${mode != 'view'}">
+                            <c:if test="${mode == 'edit'}">
                                 <div class="add-media-section mt-4">
                                     <h5>Add Media</h5>
                                     <form action="${pageContext.request.contextPath}/MediaUploadController" method="post" enctype="multipart/form-data" class="row g-3">
@@ -376,8 +382,8 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title">
                                             <c:choose>
-                                                <c:when test="${not empty variantToEdit}">Edit Variant</c:when>
-                                                <c:otherwise>Add Variant</c:otherwise>
+                                                <c:when test="${not empty variantToEdit}">Sửa phiên bản</c:when>
+                                                <c:otherwise>Thêm phiên bản</c:otherwise>
                                             </c:choose>
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -395,20 +401,20 @@
                                             <input type="text" name="cpu" class="form-control" value="${variantToEdit.cpu}" required></div>
                                         <div class="mb-3"><label>RAM</label>
                                             <input type="text" name="ram" class="form-control" value="${variantToEdit.ram}" required></div>
-                                        <div class="mb-3"><label>Screen</label>
+                                        <div class="mb-3"><label>Màn hình</label>
                                             <input type="text" name="screen" class="form-control" value="${variantToEdit.screen}" required></div>
-                                        <div class="mb-3"><label>Storage</label>
+                                        <div class="mb-3"><label>Dung lượng</label>
                                             <input type="text" name="storage" class="form-control" value="${variantToEdit.storage}" required></div>
-                                        <div class="mb-3"><label>Color</label>
+                                        <div class="mb-3"><label>Màu sắc</label>
                                             <input type="text" name="color" class="form-control" value="${variantToEdit.color}" required></div>
-                                        <div class="mb-3"><label>Price</label>
+                                        <div class="mb-3"><label>Giá</label>
                                             <input type="number" step="0.01" name="price" class="form-control" value="${variantToEdit.price}" required></div>
-                                        <div class="mb-3"><label>Stock</label>
+                                        <div class="mb-3"><label>Tồn kho</label>
                                             <input type="number" name="stockQuantity" class="form-control" value="${variantToEdit.stockQuantity}" required></div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                     </div>
                                 </div>
                             </form>

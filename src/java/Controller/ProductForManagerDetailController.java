@@ -55,14 +55,14 @@ public class ProductForManagerDetailController extends HttpServlet {
                 productId = Integer.parseInt(productIdParam);
             } catch (Exception e) {
                 request.setAttribute("errorMessage", "ProductId không hợp lệ.");
-                RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/error.jsp");
+                RequestDispatcher rd = request.getRequestDispatcher("AdminPage/error.jsp");
                 rd.forward(request, response);
                 return;
             }
             product = productDao.getProductById(productId);
             if (product == null) {
                 request.setAttribute("errorMessage", "Không tìm thấy thông tin sản phẩm.");
-                RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/error.jsp");
+                RequestDispatcher rd = request.getRequestDispatcher("AdminPage/error.jsp");
                 rd.forward(request, response);
                 return;
             }
@@ -88,7 +88,7 @@ public class ProductForManagerDetailController extends HttpServlet {
             product.setVariants(variantDao.getVariantsByProductId(product.getProductId()));
         }
 
-        RequestDispatcher rd = request.getRequestDispatcher("ManagerPage/ProductDetail.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("AdminPage/ProductDetail.jsp");
         rd.forward(request, response);
     }
 
