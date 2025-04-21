@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/user")
 public class UserController extends HttpServlet {
@@ -35,9 +36,31 @@ public class UserController extends HttpServlet {
             request.setAttribute("editUser", user);
         } else if ("delete".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
-            dao.deleteUser(id);
+            User user = dao.getUserById(id);
+            user.setIs_active(!user.isIs_active());
+            dao.updateUser(user);
+            //dao.deleteUser(id);
             response.sendRedirect("user");
             return;
+        } else if ("view".equals(action)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            Map<String, Object> result = dao.getUserByIdWithRole(id);
+            User user = (User) result.get("user");
+            String roleName = (String) result.get("role_name");
+
+            request.setAttribute("user", user);
+            request.setAttribute("roleName", roleName);
+            request.setAttribute("user", user);
+            request.getRequestDispatcher("/AdminPage/UserDetail.jsp").forward(request, response);
+            return;
+        }
+        
+        String sortBy = request.getParameter("sortBy");
+        String sortOrder = request.getParameter("sortOrder");
+        
+        if (sortBy == null || sortOrder == null) {
+            sortBy = "user_id"; // Default sort by ID
+            sortOrder = "asc"; // Default sort order ascending
         }
 
         String keyword = request.getParameter("keyword");
@@ -61,8 +84,8 @@ public class UserController extends HttpServlet {
         int offset = (page - 1) * limit;
         List<User> userList = null;
         if (users.getRole_id() == 1) {
-            userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit);
-        } else if ( users.getRole_id() == 5) {
+            userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit,sortBy,sortOrder);
+        } else if (users.getRole_id() == 5) {
             userList = dao.getFilteredCustomer(keyword, roleFilter, offset, limit);
         }
         int totalUsers = dao.countFilteredUsers(keyword, roleFilter);

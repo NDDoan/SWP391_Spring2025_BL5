@@ -1,11 +1,15 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Danh Sách Người Dùng</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
             /* Sidebar Fixed to the left */
             .sidebar {
@@ -65,9 +69,9 @@
                     <div class="col-md-3">
                         <select name="roleFilter" class="form-select">
                             <option value="">All Roles</option>
-                            <option value="1" ${param.roleFilter == '1' ? 'selected' : ''}>Admin</option>
+                            <option value="5" ${param.roleFilter == '5' ? 'selected' : ''}>Staff</option>
                             <option value="2" ${param.roleFilter == '2' ? 'selected' : ''}>Customer</option>
-                            <option value="3" ${param.roleFilter == '3' ? 'selected' : ''}>Manager</option>
+                            <option value="3" ${param.roleFilter == '3' ? 'selected' : ''}>Marketing</option>
                             <option value="4" ${param.roleFilter == '4' ? 'selected' : ''}>Shipper</option>
                         </select>
                     </div>
@@ -93,17 +97,17 @@
                 <table class="table table-bordered table-hover bg-white">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
-                            <th>Họ và tên</th>
+                            <th><a href="user?action=list&sortBy=user_id&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&page=${currentPage}">ID</a></th>
+                            <th><a href="user?action=list&sortBy=full_name&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&page=${currentPage}">Họ và tên</a></th>
                             <th>Ảnh đại diện</th>
-                            <th>Email</th>
+                            <th><a href="user?action=list&sortBy=email&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&page=${currentPage}">Email</a></th>
                             <th>Giới tính</th>
                             <th>Số điện thoại</th>
                             <th>Vai trò</th>
                             <th>Kích Hoạt</th>
                             <th>Đã xác minh</th>
-                            <th>Chỉnh sửa</th>
-                            <th>Xóa</th>
+                            <th>Hoạt động</th>
+
                         </tr>
 
                     </thead>
@@ -126,16 +130,35 @@
                                       user.role_id == 5 ? 'Staff' :'Unknown' }
                                 </td>
 
-                                <td>${user.is_active ? 'Yes' : 'No'}</td>
-                                <td>${user.is_verified ? 'Yes' : 'No'}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-warning" 
-                                            onclick='openEditModal(${user.user_id}, "${user.full_name}", "${user.email}", "${user.gender}", "${user.phone_number}", "${user.address}", ${user.role_id}, ${user.is_active}, ${user.is_verified})'>
-                                        Sửa
-                                    </button>
+                                    <span class="status-badge ${user.is_active ? 'status-active':'status-inactive'}">
+                                        ${user.is_active ? 'Active':'Inactive'}
+                                    </span>
                                 </td>
-                                <td>
+                                <td>${user.is_verified ? 'Yes' : 'No'}</td>
+                                <td class="text-nowrap">
+                                    <a href="${pageContext.request.contextPath}/UserController?action=view&id=${user.user_id}" class="btn btn-sm btn-info me-1"><i class="fas fa-eye"></i></a>
+                                    <button type="button"
+                                            class="btn btn-sm btn-warning"
+                                            title="Chỉnh sửa"
+                                            onclick='openEditModal(
+                                            ${user.user_id},
+                                                            "${fn:escapeXml(user.full_name)}",
+                                                            "${fn:escapeXml(user.email)}",
+                                                            "${user.gender}",
+                                                            "${user.phone_number}",
+                                                            "${fn:escapeXml(user.address)}",
+                                            ${user.role_id},
+                                            ${user.is_active},
+                                            ${user.is_verified}
+                                                    )'>
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
                                     <a class="btn btn-sm btn-danger" href="user?action=delete&id=${user.user_id}" onclick="return confirm('Are you sure?')">Xóa</a>
+                                    <a class="btn btn-sm btn-secondary" href="user?action=delete&id=${user.user_id}">
+                                        ${user.is_active ? 'Deactivate' : 'Activate'}
+                                    </a>
                                 </td>
                             </tr>
                         </c:forEach>

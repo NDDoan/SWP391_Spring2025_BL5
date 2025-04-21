@@ -8,7 +8,9 @@ import DBContext.DBContext;
 import Entity.User;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -495,46 +497,57 @@ public class UserDao {
 //        }
 //        return userList;
 //    }
-    public List<User> getFilteredUsers(String keyword, String roleFilter, int offset, int limit) {
+    public List<User> getFilteredUsers(String keyword, String roleFilter, int offset, int limit, String sortBy, String sortOrder) {
         List<User> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
 
         List<Object> parameters = new ArrayList<>();
 
-        // Thêm điều kiện tìm kiếm theo tên người dùng nếu có
+        // Tìm kiếm
         if (keyword != null && !keyword.isEmpty()) {
             sql.append(" AND full_name LIKE ?");
             parameters.add("%" + keyword + "%");
         }
 
-        // Thêm điều kiện lọc theo vai trò nếu có
+        // Lọc theo role
         if (roleFilter != null && !roleFilter.isEmpty()) {
             sql.append(" AND role_id = ?");
             parameters.add(Integer.parseInt(roleFilter));
         }
 
-        // Thêm điều kiện lọc theo user_id = 2, 3, 4
+        // Giới hạn role_id nằm trong 3, 4, 5
         sql.append(" AND role_id IN (?, ?, ?)");
         parameters.add(3);
         parameters.add(4);
         parameters.add(5);
 
-        // Sử dụng OFFSET-FETCH cho phân trang
-        sql.append(" ORDER BY user_id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-        parameters.add(offset);  // OFFSET bắt đầu từ vị trí này
-        parameters.add(limit);   // FETCH NEXT lấy số lượng này
+        // Sắp xếp
+        // Chỉ cho phép một số cột nhất định để tránh SQL Injection
+        String sortColumn = "user_id"; // mặc định
+        if ("full_name".equals(sortBy) || "email".equals(sortBy) || "user_id".equals(sortBy)) {
+            sortColumn = sortBy;
+        }
+
+        String sortDirection = "ASC"; // mặc định
+        if ("DESC".equalsIgnoreCase(sortOrder)) {
+            sortDirection = "DESC";
+        }
+
+        sql.append(" ORDER BY ").append(sortColumn).append(" ").append(sortDirection);
+
+        // Phân trang
+        sql.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        parameters.add(offset);
+        parameters.add(limit);
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
-            // Thiết lập các tham số vào câu lệnh PreparedStatement
             for (int i = 0; i < parameters.size(); i++) {
                 ps.setObject(i + 1, parameters.get(i));
             }
 
-            // Thực thi truy vấn
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(extractUser(rs)); // Lấy dữ liệu và thêm vào danh sách
+                list.add(extractUser(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -678,17 +691,25 @@ public class UserDao {
         int limit = 5;            // Số lượng kết quả tối đa
 
         // Lấy danh sách người dùng đã lọc
-        List<User> users = userDao.getFilteredUsers(keyword, roleFilter, offset, limit);
-
-        // Duyệt qua danh sách người dùng và in ra thông tin
-        for (User user : users) {
-            System.out.println("User ID: " + user.getUser_id());
-            System.out.println("Name: " + user.getFull_name());
-            System.out.println("Email: " + user.getEmail());
-            System.out.println("Phone: " + user.getPhone_number());
-            System.out.println("Role ID: " + user.getRole_id());
-
-            System.out.println("----------------------------");
-        }
     }
+
+    public Map<String, Object> getUserByIdWithRole(int id) {
+        String sql = "SELECT u.*, r.role_name FROM users u JOIN roles r ON u.role_id = r.role_id WHERE u.user_id = ?";
+        Map<String, Object> result = new HashMap<>();
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = extractUser(rs);
+                result.put("user", user);
+                result.put("role_name", rs.getString("role_name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 }
