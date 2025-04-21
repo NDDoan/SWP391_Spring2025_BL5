@@ -1,10 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>User Management</title>
+        <title>Danh Sách Người Dùng</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             /* Sidebar Fixed to the left */
@@ -56,7 +56,7 @@
 
             <!-- Main Content -->
             <div class="container bg-white p-4 rounded shadow">
-                <h2 class="text-center mb-4 text-primary"><i class="fas fa-users-cog me-2"></i>User Management</h2>
+                <h2 class="text-center mb-4 text-primary"><i class="fas fa-users-cog me-2"></i>Danh Sách Người Dùng</h2>
 
                 <form method="get" action="user" class="row g-2 mb-4">
                     <div class="col-md-4">
@@ -72,10 +72,10 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
                     </div>
                     <div class="col-md-2">
-                        <a href="user" class="btn btn-secondary w-100">Reset</a>
+                        <a href="user" class="btn btn-secondary w-100">Đặt lại</a>
                     </div>
                 </form>
 
@@ -87,15 +87,25 @@
                 </c:if>
 
                 <!-- Button to open Add Modal -->
-                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openAddModal()">Add User</button>
+                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openAddModal()">Thêm Người Dùng</button>
 
                 <!-- User Table -->
                 <table class="table table-bordered table-hover bg-white">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th><th>Full Name</th><th>Avatar</th><th>Email</th><th>Gender</th><th>Phone</th>
-                            <th>Role</th><th>Active</th><th>Verified</th><th>Edit</th><th>Delete</th>
+                            <th>ID</th>
+                            <th>Họ và tên</th>
+                            <th>Ảnh đại diện</th>
+                            <th>Email</th>
+                            <th>Giới tính</th>
+                            <th>Số điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Kích Hoạt</th>
+                            <th>Đã xác minh</th>
+                            <th>Chỉnh sửa</th>
+                            <th>Xóa</th>
                         </tr>
+
                     </thead>
                     <tbody>
                         <c:forEach var="user" items="${userList}">
@@ -120,11 +130,11 @@
                                 <td>
                                     <button class="btn btn-sm btn-warning" 
                                             onclick='openEditModal(${user.user_id}, "${user.full_name}", "${user.email}", "${user.gender}", "${user.phone_number}", "${user.address}", ${user.role_id}, ${user.is_active}, ${user.is_verified})'>
-                                        Edit
+                                        Sửa
                                     </button>
                                 </td>
                                 <td>
-                                    <a class="btn btn-sm btn-danger" href="user?action=delete&id=${user.user_id}" onclick="return confirm('Are you sure?')">Delete</a>
+                                    <a class="btn btn-sm btn-danger" href="user?action=delete&id=${user.user_id}" onclick="return confirm('Are you sure?')">Xóa</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -172,64 +182,72 @@
                         <div class="modal-body">
                             <input type="hidden" name="user_id" id="user_id">
 
-                            <div class="mb-2">
-                                <label>Full Name</label>
-                                <input type="text" class="form-control" name="full_name" id="full_name" required>
+                            <div class="modal-body">
+                                <input type="hidden" name="user_id" id="user_id">
+
+                                <div class="mb-2">
+                                    <label>Họ và tên</label>
+                                    <input type="text" class="form-control" name="full_name" id="full_name" required>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" name="email" id="email" required>
+                                </div>
+                                <div class="mb-2" id="passwordField">
+                                    <label>Mật khẩu</label>
+                                    <input type="password" class="form-control" name="password" id="password">
+                                </div>
+
+                                <div class="mb-2">
+                                    <label>Giới tính</label>
+                                    <select class="form-control" name="gender" id="gender">
+                                        <option value="Male">Nam</option>
+                                        <option value="Female">Nữ</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label>Số điện thoại</label>
+                                    <input type="text" class="form-control" name="phone_number" id="phone_number">
+                                </div>
+
+                                <div class="mb-2">
+                                    <label>Địa chỉ</label>
+                                    <input type="text" class="form-control" name="address" id="address">
+                                </div>
+
+                                <div class="mb-2">
+                                    <label>Vai trò</label>
+                                    <select class="form-control" name="role_id" id="role_id">
+                                        <option value="1">Quản trị viên</option>
+                                        <option value="2">Khách hàng</option>
+                                        <option value="3">Quản lý</option>
+                                        <option value="4">Nhân viên giao hàng</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label>Kích Hoạt</label>
+                                    <select class="form-control" name="is_active" id="is_active">
+                                        <option value="true">Có</option>
+                                        <option value="false">Không</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label>Đã xác minh</label>
+                                    <select class="form-control" name="is_verified" id="is_verified">
+                                        <option value="true">Có</option>
+                                        <option value="false">Không</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="mb-2">
-                                <label>Email</label>
-                                <input type="email" class="form-control" name="email" id="email" required>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Save User</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             </div>
-
-                            <div class="mb-2">
-                                <label>Gender</label>
-                                <select class="form-control" name="gender" id="gender">
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-2">
-                                <label>Phone</label>
-                                <input type="text" class="form-control" name="phone_number" id="phone_number">
-                            </div>
-
-                            <div class="mb-2">
-                                <label>Address</label>
-                                <input type="text" class="form-control" name="address" id="address">
-                            </div>
-
-                            <div class="mb-2">
-                                <label>Role</label>
-                                <select class="form-control" name="role_id" id="role_id">
-                                    <option value="1">Admin</option>
-                                    <option value="2">Customer</option>
-                                    <option value="3">Manager</option>
-                                    <option value="4">Shipper</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-2">
-                                <label>Active</label>
-                                <select class="form-control" name="is_active" id="is_active">
-                                    <option value="true">Yes</option>
-                                    <option value="false">No</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-2">
-                                <label>Verified</label>
-                                <select class="form-control" name="is_verified" id="is_verified">
-                                    <option value="true">Yes</option>
-                                    <option value="false">No</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Save User</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -252,6 +270,7 @@
                                             document.getElementById('role_id').value = '1';
                                             document.getElementById('is_active').value = 'true';
                                             document.getElementById('is_verified').value = 'false';
+                                            document.getElementById('passwordField').style.display = 'block';
                                         }
 
                                         function openEditModal(id, name, email, gender, phone, address, role, active, verified) {
@@ -265,6 +284,7 @@
                                             document.getElementById('role_id').value = role;
                                             document.getElementById('is_active').value = active ? 'true' : 'false';
                                             document.getElementById('is_verified').value = verified ? 'true' : 'false';
+                                            document.getElementById('passwordField').style.display = 'none';
 
                                             var modal = new bootstrap.Modal(document.getElementById('userModal'));
                                             modal.show();

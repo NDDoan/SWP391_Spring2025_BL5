@@ -2,6 +2,7 @@ package Controller;
 
 import Dao.UserDao;
 import Entity.User;
+import Util.HashUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -44,7 +45,7 @@ public class UserController extends HttpServlet {
             keyword = ""; // Default to empty string if no search query
         }
         String roleFilter = request.getParameter("roleFilter");
-         if (roleFilter == null) {
+        if (roleFilter == null) {
             roleFilter = ""; // Default to empty string if no role is selected
         }
         int page = 1;
@@ -89,11 +90,12 @@ public class UserController extends HttpServlet {
         String gender = request.getParameter("gender");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone_number");
+        String password = request.getParameter("password");
         String address = request.getParameter("address");
         int role = Integer.parseInt(request.getParameter("role_id"));
         boolean isActive = "true".equals(request.getParameter("is_active"));
         boolean isVerified = "true".equals(request.getParameter("is_verified"));
-
+        String hashedPassword = HashUtil.hashPassword(password);
         UserDao dao = new UserDao();
 
         if (id > 0) {
@@ -111,7 +113,7 @@ public class UserController extends HttpServlet {
         } else {
             // Insert
             // User newUser = new User(name, gender, email, "12345", phone, address, role, isActive, isVerified);
-            User insertUser = new User(100, name, gender, email, null, phone, address, null, role, isActive, isVerified, null, null, null, null, null);
+            User insertUser = new User(100, name, gender, email, hashedPassword, phone, address, null, role, isActive, isVerified, null, null, null, null, null);
             dao.insertUser(insertUser);
         }
 
