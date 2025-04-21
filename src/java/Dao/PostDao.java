@@ -3,8 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Dao;
-//import Dto.PostDto;
-//import Entity.CategoryPost;
+import EntityDto.PostDto;
+import Entity.CategoryPost;
 import DBContext.DBContext;
 import Entity.Post;
 import EntityDto.PostDto;
@@ -376,53 +376,53 @@ public class PostDao {
         return rowsUpdated > 0;
     }
 
-    // Get all categories for dropdown selection
-//    public List<CategoryPost> getAllCategories() throws Exception {
-//        List<CategoryPost> categories = new ArrayList<>();
-//        Connection conn = null;
-//        Statement stmt = null;
-//        ResultSet rs = null;
-//
-//        try {
-//            conn = new DBContext().getConnection();
-//            stmt = conn.createStatement();
-//
-//            // Modified query to include all categories (both active and inactive)
-//            String sql = "SELECT DISTINCT cp.category_id, cp.category_name, cp.description, cp.created_at, cp.updated_at, cp.is_active "
-//                    + "FROM [CategoryPost] cp "
-//                    + "LEFT JOIN [Post] p ON p.category_id = cp.category_id "
-//                    + "ORDER BY cp.category_name";
-//
-//            rs = stmt.executeQuery(sql);
-//
-//            while (rs.next()) {
-//                CategoryPost category = new CategoryPost();
-//                category.setCategoryId(rs.getInt("category_id"));
-//                category.setCategoryName(rs.getString("category_name"));
-//                category.setDescription(rs.getString("description"));
-//                category.setCreatedAt(rs.getTimestamp("created_at"));
-//                category.setUpdatedAt(rs.getTimestamp("updated_at"));
-//                category.setIsActive(rs.getBoolean("is_active"));
-//
-//                categories.add(category);
-//            }
-//        } finally {
-//            if (rs != null) try {
-//                rs.close();
-//            } catch (Exception e) {
-//            }
-//            if (stmt != null) try {
-//                stmt.close();
-//            } catch (Exception e) {
-//            }
-//            if (conn != null) try {
-//                conn.close();
-//            } catch (Exception e) {
-//            }
-//        }
-//
-//        return categories;
-//    }
+//     Get all categories for dropdown selection
+    public List<CategoryPost> getAllCategories() throws Exception {
+        List<CategoryPost> categories = new ArrayList<>();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = new DBContext().getConnection();
+            stmt = conn.createStatement();
+
+            // Modified query to include all categories (both active and inactive)
+            String sql = "SELECT DISTINCT cp.category_id, cp.category_name, cp.description, cp.created_at, cp.updated_at, cp.is_active "
+                    + "FROM [CategoryPost] cp "
+                    + "LEFT JOIN [Post] p ON p.category_id = cp.category_id "
+                    + "ORDER BY cp.category_name";
+
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                CategoryPost category = new CategoryPost();
+                category.setCategoryId(rs.getInt("category_id"));
+                category.setCategoryName(rs.getString("category_name"));
+                category.setDescription(rs.getString("description"));
+                category.setCreatedAt(rs.getTimestamp("created_at"));
+                category.setUpdatedAt(rs.getTimestamp("updated_at"));
+                category.setIsActive(rs.getBoolean("is_active"));
+
+                categories.add(category);
+            }
+        } finally {
+            if (rs != null) try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            if (stmt != null) try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            if (conn != null) try {
+                conn.close();
+            } catch (Exception e) {
+            }
+        }
+
+        return categories;
+    }
 
     // Get all authors for dropdown selection
     public List<Entity.User> getAllAuthors() throws Exception {

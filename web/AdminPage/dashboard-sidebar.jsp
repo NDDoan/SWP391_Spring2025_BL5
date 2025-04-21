@@ -41,10 +41,12 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="report">
-                            <i class="bi bi-bar-chart-line me-2"></i> Báo cáo & Thống kê
+                        <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/PostListController">
+                            <i class="bi bi-bar-chart-line me-2"></i> quản lí bài đăng
                         </a>
                     </li>
+                    
+                    
                     <li class="nav-item mt-4">
                         <form id="logoutForm" action="${pageContext.request.contextPath}/logoutcontroller" method="post">
                             <button type="submit" class="btn btn-link nav-link text-danger d-flex align-items-center" style="padding: 0; border: none; background: none;">
@@ -52,7 +54,7 @@
                             </button>
                         </form>
                     </li>
-
+                        
                 </ul>
             </div>
         </nav>
