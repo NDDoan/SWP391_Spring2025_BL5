@@ -119,10 +119,11 @@
                                 <td>${user.gender}</td>
                                 <td>${user.phone_number}</td>
                                 <td>
-                                    ${user.role_id == 1 ? 'Admin' :
+                                    ${user.role_id == 1 ? 'Manager' :
                                       user.role_id == 2 ? 'Customer' :
-                                      user.role_id == 3 ? 'Manager' :
-                                      user.role_id == 4 ? 'Shipper' : 'Unknown' }
+                                      user.role_id == 3 ? 'Marketing' :
+                                      user.role_id == 4 ? 'Shipper' :
+                                      user.role_id == 5 ? 'Staff' :'Unknown' }
                                 </td>
 
                                 <td>${user.is_active ? 'Yes' : 'No'}</td>
@@ -224,6 +225,7 @@
                                         <option value="2">Khách hàng</option>
                                         <option value="3">Quản lý</option>
                                         <option value="4">Nhân viên giao hàng</option>
+                                        <option value="5">Nhân viên quản lí</option>
                                     </select>
                                 </div>
 

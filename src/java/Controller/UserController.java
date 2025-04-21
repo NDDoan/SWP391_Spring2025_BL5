@@ -22,7 +22,7 @@ public class UserController extends HttpServlet {
         HttpSession session = request.getSession();
         User users = (User) session.getAttribute("user");
 
-        if (users == null || users.getRole_id() != 1) {
+        if (users == null || users.getRole_id() == 2) {
             response.sendRedirect("logincontroller");
             return;
         }
@@ -59,8 +59,12 @@ public class UserController extends HttpServlet {
             }
         }
         int offset = (page - 1) * limit;
-
-        List<User> userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit);
+        List<User> userList = null;
+        if (users.getRole_id() == 1) {
+            userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit);
+        } else if ( users.getRole_id() == 5) {
+            userList = dao.getFilteredCustomer(keyword, roleFilter, offset, limit);
+        }
         int totalUsers = dao.countFilteredUsers(keyword, roleFilter);
         int totalPages = (int) Math.ceil((double) totalUsers / limit);
 

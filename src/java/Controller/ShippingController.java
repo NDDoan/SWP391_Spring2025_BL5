@@ -1,6 +1,7 @@
 package Controller;
 
 import Dao.ShippingDAO;
+import Dao.UserDao;
 import Entity.Shipping;
 import DBContext.DBContext;
 import Entity.User;
@@ -20,12 +21,14 @@ import java.util.List;
 public class ShippingController extends HttpServlet {
 
     private ShippingDAO shippingDAO;
+    private UserDao userDao; // ✅ viết đúng camelCase và có ;
 
     @Override
     public void init() {
         try {
             Connection conn = new DBContext().getConnection();
             shippingDAO = new ShippingDAO(conn);
+            userDao = new UserDao(); // ✅ khởi tạo đúng
         } catch (Exception e) {
             throw new RuntimeException("Cannot connect to database", e);
         }
@@ -34,7 +37,7 @@ public class ShippingController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         User users = (User) session.getAttribute("user");
 
         if (users == null || users.getRole_id() != 1) {
@@ -89,14 +92,24 @@ public class ShippingController extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         Shipping existing = shippingDAO.getShippingById(id);
         request.setAttribute("shipping", existing);
+        try {
+            List<User> shipperList = userDao.getUsersByRole(4);
+
+            request.setAttribute("shipperList", shipperList); // nếu cần hiển thị ra view
+        } catch (Exception e) {
+            e.printStackTrace(); // hoặc log lỗi nếu cần
+        }
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/editShipping.jsp");
         dispatcher.forward(request, response);
     }
+
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/createShipping.jsp");
         dispatcher.forward(request, response);
     }
+
     private void deleteShipping(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -107,7 +120,7 @@ public class ShippingController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         User users = (User) session.getAttribute("user");
 
         if (users == null || users.getRole_id() != 1) {
@@ -122,7 +135,7 @@ public class ShippingController extends HttpServlet {
             Date shippingDate = java.sql.Date.valueOf(request.getParameter("shippingDate"));
             Date estimatedDelivery = java.sql.Date.valueOf(request.getParameter("estimatedDelivery"));
             String notes = request.getParameter("deliveryNotes");
-
+           
             Shipping s = new Shipping();
             s.setOrderId(orderId);
             s.setShippingAddress(address);
@@ -132,7 +145,6 @@ public class ShippingController extends HttpServlet {
             s.setEstimatedDelivery(estimatedDelivery);
             s.setDeliveryNotes(notes);
             s.setUpdatedAt(new Date());
-
             String idStr = request.getParameter("id");
             if (idStr == null || idStr.isEmpty()) {
                 shippingDAO.insertShipping(s);

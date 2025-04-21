@@ -165,6 +165,19 @@
 
                 <label for="deliveryNotes">Ghi chú:</label>
                 <textarea name="deliveryNotes" id="deliveryNotes" rows="3">${shipping != null ? shipping.deliveryNotes : ''}</textarea>
+                <label for="shipperId">Người giao hàng:</label>
+                <select name="shipperId" id="shipperId" required>
+                    <option value="">-- Chọn người giao hàng --</option>
+                    <c:forEach var="shipper" items="${shipperList}">
+                        <option value="${shipper.user_id}" 
+                                <c:if test="${shipping != null && shipping.shipperId == shipper.user_id}">
+                                    selected
+                                </c:if>>
+                            ${shipper.full_name}
+                        </option>
+                    </c:forEach>
+                </select>
+
 
                 <input type="submit" value="Lưu" />
                 <a href="shipping" class="back-link">← Quay lại danh sách</a>

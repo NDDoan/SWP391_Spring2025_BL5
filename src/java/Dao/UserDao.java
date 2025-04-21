@@ -513,7 +513,13 @@ public class UserDao {
             parameters.add(Integer.parseInt(roleFilter));
         }
 
-        // Sử dụng OFFSET-FETCH cho SQL Server
+        // Thêm điều kiện lọc theo user_id = 2, 3, 4
+        sql.append(" AND role_id IN (?, ?, ?)");
+        parameters.add(3);
+        parameters.add(4);
+        parameters.add(5);
+
+        // Sử dụng OFFSET-FETCH cho phân trang
         sql.append(" ORDER BY user_id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         parameters.add(offset);  // OFFSET bắt đầu từ vị trí này
         parameters.add(limit);   // FETCH NEXT lấy số lượng này
@@ -537,6 +543,43 @@ public class UserDao {
         return list;
     }
 
+    public List<User> getFilteredCustomer(String keyword, String roleFilter, int offset, int limit) {
+        List<User> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
+        List<Object> parameters = new ArrayList<>();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            sql.append(" AND full_name LIKE ?");
+            parameters.add("%" + keyword + "%");
+        }
+
+        // Luôn lọc role_id = 2 cho customer
+        sql.append(" AND role_id = ?");
+        parameters.add(2);
+
+        // Phân trang
+        sql.append(" ORDER BY user_id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        parameters.add(offset);
+        parameters.add(limit);
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(extractUser(rs));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
     public int countFilteredUsers(String keyword, String roleFilter) {
         int count = 0;
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM users WHERE 1=1");
@@ -550,6 +593,10 @@ public class UserDao {
             sql.append(" AND role_id = ?");
             parameters.add(Integer.parseInt(roleFilter));
         }
+        sql.append(" AND role_id IN (?, ?, ?)");
+        parameters.add(3);
+        parameters.add(4);
+        parameters.add(5);
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
@@ -566,6 +613,59 @@ public class UserDao {
         }
 
         return count;
+    }
+
+    public int countFilteredCustomer(String keyword, String roleFilter) {
+        int count = 0;
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM users WHERE 1=1");
+        List<Object> parameters = new ArrayList<>();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            sql.append(" AND full_name LIKE ?");
+            parameters.add("%" + keyword + "%");
+        }
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+            parameters.add(Integer.parseInt(roleFilter));
+        }
+        sql.append(" AND role_id = ?");
+        parameters.add(2);
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public List<User> getUsersByRole(int roleId) throws Exception {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE role_id = ?";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                users.add(extractUser(rs)); // tái sử dụng method extractUser nếu đã có
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
     }
 
     public static void main(String[] args) {
