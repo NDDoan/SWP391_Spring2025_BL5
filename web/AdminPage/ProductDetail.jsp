@@ -321,21 +321,26 @@
                                             </c:choose>
                                         </div>
 
-                                        <!-- Only show actions in edit/add mode -->
+                                        <!-- Only show actions in edit mode -->
                                         <c:if test="${mode != 'view'}">
                                             <div class="actions position-absolute top-0 end-0 p-2">
-                                                <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=setPrimary"
-                                                   class="btn btn-sm ${m.primary ? 'btn-outline-secondary' : 'btn-outline-primary'} me-1">
-                                                    <c:choose>
-                                                        <c:when test="${m.primary}">Đã ưu tiên</c:when>
-                                                        <c:otherwise>Chọn ưu tiên</c:otherwise>
-                                                    </c:choose>
-                                                </a>
+                                                <!-- Chỉ hiển thị nút ưu tiên nếu là image -->
+                                                <c:if test="${m.mediaType == 'image'}">
+                                                    <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=setPrimary"
+                                                       class="btn btn-sm ${m.primary ? 'btn-outline-secondary' : 'btn-outline-primary'} me-1">
+                                                        <c:choose>
+                                                            <c:when test="${m.primary}">Đã ưu tiên</c:when>
+                                                            <c:otherwise>Chọn ưu tiên</c:otherwise>
+                                                        </c:choose>
+                                                    </a>
+                                                </c:if>
+                                                <!-- Delete luôn hiển thị -->
                                                 <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=delete"
                                                    class="btn btn-sm btn-outline-danger"
                                                    onclick="return confirm('Xóa media này bạn chắc chứ?');">×</a>
                                             </div>
                                         </c:if>
+
                                     </div>
                                 </c:forEach>
                                 <c:if test="${empty product.mediaList}">
@@ -350,7 +355,7 @@
                                     <form action="${pageContext.request.contextPath}/MediaUploadController" method="post" enctype="multipart/form-data" class="row g-3">
                                         <input type="hidden" name="productId" value="${product.productId}">
                                         <div class="col-md-2">
-                                            <select name="mediaType" class="form-select" required>
+                                            <select name="mediaType" id="mediaTypeSelect" class="form-select" required>
                                                 <option value="image">Ảnh</option>
                                                 <option value="video">Video</option>
                                             </select>
@@ -361,7 +366,7 @@
                                         <div class="col-md-4">
                                             <input type="url" name="mediaUrl" class="form-control" placeholder="Hoặc Nhập URL (YouTube/Image)">
                                         </div>
-                                        <div class="col-md-2 form-check">
+                                        <div class="col-md-2 form-check" id="primary-checkbox-container">
                                             <input type="checkbox" name="isPrimary" id="isPrimary" class="form-check-input">
                                             <label for="isPrimary" class="form-check-label">Ưu tiên?</label>
                                         </div>
@@ -426,12 +431,25 @@
         <!-- Bootstrap JS bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                                       window.addEventListener('DOMContentLoaded', () => {
+            const select = document.getElementById('mediaTypeSelect');
+            const container = document.getElementById('primary-checkbox-container');
+             function togglePrimaryCheckbox() {
+               if (select.value === 'video') {
+                container.style.display = 'none';
+                // nếu cần: container.querySelector('input').checked = false;
+               } else {
+                    container.style.display = 'block';
+               }
+            }
+            // Chạy khi load trang và khi thay đổi select
+            window.addEventListener('DOMContentLoaded', togglePrimaryCheckbox);
+            select.addEventListener('change', togglePrimaryCheckbox);
+            window.addEventListener('DOMContentLoaded', () => {
             <c:if test="${not empty variantToEdit}">
-                                                           const modal = new bootstrap.Modal(document.getElementById('variantModal'));
-                                                           modal.show();
+                const modal = new bootstrap.Modal(document.getElementById('variantModal'));
+                modal.show();
             </c:if>
-                                                       });
+                });
         </script>
     </body>
 </html>
