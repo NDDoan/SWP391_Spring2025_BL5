@@ -3,8 +3,8 @@ package Controller;
 import Dao.ShippingDAO;
 import Dao.UserDao;
 import Entity.Shipping;
-import DBContext.DBContext;
 import Entity.User;
+import DBContext.DBContext;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,14 +21,14 @@ import java.util.List;
 public class ShippingController extends HttpServlet {
 
     private ShippingDAO shippingDAO;
-    private UserDao userDao; // ✅ viết đúng camelCase và có ;
+    private UserDao userDao;
 
     @Override
     public void init() {
         try {
             Connection conn = new DBContext().getConnection();
             shippingDAO = new ShippingDAO(conn);
-            userDao = new UserDao(); // ✅ khởi tạo đúng
+            userDao = new UserDao();
         } catch (Exception e) {
             throw new RuntimeException("Cannot connect to database", e);
         }
@@ -38,15 +38,17 @@ public class ShippingController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        User users = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
 
-        if (users == null || users.getRole_id() != 1) {
+        if (user == null) {
             response.sendRedirect("logincontroller");
             return;
         }
-        String action = request.getParameter("action");
-        if (users.getRole_id() == 1) {
-            try {
+
+        try {
+            if (user.getRole_id() == 1) {
+                // ADMIN - quản lý đơn hàng
+                String action = request.getParameter("action");
                 if (action == null) {
                     listShipping(request, response);
                 } else {
@@ -65,9 +67,80 @@ public class ShippingController extends HttpServlet {
                             break;
                     }
                 }
-            } catch (SQLException ex) {
-                throw new ServletException(ex);
+
+            } else if (user.getRole_id() == 4) {
+                // SHIPPER - xem đơn hàng được phân công
+                List<Shipping> list = shippingDAO.getShippingByShipper(user.getUser_id());
+                String ShipOke = "shipper";
+                request.setAttribute("ShipOke", ShipOke);
+                request.setAttribute("shippingList", list);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/shippingList.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                response.sendRedirect("logincontroller");
             }
+        } catch (Exception e) {
+            throw new ServletException("Error in doGet", e);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            response.sendRedirect("logincontroller");
+            return;
+        }
+
+        String action = request.getParameter("action");
+
+        try {
+            if (user.getRole_id() == 1) {
+                // ADMIN: thêm hoặc cập nhật đơn hàng
+                int orderId = Integer.parseInt(request.getParameter("orderId"));
+                String address = request.getParameter("shippingAddress");
+                String status = request.getParameter("shippingStatus");
+                String tracking = request.getParameter("trackingNumber");
+                Date shippingDate = java.sql.Date.valueOf(request.getParameter("shippingDate"));
+                Date estimatedDelivery = java.sql.Date.valueOf(request.getParameter("estimatedDelivery"));
+                String notes = request.getParameter("deliveryNotes");
+
+                Shipping s = new Shipping();
+                s.setOrderId(orderId);
+                s.setShippingAddress(address);
+                s.setShippingStatus(status);
+                s.setTrackingNumber(tracking);
+                s.setShippingDate(shippingDate);
+                s.setEstimatedDelivery(estimatedDelivery);
+                s.setDeliveryNotes(notes);
+                s.setUpdatedAt(new Date());
+
+                String idStr = request.getParameter("id");
+                if (idStr == null || idStr.isEmpty()) {
+                    shippingDAO.insertShipping(s);
+                } else {
+                    s.setId(Integer.parseInt(idStr));
+                    shippingDAO.updateShipping(s);
+                }
+
+                response.sendRedirect("shipping");
+
+            } else if (user.getRole_id() == 4 && "updateShippingStatus".equals(action)) {
+                // SHIPPER cập nhật trạng thái đơn hàng
+
+                int id = Integer.parseInt(request.getParameter("id"));
+                String status = request.getParameter("status");
+                shippingDAO.updateShippingStatus(id, status);
+                response.sendRedirect("shipping");
+            } else {
+                response.sendRedirect("logincontroller");
+            }
+        } catch (Exception e) {
+            throw new ServletException("Lỗi khi xử lý POST", e);
         }
     }
 
@@ -82,7 +155,8 @@ public class ShippingController extends HttpServlet {
         } else {
             list = shippingDAO.getAllShipping();
         }
-
+        String ShipOke = "manager";
+        request.setAttribute("ShipOke", ShipOke);
         request.setAttribute("shippingList", list);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/shippingList.jsp");
         dispatcher.forward(request, response);
@@ -95,10 +169,9 @@ public class ShippingController extends HttpServlet {
         request.setAttribute("shipping", existing);
         try {
             List<User> shipperList = userDao.getUsersByRole(4);
-
-            request.setAttribute("shipperList", shipperList); // nếu cần hiển thị ra view
+            request.setAttribute("shipperList", shipperList);
         } catch (Exception e) {
-            e.printStackTrace(); // hoặc log lỗi nếu cần
+            e.printStackTrace();
         }
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/editShipping.jsp");
@@ -107,6 +180,12 @@ public class ShippingController extends HttpServlet {
 
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            List<User> shipperList = userDao.getUsersByRole(4);
+            request.setAttribute("shipperList", shipperList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/createShipping.jsp");
         dispatcher.forward(request, response);
     }
@@ -116,48 +195,5 @@ public class ShippingController extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         shippingDAO.deleteShipping(id);
         response.sendRedirect("shipping");
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User users = (User) session.getAttribute("user");
-
-        if (users == null || users.getRole_id() != 1) {
-            response.sendRedirect("logincontroller");
-            return;
-        }
-        try {
-            int orderId = Integer.parseInt(request.getParameter("orderId"));
-            String address = request.getParameter("shippingAddress");
-            String status = request.getParameter("shippingStatus");
-            String tracking = request.getParameter("trackingNumber");
-            Date shippingDate = java.sql.Date.valueOf(request.getParameter("shippingDate"));
-            Date estimatedDelivery = java.sql.Date.valueOf(request.getParameter("estimatedDelivery"));
-            String notes = request.getParameter("deliveryNotes");
-
-            Shipping s = new Shipping();
-            s.setOrderId(orderId);
-            s.setShippingAddress(address);
-            s.setShippingStatus(status);
-            s.setTrackingNumber(tracking);
-            s.setShippingDate(shippingDate);
-            s.setEstimatedDelivery(estimatedDelivery);
-            s.setDeliveryNotes(notes);
-            s.setUpdatedAt(new Date());
-            String idStr = request.getParameter("id");
-            if (idStr == null || idStr.isEmpty()) {
-                shippingDAO.insertShipping(s);
-            } else {
-                s.setId(Integer.parseInt(idStr));
-                shippingDAO.updateShipping(s);
-            }
-
-            response.sendRedirect("shipping");
-
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
     }
 }

@@ -64,7 +64,7 @@ public class ShipperController extends HttpServlet {
 
             try {
                 shippingDAO.updateShippingStatus(id, status);
-                response.sendRedirect("shipper");
+                response.sendRedirect("shipping");
             } catch (Exception e) {
                 throw new ServletException("Cập nhật trạng thái đơn hàng thất bại", e);
             }

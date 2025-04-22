@@ -162,10 +162,8 @@
 
                 <label for="estimatedDelivery">Ngày dự kiến giao:</label>
                 <input type="date" name="estimatedDelivery" id="estimatedDelivery" value="${shipping != null ? shipping.estimatedDelivery : ''}" required />
-
-                <label for="deliveryNotes">Ghi chú:</label>
-                <textarea name="deliveryNotes" id="deliveryNotes" rows="3">${shipping != null ? shipping.deliveryNotes : ''}</textarea>
-                <label for="shipperId">Người giao hàng:</label>
+                
+                 <label for="shipperId">Người giao hàng:</label>
                 <select name="shipperId" id="shipperId" required>
                     <option value="">-- Chọn người giao hàng --</option>
                     <c:forEach var="shipper" items="${shipperList}">
@@ -177,10 +175,17 @@
                         </option>
                     </c:forEach>
                 </select>
+                 
+                <label for="deliveryNotes">Ghi chú:</label>
+                <textarea name="deliveryNotes" id="deliveryNotes" rows="3">${shipping != null ? shipping.deliveryNotes : ''}</textarea>
+               
+             
+                <div class="d-flex justify-content-between ">
+                    <a href="shipping" class="btn btn-secondary">⬅ Quay lại danh sách</a>
+                    <input type="submit" value="Lưu" class="btn btn-primary" />
+                </div>
 
 
-                <input type="submit" value="Lưu" />
-                <a href="shipping" class="back-link">← Quay lại danh sách</a>
             </form>
         </div>
 
