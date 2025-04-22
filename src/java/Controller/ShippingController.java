@@ -45,28 +45,29 @@ public class ShippingController extends HttpServlet {
             return;
         }
         String action = request.getParameter("action");
-
-        try {
-            if (action == null) {
-                listShipping(request, response);
-            } else {
-                switch (action) {
-                    case "edit":
-                        showEditForm(request, response);
-                        break;
-                    case "delete":
-                        deleteShipping(request, response);
-                        break;
-                    case "create":
-                        showCreateForm(request, response);
-                        break;
-                    default:
-                        listShipping(request, response);
-                        break;
+        if (users.getRole_id() == 1) {
+            try {
+                if (action == null) {
+                    listShipping(request, response);
+                } else {
+                    switch (action) {
+                        case "edit":
+                            showEditForm(request, response);
+                            break;
+                        case "delete":
+                            deleteShipping(request, response);
+                            break;
+                        case "create":
+                            showCreateForm(request, response);
+                            break;
+                        default:
+                            listShipping(request, response);
+                            break;
+                    }
                 }
+            } catch (SQLException ex) {
+                throw new ServletException(ex);
             }
-        } catch (SQLException ex) {
-            throw new ServletException(ex);
         }
     }
 
@@ -135,7 +136,7 @@ public class ShippingController extends HttpServlet {
             Date shippingDate = java.sql.Date.valueOf(request.getParameter("shippingDate"));
             Date estimatedDelivery = java.sql.Date.valueOf(request.getParameter("estimatedDelivery"));
             String notes = request.getParameter("deliveryNotes");
-           
+
             Shipping s = new Shipping();
             s.setOrderId(orderId);
             s.setShippingAddress(address);
