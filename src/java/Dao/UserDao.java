@@ -497,7 +497,7 @@ public class UserDao {
 //        }
 //        return userList;
 //    }
-    public List<User> getFilteredUsers(String keyword, String roleFilter, int offset, int limit, String sortBy, String sortOrder) {
+    public List<User> getFilteredUsers(String keyword, String roleFilter, int offset, int limit, String sortBy, String sortOrder,String genderFilter) {
         List<User> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
 
@@ -514,7 +514,10 @@ public class UserDao {
             sql.append(" AND role_id = ?");
             parameters.add(Integer.parseInt(roleFilter));
         }
-
+        if (genderFilter != null && !genderFilter.isEmpty()) {
+        sql.append(" AND gender = ?");
+        parameters.add(genderFilter);
+    }
         // Giới hạn role_id nằm trong 3, 4, 5
         sql.append(" AND role_id IN (?, ?, ?)");
         parameters.add(3);
@@ -556,27 +559,51 @@ public class UserDao {
         return list;
     }
 
-    public List<User> getFilteredCustomer(String keyword, String roleFilter, int offset, int limit) {
-        List<User> list = new ArrayList<>();
+    public List<User> getFilteredCustomer(String keyword, String roleFilter, int offset, int limit, String sortBy, String sortOrder,String genderFilter) {
+         List<User> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE 1=1");
+
         List<Object> parameters = new ArrayList<>();
 
+        // Tìm kiếm
         if (keyword != null && !keyword.isEmpty()) {
             sql.append(" AND full_name LIKE ?");
             parameters.add("%" + keyword + "%");
         }
 
-        // Luôn lọc role_id = 2 cho customer
-        sql.append(" AND role_id = ?");
+        // Lọc theo role
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+            parameters.add(Integer.parseInt(roleFilter));
+        }
+        if (genderFilter != null && !genderFilter.isEmpty()) {
+        sql.append(" AND gender = ?");
+        parameters.add(genderFilter);
+    }
+        // Giới hạn role_id nằm trong 3, 4, 5
+        sql.append(" AND role_id IN (?)");
         parameters.add(2);
 
+        // Sắp xếp
+        // Chỉ cho phép một số cột nhất định để tránh SQL Injection
+        String sortColumn = "user_id"; // mặc định
+        if ("full_name".equals(sortBy) || "email".equals(sortBy) || "user_id".equals(sortBy)) {
+            sortColumn = sortBy;
+        }
+
+        String sortDirection = "ASC"; // mặc định
+        if ("DESC".equalsIgnoreCase(sortOrder)) {
+            sortDirection = "DESC";
+        }
+
+        sql.append(" ORDER BY ").append(sortColumn).append(" ").append(sortDirection);
+
         // Phân trang
-        sql.append(" ORDER BY user_id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        sql.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         parameters.add(offset);
         parameters.add(limit);
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
             for (int i = 0; i < parameters.size(); i++) {
                 ps.setObject(i + 1, parameters.get(i));
             }
@@ -585,7 +612,6 @@ public class UserDao {
             while (rs.next()) {
                 list.add(extractUser(rs));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

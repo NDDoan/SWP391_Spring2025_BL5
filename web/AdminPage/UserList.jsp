@@ -60,21 +60,34 @@
 
             <!-- Main Content -->
             <div class="container bg-white p-4 rounded shadow">
-                <h2 class="text-center mb-4 text-primary"><i class="fas fa-users-cog me-2"></i>Danh Sách Người Dùng</h2>
-
+                <c:if test="${Useroke == 'manager'}">
+                    <h2 class="text-center mb-4 text-primary"><i class="fas fa-users-cog me-2"></i>Danh Sách Nhân Viên</h2>
+                </c:if>
+                <c:if test="${Useroke == 'staff'}">
+                    <h2 class="text-center mb-4 text-primary"><i class="fas fa-users-cog me-2"></i>Danh Sách Người Dùng</h2>
+                </c:if>
                 <form method="get" action="user" class="row g-2 mb-4">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <input type="text" name="keyword" class="form-control" placeholder="Search by name..." value="${param.keyword}">
                     </div>
-                    <div class="col-md-3">
-                        <select name="roleFilter" class="form-select">
-                            <option value="">All Roles</option>
-                            <option value="5" ${param.roleFilter == '5' ? 'selected' : ''}>Staff</option>
-                            <option value="2" ${param.roleFilter == '2' ? 'selected' : ''}>Customer</option>
-                            <option value="3" ${param.roleFilter == '3' ? 'selected' : ''}>Marketing</option>
-                            <option value="4" ${param.roleFilter == '4' ? 'selected' : ''}>Shipper</option>
+                    <c:if test="${Useroke == 'manager'}">
+                        <div class="col-md-2">
+                            <select name="roleFilter" class="form-select">
+                                <option value="">All Roles</option>
+                                <option value="5" ${param.roleFilter == '5' ? 'selected' : ''}>Staff</option>
+                                <option value="3" ${param.roleFilter == '3' ? 'selected' : ''}>Marketing</option>
+                                <option value="4" ${param.roleFilter == '4' ? 'selected' : ''}>Shipper</option>
+                            </select>
+                        </div>
+                    </c:if>
+                    <div class="col-md-2">
+                        <select name="genderFilter" class="form-select">
+                            <option value="">All Genders</option>
+                            <option value="Male" ${param.genderFilter == 'Male' ? 'selected' : ''}>Male</option>
+                            <option value="Female" ${param.genderFilter == 'Female' ? 'selected' : ''}>Female</option>
                         </select>
                     </div>
+
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
                     </div>
@@ -97,10 +110,10 @@
                 <table class="table table-bordered table-hover bg-white">
                     <thead class="table-dark">
                         <tr>
-                            <th><a href="user?action=list&sortBy=user_id&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&page=${currentPage}">ID</a></th>
-                            <th><a href="user?action=list&sortBy=full_name&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&page=${currentPage}">Họ và tên</a></th>
+                            <th><a href="user?action=list&sortBy=user_id&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&genderFilter=${param.genderFilter}&page=${currentPage}">ID</a></th>
+                            <th><a href="user?action=list&sortBy=full_name&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&genderFilter=${param.genderFilter}&page=${currentPage}">Họ và tên</a></th>
                             <th>Ảnh đại diện</th>
-                            <th><a href="user?action=list&sortBy=email&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&page=${currentPage}">Email</a></th>
+                            <th><a href="user?action=list&sortBy=email&sortOrder=${param.sortOrder == 'asc' ? 'desc' : 'asc'}&keyword=${param.keyword}&roleFilter=${param.roleFilter}&genderFilter=${param.genderFilter}&page=${currentPage}">Email</a></th>
                             <th>Giới tính</th>
                             <th>Số điện thoại</th>
                             <th>Vai trò</th>
@@ -155,10 +168,16 @@
                                         <i class="fas fa-edit"></i>
                                     </button>
 
-                                    <a class="btn btn-sm btn-danger" href="user?action=delete&id=${user.user_id}" onclick="return confirm('Are you sure?')">Xóa</a>
-                                    <a class="btn btn-sm btn-secondary" href="user?action=delete&id=${user.user_id}">
-                                        ${user.is_active ? 'Deactivate' : 'Activate'}
-                                    </a>
+                                    <form action="${pageContext.request.contextPath}/UserController" method="get" class="d-inline">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="${user.user_id}">
+                                        <button type="submit" class="btn btn-sm ${user.is_active ? 'btn-danger' : 'btn-success'}" 
+                                                title="${user.is_active ? 'Deactivate' : 'Activate'}">
+                                            <i class="fas ${user.is_active ? 'fa-times' : 'fa-check'}"></i>
+                                        </button>
+                                    </form>
+
+
                                 </td>
                             </tr>
                         </c:forEach>
@@ -240,18 +259,27 @@
                                     <label>Địa chỉ</label>
                                     <input type="text" class="form-control" name="address" id="address">
                                 </div>
+                                <c:if test="${Useroke == 'manager'}">
+                                    <div class="mb-2">
+                                        <label>Vai trò</label>
+                                        <select class="form-control" name="role_id" id="role_id">
 
-                                <div class="mb-2">
-                                    <label>Vai trò</label>
-                                    <select class="form-control" name="role_id" id="role_id">
-                                        <option value="1">Quản trị viên</option>
-                                        <option value="2">Khách hàng</option>
-                                        <option value="3">Quản lý</option>
-                                        <option value="4">Nhân viên giao hàng</option>
-                                        <option value="5">Nhân viên quản lí</option>
-                                    </select>
-                                </div>
+                                            <option value="3">Quản lý</option>
+                                            <option value="4">Nhân viên giao hàng</option>
+                                            <option value="5">Nhân viên quản lí</option>
+                                        </select>
+                                    </div>
+                                </c:if>
+                                <c:if test="${Useroke == 'staff'}">
+                                    <div class="mb-2">
+                                        <label>Vai trò</label>
+                                        <select class="form-control" name="role_id" id="role_id">
 
+                                            <option value="2">Khách hàng</option>
+
+                                        </select>
+                                    </div>
+                                </c:if>
                                 <div class="mb-2">
                                     <label>Kích Hoạt</label>
                                     <select class="form-control" name="is_active" id="is_active">
@@ -284,36 +312,36 @@
 
         <!-- Custom JS to handle form population -->
         <script>
-                                        function openAddModal() {
-                                            document.getElementById('userModalLabel').innerText = 'Add User';
-                                            document.getElementById('user_id').value = '';
-                                            document.getElementById('full_name').value = '';
-                                            document.getElementById('email').value = '';
-                                            document.getElementById('gender').value = 'Male';
-                                            document.getElementById('phone_number').value = '';
-                                            document.getElementById('address').value = '';
-                                            document.getElementById('role_id').value = '1';
-                                            document.getElementById('is_active').value = 'true';
-                                            document.getElementById('is_verified').value = 'false';
-                                            document.getElementById('passwordField').style.display = 'block';
-                                        }
+                                                function openAddModal() {
+                                                    document.getElementById('userModalLabel').innerText = 'Add User';
+                                                    document.getElementById('user_id').value = '';
+                                                    document.getElementById('full_name').value = '';
+                                                    document.getElementById('email').value = '';
+                                                    document.getElementById('gender').value = 'Male';
+                                                    document.getElementById('phone_number').value = '';
+                                                    document.getElementById('address').value = '';
+                                                    document.getElementById('role_id').value = '1';
+                                                    document.getElementById('is_active').value = 'true';
+                                                    document.getElementById('is_verified').value = 'false';
+                                                    document.getElementById('passwordField').style.display = 'block';
+                                                }
 
-                                        function openEditModal(id, name, email, gender, phone, address, role, active, verified) {
-                                            document.getElementById('userModalLabel').innerText = 'Edit User';
-                                            document.getElementById('user_id').value = id;
-                                            document.getElementById('full_name').value = name;
-                                            document.getElementById('email').value = email;
-                                            document.getElementById('gender').value = gender;
-                                            document.getElementById('phone_number').value = phone;
-                                            document.getElementById('address').value = address;
-                                            document.getElementById('role_id').value = role;
-                                            document.getElementById('is_active').value = active ? 'true' : 'false';
-                                            document.getElementById('is_verified').value = verified ? 'true' : 'false';
-                                            document.getElementById('passwordField').style.display = 'none';
+                                                function openEditModal(id, name, email, gender, phone, address, role, active, verified) {
+                                                    document.getElementById('userModalLabel').innerText = 'Edit User';
+                                                    document.getElementById('user_id').value = id;
+                                                    document.getElementById('full_name').value = name;
+                                                    document.getElementById('email').value = email;
+                                                    document.getElementById('gender').value = gender;
+                                                    document.getElementById('phone_number').value = phone;
+                                                    document.getElementById('address').value = address;
+                                                    document.getElementById('role_id').value = role;
+                                                    document.getElementById('is_active').value = active ? 'true' : 'false';
+                                                    document.getElementById('is_verified').value = verified ? 'true' : 'false';
+                                                    document.getElementById('passwordField').style.display = 'none';
 
-                                            var modal = new bootstrap.Modal(document.getElementById('userModal'));
-                                            modal.show();
-                                        }
+                                                    var modal = new bootstrap.Modal(document.getElementById('userModal'));
+                                                    modal.show();
+                                                }
         </script>
     </body>
 </html>
