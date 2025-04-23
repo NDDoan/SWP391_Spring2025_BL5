@@ -43,7 +43,7 @@ public class BlogListController extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
 
         // Forward tới JSP
-        request.getRequestDispatcher("CommonPage/BlogList.jsp").forward(request, response);
+        request.getRequestDispatcher("/CommonPage/BlogList.jsp").forward(request, response);
 
     }
 }
