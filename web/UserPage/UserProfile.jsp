@@ -239,7 +239,7 @@
     <div class="header-container">
         <div class="logo">Electro Mart</div>
         <nav class="nav-links">
-            <a href="home.jsp">Home</a>
+            <a href="HomePageController">Home</a>
             <a href="products.jsp">Products</a>
             <a href="about.jsp">About</a>
             <a href="contact.jsp">Contact</a>

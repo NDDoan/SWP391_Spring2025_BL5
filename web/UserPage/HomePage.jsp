@@ -1,149 +1,91 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="java.util.*, Entity.Product, Entity.Category"%>
-
-<%
-    List<Product> newProducts = (List<Product>) request.getAttribute("newProducts");
-    List<Category> categories = (List<Category>) request.getAttribute("categories");
-
-    Map<Integer, String> categoryMap = new HashMap<>();
-    if (categories != null) {
-        for (Category cat : categories) {
-            categoryMap.put(cat.getCategoryId(), cat.getCategoryName());
-        }
-    }
-%>
-
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Trang chủ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-
-        nav {
-            background-color: #fff;
-            padding: 15px;
-        }
-
-        nav a {
-            margin-right: 10px;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .container {
-            display: flex;
-            margin: 20px;
-        }
-
-        .sidebar {
-            width: 20%;
-            background-color: white;
-            padding: 15px;
-            box-shadow: 0 0 5px #ccc;
-        }
-
-        .main-content {
-            width: 80%;
-            padding: 15px;
-        }
-
-        .product-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .product-card {
-            background-color: white;
-            padding: 10px;
-            width: 200px;
-            border-radius: 8px;
-            box-shadow: 0 0 5px #ccc;
-            text-align: center;
-        }
-
-        .product-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            background-color: #eee;
-        }
-
-        .category-label {
-            font-size: 13px;
-            color: #888;
-        }
-
-        .product-name {
-            font-weight: bold;
-            margin: 8px 0;
-        }
-
-        .price {
-            color: #FF6B6B;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <h1>Trang chủ cửa hàng điện tử</h1>
-</header>
-
-<nav>
-    <a href="#">Tất cả sản phẩm</a>
-    <% if (categories != null) {
-        for (Category c : categories) { %>
-            <a href="category?cid=<%= c.getCategoryId() %>"><%= c.getCategoryName() %></a>
-    <%  }
-       } %>
-</nav>
-
-<div class="container">
-    <div class="sidebar">
-        <h3>Danh mục</h3>
-        <ul>
-            <% if (categories != null) {
-                for (Category c : categories) { %>
-                    <li><a href="category?cid=<%= c.getCategoryId() %>"><%= c.getCategoryName() %></a></li>
-            <%  }
-               } %>
-        </ul>
-    </div>
-
-    <div class="main-content">
-        <h2>Sản phẩm mới</h2>
-        <div class="product-grid">
-            <% if (newProducts != null && !newProducts.isEmpty()) {
-                for (Product p : newProducts) { %>
-                    <div class="product-card">
-                        <img src="assets/images/default-product.jpg" alt="<%= p.getProductName() %>">
-                        <p class="category-label"><%= categoryMap.get(p.getCategoryId()) %></p>
-                        <p class="product-name"><%= p.getProductName() %></p>
-                        <p class="price">Giá: đang cập nhật</p>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Trang Chủ – Electro Mart</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            /* CSS cho chuyển động carousel */
+            .carousel-item img {
+                transition: transform 0.5s ease;
+            }
+            .carousel-item:hover img {
+                transform: scale(1.05);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <jsp:include page="../CommonPage/Header.jsp"/>
+        <div class="container my-5">
+            <h2 class="mb-4">Featured Products</h2>
+            <div class="row g-4">
+                <c:forEach var="p" items="${featuredList}">
+                    <div class="col-md-3">
+                        <div class="card h-100 shadow-sm">
+                            <img src="${p.primaryMediaUrl}" class="card-img-top" alt="${p.productName}">
+                            <div class="card-body">
+                                <h5 class="card-title">${p.productName}</h5>
+                                <p class="card-text">
+                                    <small class="text-muted">${p.brandName} – ${p.categoryName}</small><br/>
+                                    <strong>${p.price}₫</strong>
+                                </p>
+                                <a href="${pageContext.request.contextPath}/ProductDetail?productId=${p.productId}"
+                                   class="btn btn-primary btn-sm">Xem chi tiết</a>
+                            </div>
+                        </div>
                     </div>
-            <%  }
-               } else { %>
-                <p>Không có sản phẩm mới.</p>
-            <% } %>
+                </c:forEach>
+            </div>
         </div>
-    </div>
-</div>
+        
+        <div class="container my-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Sản phẩm giá tốt</h2>
+            </div>
 
-</body>
+            <!-- Carousel hiển thị product -->
+            <div id="featuredCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <c:forEach var="p" items="${featuredList}" varStatus="st">
+                        <div class="carousel-item ${st.index == 0 ? 'active' : ''}">
+                            <div class="row justify-content-center">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <img src="${p.primaryMediaUrl}" class="card-img-top" alt="${p.productName}">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">${p.productName}</h5>
+                                            <p class="card-text text-muted">${p.brandName} – ${p.categoryName}</p>
+                                            <p class="card-text text-danger fw-bold">${p.price}₫</p>
+                                            <a href="${pageContext.request.contextPath}/cart/add?productId=${p.productId}" 
+                                               class="btn btn-success btn-sm me-2">
+                                                <i class="fas fa-cart-plus"></i> Add to Cart
+                                            </a>
+                                            <a href="${pageContext.request.contextPath}/ProductDetail?productId=${p.productId}" 
+                                               class="btn btn-primary btn-sm">Chi tiết</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <jsp:include page="../CommonPage/Footer.jsp"/>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>

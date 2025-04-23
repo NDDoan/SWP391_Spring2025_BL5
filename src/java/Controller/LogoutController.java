@@ -59,7 +59,35 @@ public class LogoutController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        // Xoá session
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        // Kiểm tra cookie Remember Me
+        boolean remember = false;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if ("rememberMe".equals(c.getName()) && "true".equals(c.getValue())) {
+                    remember = true;
+                    break;
+                }
+            }
+        }
+        // Nếu không remember → xoá cookie email/password
+        if (!remember) {
+            for (String name : new String[]{"rememberedEmail", "rememberedPassword", "rememberMe"}) {
+                Cookie c = new Cookie(name, "");
+                c.setMaxAge(0);
+                c.setPath("/");
+                response.addCookie(c);
+            }
+        }
+
+        // Redirect về trang login (qua controller)
+        response.sendRedirect(request.getContextPath() + "/logincontroller");
     }
 
     /**
@@ -89,24 +117,24 @@ public class LogoutController extends HttpServlet {
                 }
             }
         }
-    // 🔥 Nếu Remember Me không được bật, xóa cookie username + password
-    if (!rememberMeEnabled) {
-        Cookie emailCookie = new Cookie("rememberedEmail", "");
-        Cookie passwordCookie = new Cookie("rememberedPassword", "");
-        Cookie rememberCookie = new Cookie("rememberMe", "");
+        // 🔥 Nếu Remember Me không được bật, xóa cookie username + password
+        if (!rememberMeEnabled) {
+            Cookie emailCookie = new Cookie("rememberedEmail", "");
+            Cookie passwordCookie = new Cookie("rememberedPassword", "");
+            Cookie rememberCookie = new Cookie("rememberMe", "");
 
-        emailCookie.setMaxAge(0);
-        passwordCookie.setMaxAge(0);
-        rememberCookie.setMaxAge(0);
-        
-        emailCookie.setPath("/"); // Đảm bảo áp dụng cho toàn bộ app
-        passwordCookie.setPath("/");
-        rememberCookie.setPath("/");
+            emailCookie.setMaxAge(0);
+            passwordCookie.setMaxAge(0);
+            rememberCookie.setMaxAge(0);
 
-        response.addCookie(emailCookie);
-        response.addCookie(passwordCookie);
-        response.addCookie(rememberCookie);
-    }
+            emailCookie.setPath("/"); // Đảm bảo áp dụng cho toàn bộ app
+            passwordCookie.setPath("/");
+            rememberCookie.setPath("/");
+
+            response.addCookie(emailCookie);
+            response.addCookie(passwordCookie);
+            response.addCookie(rememberCookie);
+        }
         response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp");
     }
 
