@@ -28,12 +28,14 @@ public class BlogDetailController extends HttpServlet {
             Blog blog = dao.getBlogById(id);
 
             if (blog == null) {
-                response.sendRedirect("BlogList");
+                request.setAttribute("error", "Bài viết không tồn tại.");
+                request.getRequestDispatcher("CommonPage/BlogList.jsp").forward(request, response);
                 return;
             }
 
+
             request.setAttribute("blog", blog);
-            request.getRequestDispatcher("BlogDetail.jsp").forward(request, response);
+            request.getRequestDispatcher("CommonPage/BlogDetail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             response.sendRedirect("BlogList");

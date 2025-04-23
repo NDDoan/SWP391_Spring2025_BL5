@@ -35,6 +35,6 @@ public class BlogSearchController extends HttpServlet {
         request.setAttribute("searchResults", searchResults);
         request.setAttribute("latestBlogs", latestBlogs);
 
-        request.getRequestDispatcher("blog-search.jsp").forward(request, response);
+        request.getRequestDispatcher("CommonPage/BlogSearch.jsp").forward(request, response);
     }
 }
