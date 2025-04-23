@@ -167,7 +167,7 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>
-                                    <a href="shipping?sortBy=shipping_id&sortDir=${param.sortDir == 'asc' ? 'desc' : 'asc'}">
+                                    <a href="shipping?sortBy=shipping_id&sortDir=${param.sortDir == 'asc' ? 'desc' : 'asc'}&page=${currentPage}&status=${param.status}">
                                         ID
                                         <c:choose>
                                             <c:when test="${param.sortBy == 'shipping_id' && param.sortDir == 'asc'}">
@@ -184,7 +184,7 @@
                                 </th>
                                 <th>Order ID</th>
                                 <th>
-                                    <a href="shipping?sortBy=shipping_address&sortDir=${ param.sortDir == 'asc' ? 'desc' : 'asc'}">
+                                    <a href="shipping?sortBy=shipping_address&sortDir=${ param.sortDir == 'asc' ? 'desc' : 'asc'}&page=${currentPage}&status=${param.status}">
                                         Địa chỉ giao hàng
                                         <c:choose>
                                             <c:when test="${param.sortBy == 'shipping_address' && param.sortDir == 'asc'}">
@@ -202,7 +202,7 @@
                                 <th>Trạng thái</th>
                                 <th>Tracking</th>
                                 <th>
-                                    <a href="shipping?sortBy=shipping_date&sortDir=${ param.sortDir == 'asc' ? 'desc' : 'asc'}">
+                                    <a href="shipping?sortBy=shipping_date&sortDir=${ param.sortDir == 'asc' ? 'desc' : 'asc'}&page=${currentPage}&status=${param.status}">
                                         Ngày giao
                                         <c:choose>
                                             <c:when test="${param.sortBy == 'shipping_date' && param.sortDir == 'asc'}">
@@ -218,7 +218,7 @@
                                     </a>
                                 </th>
                                 <th>
-                                    <a href="shipping?sortBy=estimated_delivery&sortDir=${param.sortDir == 'asc' ? 'desc' : 'asc'}">
+                                    <a href="shipping?sortBy=estimated_delivery&sortDir=${param.sortDir == 'asc' ? 'desc' : 'asc'}&page=${currentPage}&status=${param.status}">
                                         Ngày dự kiến
                                         <c:choose>
                                             <c:when test="${param.sortBy == 'estimated_delivery' && param.sortDir == 'asc'}">

@@ -71,7 +71,7 @@ public class ShippingController extends HttpServlet {
             } else if (user.getRole_id() == 4) {
                 // SHIPPER - xem đơn hàng được phân công
 
-                String status = status = request.getParameter("status");
+                String status =  request.getParameter("status");
 
                 String sortBy = request.getParameter("sortBy");
                 String sortDir = request.getParameter("sortDir");
@@ -94,11 +94,11 @@ public class ShippingController extends HttpServlet {
                 if (sortDir == null) {
                     sortDir = "asc";
                 }
-                int totalItems = shippingDAO.getTotalShippingCountId(user.getUser_id(),status);
+                int totalItems = shippingDAO.getTotalShippingCountId(user.getUser_id(), status);
                 int totalPages = (int) Math.ceil((double) totalItems / limit);
 
                 List<Shipping> list;
-                list = shippingDAO.getShippingByStatusUserId(user.getUser_id(), status, sortBy, sortDir,offset, limit);
+                list = shippingDAO.getShippingByStatusUserId(user.getUser_id(), status, sortBy, sortDir, offset, limit);
                 String ShipOke = "shipper";
                 request.setAttribute("ShipOke", ShipOke);
                 request.setAttribute("currentPage", page);

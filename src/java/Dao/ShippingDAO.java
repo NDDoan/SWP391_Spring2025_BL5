@@ -24,7 +24,7 @@ public class ShippingDAO {
     }
 
     public void insertShipping(Shipping s) throws SQLException {
-        String sql = "INSERT INTO Shipping (order_id, shipping_address, shipping_status, tracking_number, shipping_date, estimated_delivery, delivery_notes, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Shipping (order_id, shipping_address, shipping_status, tracking_number, shipping_date, estimated_delivery, delivery_notes, updated_at, shipperId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, s.getOrderId());
             ps.setString(2, s.getShippingAddress());
@@ -34,6 +34,7 @@ public class ShippingDAO {
             ps.setDate(6, new java.sql.Date(s.getEstimatedDelivery().getTime()));
             ps.setString(7, s.getDeliveryNotes());
             ps.setDate(8, new java.sql.Date(s.getUpdatedAt().getTime()));
+            ps.setInt(9, s.getShipperId());
             ps.executeUpdate();
         }
     }
@@ -119,36 +120,42 @@ public class ShippingDAO {
 
     public List<Shipping> getShippingByStatusUserId(int userId, String status, String sortBy, String sortDir, int offset, int pageSize) throws SQLException {
         List<Shipping> list = new ArrayList<>();
-        String sql = "SELECT * FROM Shipping WHERE shipperId = ?";
 
+        // Xác thực tên cột và hướng sắp xếp
+        List<String> validSortColumns = List.of("shipping_id", "shipping_status", "shipping_date"); // tùy cột bạn có
+        List<String> validSortDirs = List.of("asc", "desc");
+
+        if (!validSortColumns.contains(sortBy)) {
+            sortBy = "shipping_id";
+        }
+        if (!validSortDirs.contains(sortDir.toLowerCase())) {
+            sortDir = "asc";
+        }
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM Shipping WHERE shipperId = ?");
         boolean hasStatus = status != null && !status.isEmpty();
         if (hasStatus) {
-            sql += " AND shipping_status = ?";
+            sql.append(" AND shipping_status = ?");
         }
+        sql.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir)
+                .append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
-        sql += " ORDER BY " + sortBy + " " + sortDir + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            int paramIndex = 1;
-
-            // set shipperId
-            statement.setInt(paramIndex++, userId);
-
-            // set status nếu có
+        try (PreparedStatement statement = conn.prepareStatement(sql.toString())) {
+            int index = 1;
+            statement.setInt(index++, userId);
             if (hasStatus) {
-                statement.setString(paramIndex++, status);
+                statement.setString(index++, status);
             }
+            statement.setInt(index++, offset);
+            statement.setInt(index, pageSize);
 
-            // set offset và pageSize
-            statement.setInt(paramIndex++, offset);
-            statement.setInt(paramIndex, pageSize);
-
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                list.add(extractShipping(resultSet));
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                list.add(extractShipping(rs));
             }
-            return list;
         }
+
+        return list;
     }
 
     public List<Shipping> getShippingByShipper(int shipperId) throws SQLException {
@@ -228,15 +235,17 @@ public class ShippingDAO {
 
     public int getTotalShippingCountId(int shiperid, String status) {
         int count = 0;
-        String sql = "SELECT COUNT(*) FROM shipping WHERE shipperId = ? ";
-        if (status != null && !status.isEmpty()) {
+        String sql = "SELECT COUNT(*) FROM shipping WHERE shipperId = ?";
+        boolean hasStatus = status != null && !status.isEmpty();
+        if (hasStatus) {
             sql += " AND shipping_status = ?";
         }
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, shiperid);
-            if (status != null && !status.isEmpty()) {
-                ps.setString(1, status);
+            int index = 1;
+            ps.setInt(index++, shiperid);
+            if (hasStatus) {
+                ps.setString(index++, status);
             }
 
             try (ResultSet rs = ps.executeQuery()) {
