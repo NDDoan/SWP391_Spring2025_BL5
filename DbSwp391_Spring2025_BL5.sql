@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [swp391_spring2025_bl5]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Database [swp391_spring2025_bl5]    Script Date: 4/23/2025 7:47:01 AM ******/
 CREATE DATABASE [swp391_spring2025_bl5]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -82,7 +82,7 @@ ALTER DATABASE [swp391_spring2025_bl5] SET QUERY_STORE (OPERATION_MODE = READ_WR
 GO
 USE [swp391_spring2025_bl5]
 GO
-/****** Object:  Table [dbo].[Blogs]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Blogs]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -99,7 +99,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Brands]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Brands]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -117,7 +117,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Cart]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Cart]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -134,7 +134,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Cart_Items]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Cart_Items]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -152,7 +152,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Categories]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Categories]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -169,7 +169,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CategoryPost]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[CategoryPost]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -187,7 +187,35 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[FeedbackImages]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[ColorOptions]    Script Date: 4/23/2025 7:47:02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ColorOptions](
+	[color_id] [int] IDENTITY(1,1) NOT NULL,
+	[color] [nvarchar](100) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[color_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[CpuOptions]    Script Date: 4/23/2025 7:47:02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CpuOptions](
+	[cpu_id] [int] IDENTITY(1,1) NOT NULL,
+	[cpu] [nvarchar](100) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[cpu_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[FeedbackImages]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -203,7 +231,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Feedbacks]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Feedbacks]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -221,7 +249,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Order_Items]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Order_Items]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -239,7 +267,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Orders]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Orders]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -257,7 +285,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Payments]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Payments]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -276,7 +304,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Permissions]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Permissions]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -291,7 +319,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Post]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Post]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -311,7 +339,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ProductMedia]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[ProductMedia]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -330,7 +358,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Products]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Products]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -349,7 +377,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ProductVariants]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[ProductVariants]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -357,22 +385,36 @@ GO
 CREATE TABLE [dbo].[ProductVariants](
 	[variant_id] [int] IDENTITY(1,1) NOT NULL,
 	[product_id] [int] NULL,
-	[cpu] [nvarchar](100) NULL,
-	[ram] [nvarchar](50) NULL,
-	[screen] [nvarchar](100) NULL,
-	[storage] [nvarchar](50) NULL,
-	[color] [nvarchar](50) NULL,
 	[price] [decimal](18, 2) NOT NULL,
 	[stock_quantity] [int] NOT NULL,
 	[created_at] [datetime] NULL,
 	[updated_at] [datetime] NULL,
+	[cpu_id] [int] NULL,
+	[ram_id] [int] NULL,
+	[screen_id] [int] NULL,
+	[storage_id] [int] NULL,
+	[color_id] [int] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[variant_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Reviews]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[RamOptions]    Script Date: 4/23/2025 7:47:02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[RamOptions](
+	[ram_id] [int] IDENTITY(1,1) NOT NULL,
+	[ram] [nvarchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ram_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Reviews]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -391,7 +433,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RolePermissions]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[RolePermissions]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -406,7 +448,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Roles]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Roles]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -423,7 +465,21 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Shipping]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[ScreenOptions]    Script Date: 4/23/2025 7:47:02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ScreenOptions](
+	[screen_id] [int] IDENTITY(1,1) NOT NULL,
+	[screen] [nvarchar](100) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[screen_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Shipping]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -445,7 +501,21 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[SubCategories]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[StorageOptions]    Script Date: 4/23/2025 7:47:02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[StorageOptions](
+	[storage_id] [int] IDENTITY(1,1) NOT NULL,
+	[storage] [nvarchar](100) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[storage_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[SubCategories]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -463,7 +533,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 4/23/2025 7:47:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -509,6 +579,16 @@ INSERT [dbo].[Brands] ([brand_id], [brand_name], [description], [logo_url], [cre
 GO
 INSERT [dbo].[Brands] ([brand_id], [brand_name], [description], [logo_url], [created_at], [updated_at]) VALUES (8, N'Dell', N'Dell là thương hiệu máy tính cá nhân và doanh nghiệp uy tín, cung cấp các giải pháp công nghệ cho thị trường toàn cầu.', N'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Dell_Logo.svg/768px-Dell_Logo.svg.png', CAST(N'2025-04-16T10:06:21.013' AS DateTime), CAST(N'2025-04-16T10:06:21.013' AS DateTime))
 GO
+INSERT [dbo].[Brands] ([brand_id], [brand_name], [description], [logo_url], [created_at], [updated_at]) VALUES (9, N'Blackberry', N'BlackBerry là một tập đoàn điện tử của Canada chuyên sản xuất, buôn bán các thiết bị di động và giải pháp di động như mẫu điện thoại ăn khách BlackBerry.', N'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Blackberry_Logo.svg/2560px-Blackberry_Logo.svg.png', CAST(N'2025-04-20T17:29:05.873' AS DateTime), CAST(N'2025-04-20T17:29:05.873' AS DateTime))
+GO
+INSERT [dbo].[Brands] ([brand_id], [brand_name], [description], [logo_url], [created_at], [updated_at]) VALUES (10, N'Asus', N'AsusTek Computer Inc. là một tập đoàn đa quốc gia có trụ sở chính tại Đài Loan, chuyên sản xuất các mặt hàng điện tử và phần cứng máy tính.', N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoa0krfGk78ZWw8Vn-UDhqgBd0Lc8okgAT_aCS9KXlfKQuWLQ9PMPu8em9K198R83UTg&usqp=CAU', CAST(N'2025-04-20T17:30:53.320' AS DateTime), CAST(N'2025-04-20T17:30:53.320' AS DateTime))
+GO
+INSERT [dbo].[Brands] ([brand_id], [brand_name], [description], [logo_url], [created_at], [updated_at]) VALUES (11, N'Acer', N'Acer là tập đoàn đa quốc gia về thiết bị điện tử và phần cứng máy tính của Đài Loan', N'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/1024px-Acer_2011.svg.png', CAST(N'2025-04-20T17:31:01.227' AS DateTime), CAST(N'2025-04-20T17:31:01.227' AS DateTime))
+GO
+INSERT [dbo].[Brands] ([brand_id], [brand_name], [description], [logo_url], [created_at], [updated_at]) VALUES (12, N'Huawei', N'Huawei, tên đầy đủ là Công ty trách nhiệm hữu hạn kỹ thuật Hoa Vi là một tập đoàn đa quốc gia về thiết bị mạng và viễn thông, có trụ sở chính tại Thâm Quyến, Quảng Đông, Trung Quốc.', N'https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Huawei_Standard_logo.svg/1200px-Huawei_Standard_logo.svg.png', CAST(N'2025-04-20T18:46:58.437' AS DateTime), CAST(N'2025-04-20T18:46:58.437' AS DateTime))
+GO
+INSERT [dbo].[Brands] ([brand_id], [brand_name], [description], [logo_url], [created_at], [updated_at]) VALUES (13, N'Xiaomi', N'Xiaomi Inc. là một Tập đoàn sản xuất hàng điện tử Trung Quốc có trụ sở tại Thâm Quyến.', N'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Xiaomi_logo_%282021-%29.svg/1024px-Xiaomi_logo_%282021-%29.svg.png', CAST(N'2025-04-20T18:47:13.300' AS DateTime), CAST(N'2025-04-20T18:47:13.300' AS DateTime))
+GO
 SET IDENTITY_INSERT [dbo].[Brands] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Categories] ON 
@@ -522,6 +602,115 @@ GO
 INSERT [dbo].[Categories] ([category_id], [category_name], [description], [created_at], [updated_at]) VALUES (4, N'Talbet', N'Máy tính bảng là một thiết bị điện tử di động có màn hình cảm ứng lớn, thường được sử dụng để đọc sách, xem video, duyệt web, và chơi game', CAST(N'2025-04-16T06:44:27.460' AS DateTime), CAST(N'2025-04-16T06:44:27.460' AS DateTime))
 GO
 SET IDENTITY_INSERT [dbo].[Categories] OFF
+GO
+SET IDENTITY_INSERT [dbo].[CategoryPost] ON 
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (1, N'Tin Tức Công Nghệ', N'Cập nhật những tin tức mới nhất về thị trường máy tính, laptop và điện thoại.', CAST(N'2025-04-21T14:39:11.497' AS DateTime), NULL, 1)
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (2, N'Đánh Giá Laptop', N'Các bài đánh giá chi tiết về các mẫu laptop mới, so sánh hiệu năng và tính năng.', CAST(N'2025-04-21T14:47:13.210' AS DateTime), NULL, 1)
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (3, N'Thủ Thuật Laptop', N'Hướng dẫn sử dụng, tối ưu hóa và khắc phục các sự cố thường gặp trên laptop.', CAST(N'2025-04-21T14:47:18.017' AS DateTime), NULL, 1)
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (4, N'Đánh Giá Điện Thoại', N'Review các dòng điện thoại thông minh, từ cao cấp đến tầm trung và giá rẻ.
+', CAST(N'2025-04-21T14:48:21.790' AS DateTime), NULL, 1)
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (5, N'Thủ Thuật Điện Thoại', N'Mẹo sử dụng, tùy chỉnh và khám phá các tính năng ẩn trên điện thoại.
+', CAST(N'2025-04-21T14:48:29.700' AS DateTime), NULL, 1)
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (6, N'Tư Vấn Mua Hàng', N'Lời khuyên và gợi ý lựa chọn Sản phẩm phù hợp với nhu cầu và ngân sách.
+', CAST(N'2025-04-21T14:48:51.043' AS DateTime), NULL, 1)
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (7, N'Phụ Kiện', N'Giới thiệu các loại phụ kiện hữu ích và cần thiết cho laptop và điện thoại.', CAST(N'2025-04-21T14:48:57.733' AS DateTime), NULL, 1)
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (8, N'Thủ thuật Máy tính', N'Hướng dẫn sử dụng, tối ưu hóa và khắc phục các sự cố thường gặp trên máy tính.', CAST(N'2025-04-21T14:49:07.917' AS DateTime), NULL, 1)
+GO
+INSERT [dbo].[CategoryPost] ([category_id], [category_name], [description], [created_at], [updated_at], [is_active]) VALUES (9, N'Đánh giá Máy tính', N'Các bài đánh giá chi tiết về các mẫu máy tính mới, so sánh hiệu năng và tính năng.', CAST(N'2025-04-21T14:49:22.363' AS DateTime), NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[CategoryPost] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ColorOptions] ON 
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (8, N'Bạc')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (9, N'Đen')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (11, N'Đỏ')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (5, N'Hồng')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (10, N'Nâu')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (12, N'Tím')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (1, N'Trắng')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (6, N'Vàng')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (7, N'Vàng Kim')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (3, N'Xanh da trời')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (2, N'Xanh Dương')
+GO
+INSERT [dbo].[ColorOptions] ([color_id], [color]) VALUES (4, N'Xanh lá mạ')
+GO
+SET IDENTITY_INSERT [dbo].[ColorOptions] OFF
+GO
+SET IDENTITY_INSERT [dbo].[CpuOptions] ON 
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (8, N'AMD Ryzen')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (12, N'Apple A-series')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (9, N'Apple M1')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (11, N'Apple M1 Max')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (10, N'Apple M1 Pro')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (16, N'Exynos')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (18, N'Exynos W-series')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (1, N'Intel Core i3')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (2, N'Intel Core i5')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (3, N'Intel Core i7')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (4, N'Intel Core i9')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (5, N'Intel Core m3')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (6, N'Intel Core m5')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (7, N'Intel Core m7')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (15, N'Snapdragon 6 series')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (14, N'Snapdragon 7 series')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (13, N'Snapdragon 8 series')
+GO
+INSERT [dbo].[CpuOptions] ([cpu_id], [cpu]) VALUES (17, N'Snapdragon Wear:')
+GO
+SET IDENTITY_INSERT [dbo].[CpuOptions] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Orders] ON 
+GO
+INSERT [dbo].[Orders] ([order_id], [user_id], [order_status], [total_amount], [created_at], [updated_at]) VALUES (1, 2, N'pending', CAST(10.00 AS Decimal(18, 2)), CAST(N'2025-04-21T13:52:13.337' AS DateTime), CAST(N'2025-04-21T13:52:13.337' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[Orders] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Post] ON 
+GO
+INSERT [dbo].[Post] ([post_id], [title], [content], [thumbnail_url], [user_id], [category_id], [status], [created_at]) VALUES (1, N'Bài Post đầu tiên', N'<h2>Hello&nbsp;</h2><p>Xin chào mọi người</p>', N'uploads/posts/1745221886446_morse.png', 1, 1, N'1', CAST(N'2025-04-21T14:51:26.473' AS DateTime))
+GO
+INSERT [dbo].[Post] ([post_id], [title], [content], [thumbnail_url], [user_id], [category_id], [status], [created_at]) VALUES (2, N'Đánh giá Laptop Lenovo', N'<p>Chất lượng: 10/10</p><p>Không có nhưng</p>', N'uploads/posts/1745222245855_lenovopost.jpg', 1, 2, N'1', CAST(N'2025-04-21T14:57:25.883' AS DateTime))
+GO
+INSERT [dbo].[Post] ([post_id], [title], [content], [thumbnail_url], [user_id], [category_id], [status], [created_at]) VALUES (3, N'Hưỡng dẫn tối ưu hiệu năng Samsung galaxy S5', N'<h2>Đừng hỏi đây là 1 bài post</h2><p><a href="https://www.youtube.com/watch?v=Ro_idLCRq6s">https://www.youtube.com/watch?v=Ro_idLCRq6s</a></p>', N'uploads/posts/1745222341678_samsunggalaxys5.jpg', 1, 5, N'0', CAST(N'2025-04-21T14:59:01.703' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[Post] OFF
 GO
 SET IDENTITY_INSERT [dbo].[ProductMedia] ON 
 GO
@@ -545,15 +734,13 @@ INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type]
 GO
 INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (10, 2, N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1P7ac40fa2uA4CZx2LWFSbGVMrRBurIlc0teWZtnYjmAtilDqQSpI2VsJHKBdTllKJD8&usqp=CAU', N'image', 0, CAST(N'2025-04-16T11:00:52.190' AS DateTime), CAST(N'2025-04-16T11:00:52.190' AS DateTime))
 GO
-INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (11, 3, N'https://www.didongmy.com/vnt_upload/product/08_2024/thumbs/(600x600)_google_pixel_watch_3_black_didongmy_thumb_600x600_1.jpg', N'image', 1, CAST(N'2025-04-16T11:02:24.067' AS DateTime), CAST(N'2025-04-16T11:02:24.067' AS DateTime))
+INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (11, 3, N'https://www.didongmy.com/vnt_upload/product/08_2024/thumbs/(600x600)_google_pixel_watch_3_black_didongmy_thumb_600x600_1.jpg', N'image', 0, CAST(N'2025-04-16T11:02:24.067' AS DateTime), CAST(N'2025-04-16T11:02:24.067' AS DateTime))
 GO
 INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (12, 3, N'https://youtu.be/3wGPJaZ17aw', N'video', 0, CAST(N'2025-04-16T11:02:24.067' AS DateTime), CAST(N'2025-04-16T11:02:24.067' AS DateTime))
 GO
 INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (13, 3, N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf5O8eamjQ2UqKSZsaVDCO9PQRdU5doLpF5syxqXpq0ejMwJERDjex9-gYev-Skrnw_Pk&usqp=CAU', N'image', 0, CAST(N'2025-04-16T11:02:24.067' AS DateTime), CAST(N'2025-04-16T11:02:24.067' AS DateTime))
 GO
 INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (14, 3, N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQewZ-HNjmzndMGR6CL__IL68Qs_KK-U2r8Qn0dKUlVaFxn6_WrMvkfEYYqKW6w6QFqDI0&usqp=CAU', N'image', 0, CAST(N'2025-04-16T11:02:24.067' AS DateTime), CAST(N'2025-04-16T11:02:24.067' AS DateTime))
-GO
-INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (15, 3, N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStwj0c4Dq2IIiy2xoQ9RKo1CsEwhBTUgjziB2tePTVQxceRQR8cGc09W41PdcRwwc8lXQ&usqp=CAU', N'image', 0, CAST(N'2025-04-16T11:02:24.067' AS DateTime), CAST(N'2025-04-16T11:02:24.067' AS DateTime))
 GO
 INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (16, 4, N'https://images.samsung.com/is/image/samsung/p6pim/vn/sm-x716bzaexxv/gallery/vn-galaxy-tab-s9-5g-x716-sm-x716bzaexxv-537885551?$684_547_PNG$', N'image', 1, CAST(N'2025-04-16T11:04:01.377' AS DateTime), CAST(N'2025-04-16T11:04:01.377' AS DateTime))
 GO
@@ -564,6 +751,8 @@ GO
 INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (19, 4, N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_tsW5xYxs_saFBfy6dV4AKnEmGUHTpTG1qC0KKtXXcsIAAOEVbdGuit0bkQKiBZT3oxA&usqp=CAU', N'image', 0, CAST(N'2025-04-16T11:04:01.377' AS DateTime), CAST(N'2025-04-16T11:04:01.377' AS DateTime))
 GO
 INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (20, 4, N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_HV0Tdrv1Hwjmo7Qkmr0p8S6taAwdp0xMlw&s', N'image', 0, CAST(N'2025-04-16T11:04:01.377' AS DateTime), CAST(N'2025-04-16T11:04:01.377' AS DateTime))
+GO
+INSERT [dbo].[ProductMedia] ([media_id], [product_id], [media_url], [media_type], [is_primary], [created_at], [updated_at]) VALUES (21, 3, N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStwj0c4Dq2IIiy2xoQ9RKo1CsEwhBTUgjziB2tePTVQxceRQR8cGc09W41PdcRwwc8lXQ&usqp=CAU', N'image', 1, CAST(N'2025-04-23T06:32:34.440' AS DateTime), CAST(N'2025-04-23T06:32:34.440' AS DateTime))
 GO
 SET IDENTITY_INSERT [dbo].[ProductMedia] OFF
 GO
@@ -581,31 +770,29 @@ SET IDENTITY_INSERT [dbo].[Products] OFF
 GO
 SET IDENTITY_INSERT [dbo].[ProductVariants] ON 
 GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (1, 1, N'i5', N'8Gb', N'1920 x 1080', N'1TB', N'White', CAST(1000.00 AS Decimal(18, 2)), 50, CAST(N'2025-04-16T10:22:16.653' AS DateTime), CAST(N'2025-04-16T10:22:16.653' AS DateTime))
+INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [price], [stock_quantity], [created_at], [updated_at], [cpu_id], [ram_id], [screen_id], [storage_id], [color_id]) VALUES (1, 1, CAST(18999000.00 AS Decimal(18, 2)), 200, CAST(N'2025-04-23T07:40:37.807' AS DateTime), CAST(N'2025-04-23T07:40:37.807' AS DateTime), 8, 5, 2, 5, 1)
 GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (2, 1, N'i5', N'16Gb', N'1920 x 1080', N'1TB', N'White', CAST(1200.00 AS Decimal(18, 2)), 30, CAST(N'2025-04-16T10:22:16.653' AS DateTime), CAST(N'2025-04-16T10:22:16.653' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (3, 1, N'i7', N'8Gb', N'1920 x 1080', N'1TB', N'White', CAST(1100.00 AS Decimal(18, 2)), 40, CAST(N'2025-04-16T10:22:16.653' AS DateTime), CAST(N'2025-04-16T10:22:16.653' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (4, 1, N'i7', N'16Gb', N'1920 x 1080', N'1TB', N'White', CAST(1300.00 AS Decimal(18, 2)), 20, CAST(N'2025-04-16T10:22:16.653' AS DateTime), CAST(N'2025-04-16T10:22:16.653' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (5, 2, N'M1', N'4Gb', N'6.9 inch', N'128GB', N'White', CAST(1000.00 AS Decimal(18, 2)), 100, CAST(N'2025-04-16T10:42:34.120' AS DateTime), CAST(N'2025-04-16T10:42:34.120' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (6, 2, N'M1', N'4Gb', N'6.9 inch', N'256GB', N'Black', CAST(1200.00 AS Decimal(18, 2)), 90, CAST(N'2025-04-16T10:42:34.120' AS DateTime), CAST(N'2025-04-16T10:42:34.120' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (7, 2, N'M1', N'8Gb', N'6.9 inch', N'128GB', N'Gold', CAST(1100.00 AS Decimal(18, 2)), 70, CAST(N'2025-04-16T10:42:34.120' AS DateTime), CAST(N'2025-04-16T10:42:34.120' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (8, 2, N'M1', N'8Gb', N'6.9 inch', N'256BG', N'White', CAST(1300.00 AS Decimal(18, 2)), 65, CAST(N'2025-04-16T10:42:34.120' AS DateTime), CAST(N'2025-04-16T10:42:34.120' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (9, 3, N'Snapdragon Wear 4100', N'512MB', N'400 x 400', N'4GB', N'Black', CAST(299.00 AS Decimal(18, 2)), 100, CAST(N'2025-04-16T10:45:45.567' AS DateTime), CAST(N'2025-04-16T10:45:45.567' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (10, 3, N'Snapdragon Wear 4100', N'512MB', N'400 x 400', N'4GB', N'Silver', CAST(309.00 AS Decimal(18, 2)), 80, CAST(N'2025-04-16T10:45:45.567' AS DateTime), CAST(N'2025-04-16T10:45:45.567' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (11, 4, N'ARM Cortex-A73', N'4GB', N'1920 x 1080', N'64GB', N'Black', CAST(350.00 AS Decimal(18, 2)), 50, CAST(N'2025-04-16T10:47:23.753' AS DateTime), CAST(N'2025-04-16T10:47:23.753' AS DateTime))
-GO
-INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [cpu], [ram], [screen], [storage], [color], [price], [stock_quantity], [created_at], [updated_at]) VALUES (12, 4, N'ARM Cortex-A73', N'4GB', N'1920 x 1080', N'128GB', N'White', CAST(450.00 AS Decimal(18, 2)), 30, CAST(N'2025-04-16T10:47:23.753' AS DateTime), CAST(N'2025-04-16T10:47:23.753' AS DateTime))
+INSERT [dbo].[ProductVariants] ([variant_id], [product_id], [price], [stock_quantity], [created_at], [updated_at], [cpu_id], [ram_id], [screen_id], [storage_id], [color_id]) VALUES (2, 1, CAST(18499000.00 AS Decimal(18, 2)), 300, CAST(N'2025-04-23T07:41:28.220' AS DateTime), CAST(N'2025-04-23T07:41:28.220' AS DateTime), 3, 5, 2, 5, 1)
 GO
 SET IDENTITY_INSERT [dbo].[ProductVariants] OFF
+GO
+SET IDENTITY_INSERT [dbo].[RamOptions] ON 
+GO
+INSERT [dbo].[RamOptions] ([ram_id], [ram]) VALUES (5, N'16GB')
+GO
+INSERT [dbo].[RamOptions] ([ram_id], [ram]) VALUES (1, N'1GB')
+GO
+INSERT [dbo].[RamOptions] ([ram_id], [ram]) VALUES (2, N'2GB')
+GO
+INSERT [dbo].[RamOptions] ([ram_id], [ram]) VALUES (6, N'32GB')
+GO
+INSERT [dbo].[RamOptions] ([ram_id], [ram]) VALUES (3, N'4GB')
+GO
+INSERT [dbo].[RamOptions] ([ram_id], [ram]) VALUES (7, N'512MB')
+GO
+INSERT [dbo].[RamOptions] ([ram_id], [ram]) VALUES (4, N'8GB')
+GO
+SET IDENTITY_INSERT [dbo].[RamOptions] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Roles] ON 
 GO
@@ -615,7 +802,59 @@ INSERT [dbo].[Roles] ([role_id], [role_name], [description], [created_at], [upda
 GO
 INSERT [dbo].[Roles] ([role_id], [role_name], [description], [created_at], [updated_at]) VALUES (3, N'customer', N'Quy?n c?a khách hàng truy c?p và mua s?m', CAST(N'2025-04-15T22:43:00.293' AS DateTime), CAST(N'2025-04-15T22:43:00.293' AS DateTime))
 GO
+INSERT [dbo].[Roles] ([role_id], [role_name], [description], [created_at], [updated_at]) VALUES (4, N'Ship', N'La cho shipper', CAST(N'2025-04-17T14:56:41.637' AS DateTime), CAST(N'2025-04-17T14:56:41.637' AS DateTime))
+GO
 SET IDENTITY_INSERT [dbo].[Roles] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ScreenOptions] ON 
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (3, N'2K 2560 x 1440')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (4, N'4K 3840 x 2160')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (5, N'5 inch')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (6, N'5,5 inch')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (7, N'6 inch')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (8, N'6.5 inch')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (9, N'6.9 inch')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (10, N'7 inch')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (2, N'FULL HD 1920 x 1080')
+GO
+INSERT [dbo].[ScreenOptions] ([screen_id], [screen]) VALUES (1, N'HD 1366 x 768')
+GO
+SET IDENTITY_INSERT [dbo].[ScreenOptions] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Shipping] ON 
+GO
+INSERT [dbo].[Shipping] ([shipping_id], [order_id], [shipping_address], [shipping_status], [tracking_number], [shipping_date], [estimated_delivery], [delivery_notes], [updated_at], [shipperId]) VALUES (1, 1, N'Ha Noi', N'Delivered', N'10', CAST(N'2025-04-18T00:00:00.000' AS DateTime), CAST(N'2025-04-30T00:00:00.000' AS DateTime), N'oke', CAST(N'2025-04-21T13:58:16.593' AS DateTime), 5)
+GO
+INSERT [dbo].[Shipping] ([shipping_id], [order_id], [shipping_address], [shipping_status], [tracking_number], [shipping_date], [estimated_delivery], [delivery_notes], [updated_at], [shipperId]) VALUES (2, 1, N'ThaiBinh', N'Pending', N'10', CAST(N'2025-04-22T00:00:00.000' AS DateTime), CAST(N'2025-04-30T00:00:00.000' AS DateTime), N'oke', CAST(N'2025-04-21T00:00:00.000' AS DateTime), 5)
+GO
+SET IDENTITY_INSERT [dbo].[Shipping] OFF
+GO
+SET IDENTITY_INSERT [dbo].[StorageOptions] ON 
+GO
+INSERT [dbo].[StorageOptions] ([storage_id], [storage]) VALUES (3, N'128GB')
+GO
+INSERT [dbo].[StorageOptions] ([storage_id], [storage]) VALUES (6, N'1TB')
+GO
+INSERT [dbo].[StorageOptions] ([storage_id], [storage]) VALUES (4, N'256GB')
+GO
+INSERT [dbo].[StorageOptions] ([storage_id], [storage]) VALUES (7, N'2TB')
+GO
+INSERT [dbo].[StorageOptions] ([storage_id], [storage]) VALUES (1, N'32GB')
+GO
+INSERT [dbo].[StorageOptions] ([storage_id], [storage]) VALUES (5, N'500GB')
+GO
+INSERT [dbo].[StorageOptions] ([storage_id], [storage]) VALUES (2, N'64GB')
+GO
+SET IDENTITY_INSERT [dbo].[StorageOptions] OFF
 GO
 SET IDENTITY_INSERT [dbo].[SubCategories] ON 
 GO
@@ -643,9 +882,63 @@ INSERT [dbo].[SubCategories] ([subcategory_id], [subcategory_name], [category_id
 GO
 SET IDENTITY_INSERT [dbo].[SubCategories] OFF
 GO
+SET IDENTITY_INSERT [dbo].[Users] ON 
+GO
+INSERT [dbo].[Users] ([user_id], [email], [full_name], [Gender], [avatar_url], [phone_number], [address], [role_id], [created_at], [updated_at], [is_active], [password_hash], [is_verified], [reset_token], [reset_token_expiry], [last_login]) VALUES (1, N'bardok@gmail.com', N'Bardok Monkey', N'Male', N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUXcqu9fIJTDQIzZ3Mhbz2KKF2L94UZsrUnkWnvfsxhv8mGOFcDou_32Q_VFGa9NDzFQ8&usqp=CAU', N'0885559635', N'Saiyan', 1, CAST(N'2025-04-19T07:10:56.650' AS DateTime), CAST(N'2025-04-19T19:52:18.610' AS DateTime), 1, N'$2a$12$vg2q8NYzxQg0PU.q20EmZe6B5ECKKy1ofc3vUYGr4k2HmQEIv59FC', 1, NULL, NULL, NULL)
+GO
+INSERT [dbo].[Users] ([user_id], [email], [full_name], [Gender], [avatar_url], [phone_number], [address], [role_id], [created_at], [updated_at], [is_active], [password_hash], [is_verified], [reset_token], [reset_token_expiry], [last_login]) VALUES (2, N'naruto@gmail.com', N'Naruto Uzumaki', N'Male', N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_-lUcUOZyn-VWRQCMo0S4FYEwX1ORWvH53FSJlc2V9Twuxy2dewa7TjmlSDj7KwMXfao&usqp=CAU', N'0885559635', N'Lang La', 2, CAST(N'2025-04-20T13:09:23.537' AS DateTime), CAST(N'2025-04-20T13:09:23.630' AS DateTime), 1, N'$2a$12$vg2q8NYzxQg0PU.q20EmZe6B5ECKKy1ofc3vUYGr4k2HmQEIv59FC', 0, NULL, NULL, NULL)
+GO
+INSERT [dbo].[Users] ([user_id], [email], [full_name], [Gender], [avatar_url], [phone_number], [address], [role_id], [created_at], [updated_at], [is_active], [password_hash], [is_verified], [reset_token], [reset_token_expiry], [last_login]) VALUES (3, N'kakalot@gmail.com', N'Son goku', N'Male', NULL, N'0456789153', N'Kame island', 3, CAST(N'2025-04-20T13:09:23.537' AS DateTime), CAST(N'2025-04-20T13:09:23.630' AS DateTime), 1, N'$2a$12$vg2q8NYzxQg0PU.q20EmZe6B5ECKKy1ofc3vUYGr4k2HmQEIv59FC', 0, NULL, NULL, NULL)
+GO
+INSERT [dbo].[Users] ([user_id], [email], [full_name], [Gender], [avatar_url], [phone_number], [address], [role_id], [created_at], [updated_at], [is_active], [password_hash], [is_verified], [reset_token], [reset_token_expiry], [last_login]) VALUES (4, N'Customer@gmail.com', N'Customer', N'Male', NULL, N'0123456788', N'Customer', 1, CAST(N'2025-04-21T13:29:13.127' AS DateTime), CAST(N'2025-04-21T13:29:13.153' AS DateTime), 1, N'$2a$12$vg2q8NYzxQg0PU.q20EmZe6B5ECKKy1ofc3vUYGr4k2HmQEIv59FC', 0, NULL, NULL, NULL)
+GO
+INSERT [dbo].[Users] ([user_id], [email], [full_name], [Gender], [avatar_url], [phone_number], [address], [role_id], [created_at], [updated_at], [is_active], [password_hash], [is_verified], [reset_token], [reset_token_expiry], [last_login]) VALUES (5, N'customer2@gmail.com', N'Customer2', N'Male', NULL, N'0123456789', N'Ha Noi', 4, CAST(N'2025-04-21T13:44:02.027' AS DateTime), CAST(N'2025-04-21T13:44:02.033' AS DateTime), 1, N'$2a$12$vg2q8NYzxQg0PU.q20EmZe6B5ECKKy1ofc3vUYGr4k2HmQEIv59FC', 0, NULL, NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[Users] OFF
+GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Users__AB6E61647A3D32A7]    Script Date: 4/16/2025 1:49:54 PM ******/
+/****** Object:  Index [UQ__ColorOpt__900DC6E96925CF84]    Script Date: 4/23/2025 7:47:02 AM ******/
+ALTER TABLE [dbo].[ColorOptions] ADD UNIQUE NONCLUSTERED 
+(
+	[color] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__CpuOptio__D836E708C2AFD02D]    Script Date: 4/23/2025 7:47:02 AM ******/
+ALTER TABLE [dbo].[CpuOptions] ADD UNIQUE NONCLUSTERED 
+(
+	[cpu] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__RamOptio__C2B02CE4ED9D2CC0]    Script Date: 4/23/2025 7:47:02 AM ******/
+ALTER TABLE [dbo].[RamOptions] ADD UNIQUE NONCLUSTERED 
+(
+	[ram] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__ScreenOp__CAA5D583E962D6D0]    Script Date: 4/23/2025 7:47:02 AM ******/
+ALTER TABLE [dbo].[ScreenOptions] ADD UNIQUE NONCLUSTERED 
+(
+	[screen] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__StorageO__156FD1D1CF699182]    Script Date: 4/23/2025 7:47:02 AM ******/
+ALTER TABLE [dbo].[StorageOptions] ADD UNIQUE NONCLUSTERED 
+(
+	[storage] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Users__AB6E61648B2D28B2]    Script Date: 4/23/2025 7:47:02 AM ******/
 ALTER TABLE [dbo].[Users] ADD UNIQUE NONCLUSTERED 
 (
 	[email] ASC
@@ -776,6 +1069,31 @@ ALTER TABLE [dbo].[ProductVariants]  WITH CHECK ADD  CONSTRAINT [FK_ProductVaria
 REFERENCES [dbo].[Products] ([product_id])
 GO
 ALTER TABLE [dbo].[ProductVariants] CHECK CONSTRAINT [FK_ProductVariants_Products]
+GO
+ALTER TABLE [dbo].[ProductVariants]  WITH CHECK ADD  CONSTRAINT [FK_PV_ColorOptions] FOREIGN KEY([color_id])
+REFERENCES [dbo].[ColorOptions] ([color_id])
+GO
+ALTER TABLE [dbo].[ProductVariants] CHECK CONSTRAINT [FK_PV_ColorOptions]
+GO
+ALTER TABLE [dbo].[ProductVariants]  WITH CHECK ADD  CONSTRAINT [FK_PV_CpuOptions] FOREIGN KEY([cpu_id])
+REFERENCES [dbo].[CpuOptions] ([cpu_id])
+GO
+ALTER TABLE [dbo].[ProductVariants] CHECK CONSTRAINT [FK_PV_CpuOptions]
+GO
+ALTER TABLE [dbo].[ProductVariants]  WITH CHECK ADD  CONSTRAINT [FK_PV_RamOptions] FOREIGN KEY([ram_id])
+REFERENCES [dbo].[RamOptions] ([ram_id])
+GO
+ALTER TABLE [dbo].[ProductVariants] CHECK CONSTRAINT [FK_PV_RamOptions]
+GO
+ALTER TABLE [dbo].[ProductVariants]  WITH CHECK ADD  CONSTRAINT [FK_PV_ScreenOptions] FOREIGN KEY([screen_id])
+REFERENCES [dbo].[ScreenOptions] ([screen_id])
+GO
+ALTER TABLE [dbo].[ProductVariants] CHECK CONSTRAINT [FK_PV_ScreenOptions]
+GO
+ALTER TABLE [dbo].[ProductVariants]  WITH CHECK ADD  CONSTRAINT [FK_PV_StorageOptions] FOREIGN KEY([storage_id])
+REFERENCES [dbo].[StorageOptions] ([storage_id])
+GO
+ALTER TABLE [dbo].[ProductVariants] CHECK CONSTRAINT [FK_PV_StorageOptions]
 GO
 ALTER TABLE [dbo].[Reviews]  WITH CHECK ADD FOREIGN KEY([product_id])
 REFERENCES [dbo].[Products] ([product_id])

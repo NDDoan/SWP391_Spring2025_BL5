@@ -58,41 +58,6 @@ public class ProductDao {
                     productDto.setProductId(generatedProductId);
                 }
             }
-
-            // Nếu có variants, chèn các bản ghi vào ProductVariants
-            if (productDto.getVariants() != null && !productDto.getVariants().isEmpty()) {
-                String insertVariantSQL = "INSERT INTO ProductVariants (product_id, cpu, ram, screen, storage, color, price, stock_quantity, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
-                try (PreparedStatement psVariant = conn.prepareStatement(insertVariantSQL)) {
-                    for (ProductVariant variant : productDto.getVariants()) {
-                        psVariant.setInt(1, generatedProductId);
-                        psVariant.setString(2, variant.getCpu());
-                        psVariant.setString(3, variant.getRam());
-                        psVariant.setString(4, variant.getScreen());
-                        psVariant.setString(5, variant.getStorage());
-                        psVariant.setString(6, variant.getColor());
-                        psVariant.setDouble(7, variant.getPrice());
-                        psVariant.setInt(8, variant.getStockQuantity());
-                        psVariant.addBatch();
-                    }
-                    psVariant.executeBatch();
-                }
-            }
-
-            // Nếu có media, chèn các bản ghi vào ProductMedia
-            if (productDto.getMediaList() != null && !productDto.getMediaList().isEmpty()) {
-                String insertMediaSQL = "INSERT INTO ProductMedia (product_id, media_url, media_type, is_primary, created_at, updated_at) VALUES (?, ?, ?, ?, GETDATE(), GETDATE())";
-                try (PreparedStatement psMedia = conn.prepareStatement(insertMediaSQL)) {
-                    for (ProductMedia media : productDto.getMediaList()) {
-                        psMedia.setInt(1, generatedProductId);
-                        psMedia.setString(2, media.getMediaUrl());
-                        psMedia.setString(3, media.getMediaType());
-                        psMedia.setBoolean(4, media.isPrimary());
-                        psMedia.addBatch();
-                    }
-                    psMedia.executeBatch();
-                }
-            }
-
             // Commit giao dịch khi mọi thứ thành công
             conn.commit();
         } catch (SQLException ex) {

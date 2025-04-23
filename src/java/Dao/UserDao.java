@@ -582,7 +582,7 @@ public class UserDao {
     }
         // Giới hạn role_id nằm trong 3, 4, 5
         sql.append(" AND role_id IN (?)");
-        parameters.add(2);
+        parameters.add(2);  
 
         // Sắp xếp
         // Chỉ cho phép một số cột nhất định để tránh SQL Injection

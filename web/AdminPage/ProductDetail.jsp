@@ -403,15 +403,40 @@
                                             <input type="hidden" name="variantAction" value="add">
                                         </c:if>
                                         <div class="mb-3"><label>CPU</label>
-                                            <input type="text" name="cpu" class="form-control" value="${variantToEdit.cpu}" required></div>
+                                            <select name="cpu_id" class="form-select mb-2">
+                                                <option value="">Chọn CPU</option>
+                                                <c:forEach var="o" items="${cpuOptions}">
+                                                    <option value="${o.cpuId}" ${o.cpu == variantToEdit.cpu ? 'selected' : ''}>${o.cpu}</option>
+                                                </c:forEach>
+                                            </select></div>
                                         <div class="mb-3"><label>RAM</label>
-                                            <input type="text" name="ram" class="form-control" value="${variantToEdit.ram}" required></div>
+                                            <select name="ram_id" class="form-select mb-2">
+                                                <option value="">Chọn Ram</option>
+                                                <c:forEach var="o" items="${ramOptions}">
+                                                    <option value="${o.ramId}" ${(o.ram==variantToEdit.ram)?'selected':''}>${o.ram}</option>
+                                                </c:forEach>
+                                            </select></div>
                                         <div class="mb-3"><label>Màn hình</label>
-                                            <input type="text" name="screen" class="form-control" value="${variantToEdit.screen}" required></div>
+                                            <select name="screen_id" class="form-select mb-2">
+                                                <option value="">Chọn Màn hình</option>
+                                                <c:forEach var="o" items="${screenOptions}">
+                                                    <option value="${o.screenId}" ${(o.screen==variantToEdit.screen)?'selected':''}>${o.screen}</option>
+                                                </c:forEach>
+                                            </select></div>
                                         <div class="mb-3"><label>Dung lượng</label>
-                                            <input type="text" name="storage" class="form-control" value="${variantToEdit.storage}" required></div>
+                                            <select name="storage_id" class="form-select mb-2">
+                                                <option value="">Chọn Dung lượng</option>
+                                                <c:forEach var="o" items="${storageOptions}">
+                                                    <option value="${o.storageId}" ${(o.storage==variantToEdit.storage)?'selected':''}>${o.storage}</option>
+                                                </c:forEach>
+                                            </select></div>
                                         <div class="mb-3"><label>Màu sắc</label>
-                                            <input type="text" name="color" class="form-control" value="${variantToEdit.color}" required></div>
+                                            <select name="color_id" class="form-select mb-2">
+                                                <option value="">Chọn Màu sắc</option>
+                                                <c:forEach var="o" items="${colorOptions}">
+                                                    <option value="${o.colorId}" ${(o.color==variantToEdit.color)?'selected':''}>${o.color}</option>
+                                                </c:forEach>
+                                            </select></div>
                                         <div class="mb-3"><label>Giá</label>
                                             <input type="number" step="0.01" name="price" class="form-control" value="${variantToEdit.price}" required></div>
                                         <div class="mb-3"><label>Tồn kho</label>
@@ -431,25 +456,25 @@
         <!-- Bootstrap JS bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            const select = document.getElementById('mediaTypeSelect');
-            const container = document.getElementById('primary-checkbox-container');
-             function togglePrimaryCheckbox() {
-               if (select.value === 'video') {
-                container.style.display = 'none';
-                // nếu cần: container.querySelector('input').checked = false;
-               } else {
-                    container.style.display = 'block';
-               }
-            }
-            // Chạy khi load trang và khi thay đổi select
-            window.addEventListener('DOMContentLoaded', togglePrimaryCheckbox);
-            select.addEventListener('change', togglePrimaryCheckbox);
-            window.addEventListener('DOMContentLoaded', () => {
+                                                       const select = document.getElementById('mediaTypeSelect');
+                                                       const container = document.getElementById('primary-checkbox-container');
+                                                       function togglePrimaryCheckbox() {
+                                                           if (select.value === 'video') {
+                                                               container.style.display = 'none';
+                                                               // nếu cần: container.querySelector('input').checked = false;
+                                                           } else {
+                                                               container.style.display = 'block';
+                                                           }
+                                                       }
+                                                       // Chạy khi load trang và khi thay đổi select
+                                                       window.addEventListener('DOMContentLoaded', togglePrimaryCheckbox);
+                                                       select.addEventListener('change', togglePrimaryCheckbox);
+                                                       window.addEventListener('DOMContentLoaded', () => {
             <c:if test="${not empty variantToEdit}">
-                const modal = new bootstrap.Modal(document.getElementById('variantModal'));
-                modal.show();
+                                                           const modal = new bootstrap.Modal(document.getElementById('variantModal'));
+                                                           modal.show();
             </c:if>
-                });
+                                                       });
         </script>
     </body>
 </html>

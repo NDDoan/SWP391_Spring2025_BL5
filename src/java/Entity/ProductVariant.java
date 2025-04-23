@@ -11,6 +11,7 @@ import java.util.Date;
  * @author LENOVO
  */
 public class ProductVariant {
+
     private int variantId;
     private int productId;
     private String cpu;
@@ -23,11 +24,17 @@ public class ProductVariant {
     private Date createdAt;
     private Date updatedAt;
 
+    private int cpuId;
+    private int ramId;
+    private int screenId;
+    private int storageId;
+    private int colorId;
+
     public ProductVariant() {
     }
 
     public ProductVariant(int variantId, int productId, String cpu, String ram, String screen, String storage,
-                          String color, double price, int stockQuantity, Date createdAt, Date updatedAt) {
+            String color, double price, int stockQuantity, Date createdAt, Date updatedAt) {
         this.variantId = variantId;
         this.productId = productId;
         this.cpu = cpu;
@@ -130,20 +137,60 @@ public class ProductVariant {
         this.updatedAt = updatedAt;
     }
 
+    public int getCpuId() {
+        return cpuId;
+    }
+
+    public void setCpuId(int cpuId) {
+        this.cpuId = cpuId;
+    }
+
+    public int getRamId() {
+        return ramId;
+    }
+
+    public void setRamId(int ramId) {
+        this.ramId = ramId;
+    }
+
+    public int getScreenId() {
+        return screenId;
+    }
+
+    public void setScreenId(int screenId) {
+        this.screenId = screenId;
+    }
+
+    public int getStorageId() {
+        return storageId;
+    }
+
+    public void setStorageId(int storageId) {
+        this.storageId = storageId;
+    }
+
+    public int getColorId() {
+        return colorId;
+    }
+
+    public void setColorId(int colorId) {
+        this.colorId = colorId;
+    }
+
     @Override
     public String toString() {
-        return "ProductVariant{" +
-               "variantId=" + variantId +
-               ", productId=" + productId +
-               ", cpu='" + cpu + '\'' +
-               ", ram='" + ram + '\'' +
-               ", screen='" + screen + '\'' +
-               ", storage='" + storage + '\'' +
-               ", color='" + color + '\'' +
-               ", price=" + price +
-               ", stockQuantity=" + stockQuantity +
-               ", createdAt=" + createdAt +
-               ", updatedAt=" + updatedAt +
-               '}';
+        return "ProductVariant{"
+                + "variantId=" + variantId
+                + ", productId=" + productId
+                + ", cpu='" + cpu + '\''
+                + ", ram='" + ram + '\''
+                + ", screen='" + screen + '\''
+                + ", storage='" + storage + '\''
+                + ", color='" + color + '\''
+                + ", price=" + price
+                + ", stockQuantity=" + stockQuantity
+                + ", createdAt=" + createdAt
+                + ", updatedAt=" + updatedAt
+                + '}';
     }
 }
