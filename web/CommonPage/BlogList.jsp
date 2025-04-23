@@ -11,7 +11,7 @@
         <!-- Main Content -->
         <div class="col-md-8">
             <h2>Latest Blog Posts</h2>
-            <c:forEach var="b" items="${blogList}">
+            <c:forEach var="b" items="${blogs}">
                 <div class="card mb-3">
                     <div class="row g-0">
                         <div class="col-md-4">
@@ -21,13 +21,18 @@
                             <div class="card-body">
                                 <h5 class="card-title">${b.title}</h5>
                                 <p class="card-text">${b.briefInfo}</p>
-                                <p class="card-text"><small class="text-muted">Updated on ${b.updatedAt}</small></p>
-                                <a href="blog-detail.jsp?id=${b.id}" class="btn btn-primary">Read More</a>
+                                <p class="card-text">
+                                    <small class="text-muted">Updated on 
+                                        <fmt:formatDate value="${b.updatedAt}" pattern="dd/MM/yyyy HH:mm"/>
+                                    </small>
+                                </p>
+                                <a href="blog-detail?id=${b.blogId}" class="btn btn-primary">Read More</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </c:forEach>
+
 
             <!-- Pagination -->
             <nav>

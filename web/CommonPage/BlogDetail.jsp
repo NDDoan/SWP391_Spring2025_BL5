@@ -1,0 +1,59 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html>
+<head>
+    <title>${blog.title}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.7;
+        }
+        .blog-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            margin-top: 60px;
+        }
+        .blog-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .blog-meta {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .blog-content {
+            font-size: 1.1rem;
+        }
+        .back-link {
+            margin-top: 30px;
+            display: inline-block;
+            color: #4A90E2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="col-md-10 offset-md-1 blog-container">
+        <h1 class="blog-title">${blog.title}</h1>
+        <p class="blog-meta">Created at: ${blog.createdAt} | Updated at: ${blog.updatedAt}</p>
+        <hr>
+        <div class="blog-content">
+            <c:out value="${blog.content}" escapeXml="false"/>
+        </div>
+        <a href="blog-list" class="back-link">← Back to Blog List</a>
+    </div>
+</div>
+</body>
+</html>

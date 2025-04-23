@@ -67,12 +67,13 @@ public class BlogDao {
         return list;
     }
 
-    public List<Blog> searchBlogsByTitle(String keyword) {
+    public List<Blog> searchBlogsByKeyword(String keyword) {
         List<Blog> list = new ArrayList<>();
-        String sql = "SELECT * FROM Blogs WHERE title LIKE ? ORDER BY updated_at DESC";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + keyword + "%");
+        String sql = "SELECT * FROM Blogs WHERE title LIKE ? OR content LIKE ? ORDER BY updated_at DESC";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            String searchValue = "%" + keyword + "%";
+            ps.setString(1, searchValue);
+            ps.setString(2, searchValue);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Blog blog = new Blog();
@@ -88,6 +89,8 @@ public class BlogDao {
         }
         return list;
     }
+
+
 
     public Blog getBlogById(int id) {
         String sql = "SELECT * FROM Blogs WHERE blog_id = ?";
