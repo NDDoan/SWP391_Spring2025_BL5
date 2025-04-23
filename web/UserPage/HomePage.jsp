@@ -8,11 +8,18 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             /* CSS cho chuyển động carousel */
-            .carousel-item img {
-                transition: transform 0.5s ease;
+            .carousel-control-prev-icon,
+            .carousel-control-next-icon {
+                background-color: rgba(0, 0, 0, 0.5);
+                border-radius: 50%;
+                background-size: 2rem 2rem;
             }
-            .carousel-item:hover img {
-                transform: scale(1.05);
+            /* Đẩy icon ra xa một chút để nhìn rõ */
+            .carousel-control-prev {
+                left: 1%;
+            }
+            .carousel-control-next {
+                right: 1%;
             }
             .partners-section {
                 padding: 4rem 0;
@@ -34,6 +41,58 @@
                 transform: translateY(-5px);
                 box-shadow: 0 8px 16px rgba(0,0,0,0.2);
             }
+            /* ----- Categories Section ----- */
+            .categories-section {
+                background-color: #ffffff;
+            }
+            .categories-section .section-header {
+                border-bottom: 2px solid #e9ecef;
+                padding-bottom: .5rem;
+            }
+            .categories-section .section-header h3 {
+                font-size: 1.75rem;
+                color: #343a40;
+                margin: 0;
+            }
+            .categories-section .section-header .btn-outline-primary {
+                font-size: .875rem;
+            }
+
+            .category-card {
+                border: none;
+                border-radius: .75rem;
+                overflow: hidden;
+                transition: transform .3s ease, box-shadow .3s ease;
+            }
+            .category-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+            }
+            .category-card .card-img-top {
+                height: 180px;
+                object-fit: cover;
+            }
+            .category-card .card-title {
+                font-size: 1rem;
+                margin-bottom: .5rem;
+            }
+            .category-card .text-muted {
+                font-size: .875rem;
+            }
+            .category-card .fw-bold {
+                font-size: 1rem;
+            }
+
+            /* Responsive tweaks */
+            @media (max-width: 576px) {
+                .categories-section .section-header h3 {
+                    font-size: 1.5rem;
+                }
+                .category-card .card-img-top {
+                    height: 150px;
+                }
+            }
+
         </style>
     </head>
     <body>
@@ -103,6 +162,40 @@
             </div>
         </div>
 
+        <!-- Products by Category -->
+        <c:forEach var="entry" items="${productsByCategory}">
+            <c:set var="catName" value="${entry.key}" />
+            <c:set var="prods" value="${entry.value}" />
+
+            <section class="category-section py-4">
+                <div class="container">
+                    <h3 class="mb-3">${catName}</h3>
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                        <c:forEach var="p" items="${prods}">
+                            <div class="col">
+                                <div class="card h-100">
+                                    <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${p.productId}&mode=view">
+                                        <img src="${p.primaryMediaUrl}" class="card-img-top" alt="${p.productName}" style="height:auto; object-fit:cover;">
+                                    </a>
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">${p.productName}</h5>
+                                        <p class="text-muted mb-2">${p.brandName}</p>
+                                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold">${p.price}₫</span>
+                                            <a href="#" class="btn btn-sm btn-success">Add to cart</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                        <c:if test="${empty prods}">
+                            <p class="text-muted">Không có sản phẩm nào trong danh mục này.</p>
+                        </c:if>
+                    </div>
+                </div>
+            </section>
+        </c:forEach>
+
         <!-- Partners Section -->
         <section class="partners-section">
             <div class="container">
@@ -111,7 +204,7 @@
                     <c:forEach var="b" items="${partners}">
                         <div class="col d-flex align-items-center justify-content-center">
                             <div class="partner-logo w-100 text-center">
-                                    <img src="${b.logoUrl}" alt="${b.brandName} logo">
+                                <img src="${b.logoUrl}" alt="${b.brandName} logo">
                             </div>
                         </div>
                     </c:forEach>

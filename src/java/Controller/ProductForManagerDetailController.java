@@ -112,10 +112,46 @@ public class ProductForManagerDetailController extends HttpServlet {
         // 1. Handle add/edit Product
         String mode = request.getParameter("mode");
         if ("add".equalsIgnoreCase(mode) || "edit".equalsIgnoreCase(mode)) {
-            // ... (giữ nguyên validate & add/update product như cũ) ...
-            // Sau đó redirect:
-            // response.sendRedirect(... + "&mode=view");
-            // return;
+            // Extract form values
+            String name = request.getParameter("productName").trim();
+            String brand = request.getParameter("brandName").trim();
+            String category = request.getParameter("categoryName").trim();
+            String desc = request.getParameter("description").trim();
+            int currentId = 0;
+            if ("edit".equalsIgnoreCase(mode)) {
+                currentId = Integer.parseInt(request.getParameter("productId"));
+            }
+            // Validate unique product name
+            if (productDao.isNameExistsExceptId(name, currentId)) {
+                request.setAttribute("errorName", "Tên sản phẩm đã tồn tại rồi.");
+                // Preserve form inputs
+                request.setAttribute("productName", name);
+                request.setAttribute("brandName", brand);
+                request.setAttribute("categoryName", category);
+                request.setAttribute("description", desc);
+                processRequest(request, response);
+                return;
+            }
+            // Build DTO
+            ProductDto product = new ProductDto();
+            if ("edit".equalsIgnoreCase(mode)) {
+                product.setProductId(currentId);
+            }
+            product.setProductName(name);
+            product.setBrandName(brand);
+            product.setCategoryName(category);
+            product.setDescription(desc);
+
+            int prodId;
+            if ("add".equalsIgnoreCase(mode)) {
+                prodId = productDao.addProduct(product);
+            } else {
+                productDao.updateProduct(product);
+                prodId = product.getProductId();
+            }
+            response.sendRedirect(request.getContextPath()
+                    + "/ProductForManagerDetailController?productId=" + prodId + "&mode=view");
+            return;
         }
 
         // 2. Handle add/update Variant

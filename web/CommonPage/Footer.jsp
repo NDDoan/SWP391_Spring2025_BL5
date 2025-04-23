@@ -78,25 +78,25 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
-                <h3>Contact Us</h3>
+                <h3>Liên hệ với chúng tôi</h3>
                 <p><i class="fas fa-envelope"></i> contact@electromart.com</p>
                 <p><i class="fas fa-phone-alt"></i> +84 123 456 789</p>
                 <p><i class="fas fa-map-marker-alt"></i> 123 Tech Street, Hanoi</p>
             </div>
             <div class="footer-section">
-                <h3>Customer Support</h3>
+                <h3>Hỗ trợ khách hàng</h3>
                 <p><a href="#">FAQs</a></p>
-                <p><a href="#">Return Policy</a></p>
-                <p><a href="#">Shipping Info</a></p>
+                <p><a href="#">Chính sách trả hàng</a></p>
+                <p><a href="#">Thông tin vận chuyển</a></p>
             </div>
             <div class="footer-section">
                 <h3>About Us</h3>
-                <p><a href="#">Privacy Policy</a></p>
-                <p><a href="#">Terms of Service</a></p>
+                <p><a href="#">Chính sách bảo mật</a></p>
+                <p><a href="#">Điều khoản dịch vụ</a></p>
                 <p><strong>Nhóm 2 - SWP391.BL5</strong></p>
             </div>
             <div class="footer-section">
-                <h3>Connect with us</h3>
+                <h3>Kết nối với chúng tôi</h3>
                 <p><a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a></p>
                 <p><a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i> Twitter</a></p>
                 <p><a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></p>

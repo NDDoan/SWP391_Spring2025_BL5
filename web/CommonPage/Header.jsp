@@ -79,7 +79,12 @@
                 <input name="search" class="form-control" placeholder="Search products…" />
                 <button class="btn" type="submit"><i class="fas fa-search"></i></button>
             </form>
-
+                  
+            <div class="nav-links">
+                <a href="#">Sản Phẩm</a>
+                <a href="#">Bài viết</a>
+            </div>
+                  
             <!-- Right nav -->
             <nav class="d-flex align-items-center">
                 <!-- Cart -->
@@ -125,7 +130,7 @@
                 </c:choose>
             </nav>
             <div class="nav-links">
-                <a href="#"><i class="fas fa-headset"></i> Hotline: 1900 9999</a>
+                <a href="#"><i class="fas fa-headset"></i> Đường dây nóng: 1900 9999</a>
             </div>
         </header>
 

@@ -16,7 +16,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -73,9 +75,20 @@ public class HomePageController extends HttpServlet {
         try {
             List<ProductSummaryDto> featured = dao.getFeaturedProducts(8);
             request.setAttribute("featuredList", featured);
+            // 2. Lấy tên category
+            List<String> categories = dao.getAllCategoryNames();
+            request.setAttribute("categories", categories);
+
+            // 3. Với mỗi category, lấy top 4 sản phẩm
+            Map<String, List<ProductSummaryDto>> byCat = new LinkedHashMap<>();
+            for (String cat : categories) {
+                byCat.put(cat, dao.getProductsByCategory(cat, 4));
+            }
+            request.setAttribute("productsByCategory", byCat);
         } catch (Exception e) {
             throw new ServletException(e);
         }
+
         RequestDispatcher rd = request.getRequestDispatcher("UserPage/HomePage.jsp");
         rd.forward(request, response);
     }
