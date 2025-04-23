@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import Dao.BlogDao;
 import Entity.Blog;
@@ -29,13 +29,13 @@ public class BlogDetailController extends HttpServlet {
 
             if (blog == null) {
                 request.setAttribute("error", "Bài viết không tồn tại.");
-                request.getRequestDispatcher("CommonPage/BlogList.jsp").forward(request, response);
+                request.getRequestDispatcher("/CommonPage/BlogList.jsp").forward(request, response);
                 return;
             }
 
 
             request.setAttribute("blog", blog);
-            request.getRequestDispatcher("CommonPage/BlogDetail.jsp").forward(request, response);
+            request.getRequestDispatcher("/CommonPage/BlogDetail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             response.sendRedirect("BlogList");
