@@ -35,12 +35,23 @@ public class UserController extends HttpServlet {
             User user = dao.getUserById(id);
             request.setAttribute("editUser", user);
         } else if ("delete".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            User user = dao.getUserById(id);
-            user.setIs_active(!user.isIs_active());
-            dao.updateUser(user);
-            //dao.deleteUser(id);
-            response.sendRedirect("user");
+            String idStr = request.getParameter("id");
+            if (idStr == null || idStr.isEmpty()) {
+                response.sendRedirect("user"); // Không có id hợp lệ
+                return;
+            }
+
+            try {
+                int id = Integer.parseInt(idStr);
+                User user = dao.getUserById(id);
+                if (user != null) {
+                    user.setIs_active(!user.isIs_active());
+                    dao.updateUser(user);
+                }
+                response.sendRedirect("user");
+            } catch (NumberFormatException e) {
+                response.sendRedirect("user"); // Xử lý khi id không hợp lệ
+            }
             return;
         } else if ("view".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
@@ -54,10 +65,10 @@ public class UserController extends HttpServlet {
             request.getRequestDispatcher("/AdminPage/UserDetail.jsp").forward(request, response);
             return;
         }
-        
+
         String sortBy = request.getParameter("sortBy");
         String sortOrder = request.getParameter("sortOrder");
-        
+
         if (sortBy == null || sortOrder == null) {
             sortBy = "user_id"; // Default sort by ID
             sortOrder = "asc"; // Default sort order ascending
@@ -68,6 +79,10 @@ public class UserController extends HttpServlet {
             keyword = ""; // Default to empty string if no search query
         }
         String roleFilter = request.getParameter("roleFilter");
+        if (roleFilter == null) {
+            roleFilter = ""; // Default to empty string if no role is selected
+        }
+        String genderFilter = request.getParameter("genderFilter");
         if (roleFilter == null) {
             roleFilter = ""; // Default to empty string if no role is selected
         }
@@ -83,14 +98,18 @@ public class UserController extends HttpServlet {
         }
         int offset = (page - 1) * limit;
         List<User> userList = null;
+        String Useroke = null;
         if (users.getRole_id() == 1) {
-            userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit,sortBy,sortOrder);
+            userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit, sortBy, sortOrder,genderFilter);
+            Useroke = "manager";
         } else if (users.getRole_id() == 5) {
-            userList = dao.getFilteredCustomer(keyword, roleFilter, offset, limit);
+            userList = dao.getFilteredCustomer(keyword, roleFilter, offset, limit, sortBy, sortOrder,genderFilter);
+            Useroke = "staff";
         }
         int totalUsers = dao.countFilteredUsers(keyword, roleFilter);
         int totalPages = (int) Math.ceil((double) totalUsers / limit);
 
+        request.setAttribute("Useroke", Useroke);
         request.setAttribute("userList", userList);
         request.setAttribute("keyword", keyword);
         request.setAttribute("roleFilter", roleFilter);

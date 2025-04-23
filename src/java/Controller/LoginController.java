@@ -159,7 +159,7 @@ public class LoginController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/AdminPage/AdminDashBoard.jsp"); // Chuyển hướng đến giao diện Admin
                 return;
             } else if (roleId == 4) { 
-             response.sendRedirect(request.getContextPath() + "/Shipper/ShipperDashBoard.jsp");
+             response.sendRedirect(request.getContextPath() + "/ShippingController");
                 return;
             }
    
