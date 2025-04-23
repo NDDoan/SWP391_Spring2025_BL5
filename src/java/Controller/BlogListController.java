@@ -9,7 +9,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "BlogListController", urlPatterns = {"/blog-list"})
+@WebServlet(name = "BlogListController", urlPatterns = {"/BlogList"})
 public class BlogListController extends HttpServlet {
 
     private static final int PAGE_SIZE = 5;  // Số blog mỗi trang
@@ -43,6 +43,6 @@ public class BlogListController extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
 
         // Forward tới JSP
-        request.getRequestDispatcher("blog-list.jsp").forward(request, response);
+        request.getRequestDispatcher("BlogList.jsp").forward(request, response);
     }
 }

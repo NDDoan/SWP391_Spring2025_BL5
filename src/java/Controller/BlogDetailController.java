@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 
-@WebServlet(name = "BlogDetailController", urlPatterns = {"/blog-detail"})
+@WebServlet(name = "BlogDetailController", urlPatterns = {"/BlogDetail"})
 public class BlogDetailController extends HttpServlet {
 
     @Override
@@ -18,7 +18,7 @@ public class BlogDetailController extends HttpServlet {
         String idParam = request.getParameter("id");
 
         if (idParam == null || idParam.isEmpty()) {
-            response.sendRedirect("blog-list");
+            response.sendRedirect("BlogList");
             return;
         }
 
@@ -28,15 +28,15 @@ public class BlogDetailController extends HttpServlet {
             Blog blog = dao.getBlogById(id);
 
             if (blog == null) {
-                response.sendRedirect("blog-list");
+                response.sendRedirect("BlogList");
                 return;
             }
 
             request.setAttribute("blog", blog);
-            request.getRequestDispatcher("blog-detail.jsp").forward(request, response);
+            request.getRequestDispatcher("BlogDetail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            response.sendRedirect("blog-list");
+            response.sendRedirect("BlogList");
         }
     }
 }

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <html>
 <head>
     <title>Blog List</title>
@@ -13,22 +14,13 @@
             <h2>Latest Blog Posts</h2>
             <c:forEach var="b" items="${blogs}">
                 <div class="card mb-3">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="${b.thumbnail}" class="img-fluid rounded-start" alt="Thumbnail">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">${b.title}</h5>
-                                <p class="card-text">${b.briefInfo}</p>
-                                <p class="card-text">
-                                    <small class="text-muted">Updated on 
-                                        <fmt:formatDate value="${b.updatedAt}" pattern="dd/MM/yyyy HH:mm"/>
-                                    </small>
-                                </p>
-                                <a href="blog-detail?id=${b.blogId}" class="btn btn-primary">Read More</a>
-                            </div>
-                        </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${b.title}</h5>
+                        <p class="card-text">
+                            ${fn:substring(b.content, 0, 150)}...
+                        </p>
+                        <p class="card-text"><small class="text-muted">Updated on ${b.updatedAt}</small></p>
+                        <a href="blog-detail.jsp?id=${b.blogId}" class="btn btn-primary">Read More</a>
                     </div>
                 </div>
             </c:forEach>
