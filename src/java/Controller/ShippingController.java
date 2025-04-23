@@ -62,6 +62,9 @@ public class ShippingController extends HttpServlet {
                         case "create":
                             showCreateForm(request, response);
                             break;
+                        case "detail":
+                            showDetail(request, response);
+                            break;
                         default:
                             listShipping(request, response);
                             break;
@@ -71,7 +74,7 @@ public class ShippingController extends HttpServlet {
             } else if (user.getRole_id() == 4) {
                 // SHIPPER - xem đơn hàng được phân công
 
-                String status =  request.getParameter("status");
+                String status = request.getParameter("status");
 
                 String sortBy = request.getParameter("sortBy");
                 String sortDir = request.getParameter("sortDir");
@@ -208,7 +211,12 @@ public class ShippingController extends HttpServlet {
         // Tính offset
         // Lấy danh sách shipping theo trang
         List<Shipping> list = shippingDAO.getShippingByStatus(status, sortBy, sortDir, offset, limit);
-
+        try {
+            List<User> shipperList = userDao.getUsersByRole(4);
+            request.setAttribute("shipperList", shipperList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String ShipOke = "manager";
         request.setAttribute("ShipOke", ShipOke);
         request.setAttribute("currentPage", page);
@@ -255,5 +263,21 @@ public class ShippingController extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         shippingDAO.deleteShipping(id);
         response.sendRedirect("shipping");
+    }
+
+    private void showDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        Shipping shippingDetail = shippingDAO.getShippingDetailById(Integer.parseInt(id));  // Your service method to fetch details
+        try {
+            User shipper = userDao.getUserById(shippingDetail.getShipperId());
+            request.setAttribute("shipper", shipper);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        request.setAttribute("shippingDetail", shippingDetail);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/shipping-detail.jsp");
+        dispatcher.forward(request, response);
     }
 }

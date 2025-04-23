@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="java.util.*, Entity.Shipping" %>
-
+<%@ page import="Entity.User" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -235,6 +235,9 @@
                                 </th>
                                 <th>Ghi chú</th>
                                 <th>Cập nhật</th>
+                                    <c:if test="${ShipOke == 'manager'}">
+                                    <th>Shipper Name</th>
+                                    </c:if>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -250,9 +253,29 @@
                                     <td>${s.estimatedDelivery}</td>
                                     <td>${s.deliveryNotes}</td>
                                     <td>${s.updatedAt}</td>
+                                    <c:if test="${ShipOke == 'manager'}">
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${s.shipperId != null}">
+                                                    <c:forEach var="shipper" items="${shipperList}">
+                                                        <c:if test="${s.shipperId == shipper.user_id}">
+                                                            ${shipper.full_name}
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span style="color: red;">Chưa có người giao hàng</span> <!-- Added style for visibility -->
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    </c:if>
                                     <td class="text-nowrap">
                                         <c:choose>
                                             <c:when test="${ShipOke == 'manager'}">
+
+                                                <a href="shipping?action=detail&id=${s.id}" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-eye"></i> 
+                                                </a>
                                                 <a href="shipping?action=edit&id=${s.id}" class="btn btn-sm btn-warning">
                                                     <i class="fas fa-edit"></i>
                                                 </a>

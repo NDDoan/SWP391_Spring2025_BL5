@@ -5,18 +5,65 @@
 <%
     User user = (User) request.getAttribute("user");
 %>
-
 <!DOCTYPE html>
-<html>
+<html lang="vi">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Chi tiết người dùng</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                margin: 0;
+                padding-top: 60px; /* Space for fixed header */
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .main-layout {
+                display: flex;
+                flex-grow: 1;
+            }
+            .dashboard-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 60px; /* Fixed height for header */
+                background-color: #343a40;
+                color: white;
+                z-index: 1000; /* Ensure header is above other elements */
+                border-bottom: none; /* Remove any border */
+                box-shadow: none; /* Remove any shadow */
+            }
+            .dashboard-header > * {
+                margin: 0; /* Remove margins from child elements */
+                border: none; /* Ensure no borders on child elements */
+            }
+            .sidebar {
+                width: 250px;
+                background-color: #f8f9fa;
+                padding: 20px;
+                position: fixed;
+                top: 60px; /* Start below header */
+                bottom: 0;
+                left: 0;
+                z-index: 900; /* Below header but above content */
+            }
+            .container {
+                margin-left: 270px; /* Space for sidebar */
+                padding: 20px;
+                flex-grow: 1;
+                margin-top: 20px; /* Additional spacing */
+            }
+        </style>
     </head>
     <body>
         <div class="dashboard-header">
             <jsp:include page="dashboard-header.jsp"/>
         </div>
+
         <!-- Sidebar + Content -->
         <div class="main-layout">
             <!-- Sidebar -->
@@ -24,7 +71,7 @@
                 <jsp:include page="dashboard-sidebar.jsp"/>
             </div>
 
-            <div class="container mt-5">
+            <div class="container">
                 <h2 class="mb-4">Chi tiết người dùng</h2>
 
                 <div class="card shadow p-4">

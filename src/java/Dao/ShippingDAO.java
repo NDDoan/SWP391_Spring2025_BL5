@@ -190,7 +190,8 @@ public class ShippingDAO {
                 rs.getDate("shipping_date"),
                 rs.getDate("estimated_delivery"),
                 rs.getString("delivery_notes"),
-                rs.getDate("updated_at")
+                rs.getDate("updated_at"),
+                rs.getInt("shipperId")
         );
     }
 
@@ -277,4 +278,25 @@ public class ShippingDAO {
         return list;
     }
 
+    public Shipping getShippingDetailById(int id) {
+        Shipping shipping = null;
+        String sql = "SELECT * FROM Shipping WHERE shipping_id  = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                shipping = extractShipping(rs); // Tái sử dụng hàm
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return shipping;
+    }
+
+    
 }
