@@ -294,6 +294,40 @@
                 </div>
             </div>
         </div>
+        <c:if test="${totalPages > 1}">
+            <nav aria-label="Pagination">
+                <ul class="pagination justify-content-center mt-4">
+
+                    <!-- Nút Previous -->
+                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                        <a class="page-link"
+                           href="shipping?page=${currentPage - 1}&status=${param.status}&sortBy=${param.sortBy}&sortDir=${param.sortDir}">
+                            Previous
+                        </a>
+                    </li>
+
+                    <!-- Các số trang -->
+                    <c:forEach var="i" begin="1" end="${totalPages}">
+                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                            <a class="page-link"
+                               href="shipping?page=${i}&status=${param.status}&sortBy=${param.sortBy}&sortDir=${param.sortDir}">
+                                ${i}
+                            </a>
+                        </li>
+                    </c:forEach>
+
+                    <!-- Nút Next -->
+                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                        <a class="page-link"
+                           href="shipping?page=${currentPage + 1}&status=${param.status}&sortBy=${param.sortBy}&sortDir=${param.sortDir}">
+                            Next
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </c:if>
+
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -74,32 +74,32 @@ public class ShippingDAO {
         }
     }
 
-    public List<Shipping> getShippingByStatus(String status,String sortBy, String sortDir) throws SQLException {
+    public List<Shipping> getShippingByStatus(String status, String sortBy, String sortDir, int offset, int pageSize) throws SQLException {
         List<Shipping> list = new ArrayList<>();
-         String sql = "SELECT * FROM Shipping ";
-        // Nếu status không rỗng, thêm điều kiện lọc theo status
-        if (status != null && !status.isEmpty()) {
-            sql += "WHERE shipping_status = ?";
+        String sql = "SELECT * FROM Shipping ";
+        boolean hasStatus = status != null && !status.isEmpty();
+
+        if (hasStatus) {
+            sql += "WHERE shipping_status = ? ";
         }
 
-        // Thêm phần sắp xếp
-        sql += " ORDER BY " + sortBy + " " + sortDir;
+        sql += "ORDER BY " + sortBy + " " + sortDir + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            // Thiết lập giá trị cho userId (luôn có)
-            
+            int paramIndex = 1;
 
-            // Nếu status không rỗng, thiết lập thêm giá trị cho shipping_status
-            if (status != null && !status.isEmpty()) {
-                statement.setString(1, status);
+            if (hasStatus) {
+                statement.setString(paramIndex++, status);
             }
+
+            statement.setInt(paramIndex++, offset);
+            statement.setInt(paramIndex, pageSize);
 
             ResultSet resultSet = statement.executeQuery();
-            
             while (resultSet.next()) {
-            
                 list.add(extractShipping(resultSet));
             }
+
             return list;
         }
     }
@@ -117,31 +117,34 @@ public class ShippingDAO {
         return list;
     }
 
-    public List<Shipping> getShippingByStatusUserId(int userId, String status, String sortBy, String sortDir) throws SQLException {
-        // Nếu status là rỗng, không cần thêm điều kiện cho status trong câu truy vấn
+    public List<Shipping> getShippingByStatusUserId(int userId, String status, String sortBy, String sortDir, int offset, int pageSize) throws SQLException {
         List<Shipping> list = new ArrayList<>();
-         String sql = "SELECT * FROM Shipping WHERE shipperId = ?";
-        // Nếu status không rỗng, thêm điều kiện lọc theo status
-        if (status != null && !status.isEmpty()) {
+        String sql = "SELECT * FROM Shipping WHERE shipperId = ?";
+
+        boolean hasStatus = status != null && !status.isEmpty();
+        if (hasStatus) {
             sql += " AND shipping_status = ?";
         }
 
-        // Thêm phần sắp xếp
-        sql += " ORDER BY " + sortBy + " " + sortDir;
+        sql += " ORDER BY " + sortBy + " " + sortDir + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            // Thiết lập giá trị cho userId (luôn có)
-            statement.setInt(1, userId);
+            int paramIndex = 1;
 
-            // Nếu status không rỗng, thiết lập thêm giá trị cho shipping_status
-            if (status != null && !status.isEmpty()) {
-                statement.setString(2, status);
+            // set shipperId
+            statement.setInt(paramIndex++, userId);
+
+            // set status nếu có
+            if (hasStatus) {
+                statement.setString(paramIndex++, status);
             }
 
+            // set offset và pageSize
+            statement.setInt(paramIndex++, offset);
+            statement.setInt(paramIndex, pageSize);
+
             ResultSet resultSet = statement.executeQuery();
-            
             while (resultSet.next()) {
-            
                 list.add(extractShipping(resultSet));
             }
             return list;
@@ -196,6 +199,56 @@ public class ShippingDAO {
             }
         }
         return list;
+    }
+
+    public int getTotalShippingCount(String status) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM shipping";
+        if (status != null && !status.isEmpty()) {
+            sql += " WHERE shipping_status = ?";
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (status != null && !status.isEmpty()) {
+                ps.setString(1, status);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public int getTotalShippingCountId(int shiperid, String status) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM shipping WHERE shipperId = ? ";
+        if (status != null && !status.isEmpty()) {
+            sql += " AND shipping_status = ?";
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, shiperid);
+            if (status != null && !status.isEmpty()) {
+                ps.setString(1, status);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
     }
 
     public List<Shipping> getShippingByCustomerIdStatus(int customerId, String status) throws SQLException {

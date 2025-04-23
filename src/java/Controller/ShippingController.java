@@ -72,20 +72,37 @@ public class ShippingController extends HttpServlet {
                 // SHIPPER - xem đơn hàng được phân công
 
                 String status = status = request.getParameter("status");
-                
+
                 String sortBy = request.getParameter("sortBy");
                 String sortDir = request.getParameter("sortDir");
+                int page = 1;
+                int limit = 5; // Số đơn hàng mỗi trang
+
+                // Parse trang hiện tại
+                String pageParam = request.getParameter("page");
+                if (pageParam != null && !pageParam.isEmpty()) {
+                    try {
+                        page = Integer.parseInt(pageParam);
+                    } catch (NumberFormatException e) {
+                        page = 1;
+                    }
+                }
+                int offset = (page - 1) * limit;
                 if (sortBy == null) {
                     sortBy = "shipping_id";
                 }
                 if (sortDir == null) {
                     sortDir = "asc";
                 }
+                int totalItems = shippingDAO.getTotalShippingCountId(user.getUser_id(),status);
+                int totalPages = (int) Math.ceil((double) totalItems / limit);
 
                 List<Shipping> list;
-                list = shippingDAO.getShippingByStatusUserId(user.getUser_id(), status, sortBy, sortDir);
+                list = shippingDAO.getShippingByStatusUserId(user.getUser_id(), status, sortBy, sortDir,offset, limit);
                 String ShipOke = "shipper";
                 request.setAttribute("ShipOke", ShipOke);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("shippingList", list);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/shippingList.jsp");
                 dispatcher.forward(request, response);
@@ -163,20 +180,44 @@ public class ShippingController extends HttpServlet {
         String status = request.getParameter("status");
         String sortBy = request.getParameter("sortBy");
         String sortDir = request.getParameter("sortDir");
-        if (sortBy == null) {
+        int page = 1;
+        int limit = 5; // Số đơn hàng mỗi trang
+
+        // Parse trang hiện tại
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+        int offset = (page - 1) * limit;
+        // Mặc định nếu không chọn
+        if (sortBy == null || sortBy.isEmpty()) {
             sortBy = "shipping_id";
         }
-        if (sortDir == null) {
+        if (sortDir == null || sortDir.isEmpty()) {
             sortDir = "asc";
         }
 
-        List<Shipping> list;
+        // Tổng số đơn hàng sau khi lọc
+        int totalItems = shippingDAO.getTotalShippingCount(status);
+        int totalPages = (int) Math.ceil((double) totalItems / limit);
 
-        list = shippingDAO.getShippingByStatus(status, sortBy, sortDir);
+        // Tính offset
+        // Lấy danh sách shipping theo trang
+        List<Shipping> list = shippingDAO.getShippingByStatus(status, sortBy, sortDir, offset, limit);
 
         String ShipOke = "manager";
         request.setAttribute("ShipOke", ShipOke);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("shippingList", list);
+        request.setAttribute("status", status);      // giữ lại filter
+        request.setAttribute("sortBy", sortBy);      // giữ lại sort
+        request.setAttribute("sortDir", sortDir);    // giữ lại sort
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/shippingList.jsp");
         dispatcher.forward(request, response);
     }
