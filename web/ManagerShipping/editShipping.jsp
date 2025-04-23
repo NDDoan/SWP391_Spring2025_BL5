@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="Entity.Shipping" %>
+<%@ page import="Entity.User" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
@@ -162,24 +163,24 @@
 
                 <label for="estimatedDelivery">Ngày dự kiến giao:</label>
                 <input type="date" name="estimatedDelivery" id="estimatedDelivery" value="${shipping != null ? shipping.estimatedDelivery : ''}" required />
-                
-                 <label for="shipperId">Người giao hàng:</label>
+
+                <label for="shipperId">Người giao hàng:</label>
                 <select name="shipperId" id="shipperId" required>
                     <option value="">-- Chọn người giao hàng --</option>
                     <c:forEach var="shipper" items="${shipperList}">
                         <option value="${shipper.user_id}" 
-                                <c:if test="${shipping != null && shipping.shipperId == shipper.user_id}">
+                                <c:if test="${shipping != null && shipping.shipperId == shipper.user_id }">
                                     selected
                                 </c:if>>
                             ${shipper.full_name}
                         </option>
                     </c:forEach>
                 </select>
-                 
+
                 <label for="deliveryNotes">Ghi chú:</label>
                 <textarea name="deliveryNotes" id="deliveryNotes" rows="3">${shipping != null ? shipping.deliveryNotes : ''}</textarea>
-               
-             
+
+
                 <div class="d-flex justify-content-between ">
                     <a href="shipping" class="btn btn-secondary">⬅ Quay lại danh sách</a>
                     <input type="submit" value="Lưu" class="btn btn-primary" />

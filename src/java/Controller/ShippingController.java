@@ -70,7 +70,20 @@ public class ShippingController extends HttpServlet {
 
             } else if (user.getRole_id() == 4) {
                 // SHIPPER - xem đơn hàng được phân công
-                List<Shipping> list = shippingDAO.getShippingByShipper(user.getUser_id());
+
+                String status = status = request.getParameter("status");
+                
+                String sortBy = request.getParameter("sortBy");
+                String sortDir = request.getParameter("sortDir");
+                if (sortBy == null) {
+                    sortBy = "shipping_id";
+                }
+                if (sortDir == null) {
+                    sortDir = "asc";
+                }
+
+                List<Shipping> list;
+                list = shippingDAO.getShippingByStatusUserId(user.getUser_id(), status, sortBy, sortDir);
                 String ShipOke = "shipper";
                 request.setAttribute("ShipOke", ShipOke);
                 request.setAttribute("shippingList", list);
@@ -108,6 +121,7 @@ public class ShippingController extends HttpServlet {
                 Date shippingDate = java.sql.Date.valueOf(request.getParameter("shippingDate"));
                 Date estimatedDelivery = java.sql.Date.valueOf(request.getParameter("estimatedDelivery"));
                 String notes = request.getParameter("deliveryNotes");
+                int shipperId = Integer.parseInt(request.getParameter("shipperId"));
 
                 Shipping s = new Shipping();
                 s.setOrderId(orderId);
@@ -118,7 +132,7 @@ public class ShippingController extends HttpServlet {
                 s.setEstimatedDelivery(estimatedDelivery);
                 s.setDeliveryNotes(notes);
                 s.setUpdatedAt(new Date());
-
+                s.setShipperId(shipperId);
                 String idStr = request.getParameter("id");
                 if (idStr == null || idStr.isEmpty()) {
                     shippingDAO.insertShipping(s);
@@ -147,14 +161,19 @@ public class ShippingController extends HttpServlet {
     private void listShipping(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         String status = request.getParameter("status");
+        String sortBy = request.getParameter("sortBy");
+        String sortDir = request.getParameter("sortDir");
+        if (sortBy == null) {
+            sortBy = "shipping_id";
+        }
+        if (sortDir == null) {
+            sortDir = "asc";
+        }
 
         List<Shipping> list;
-        if (status != null && !status.isEmpty()) {
-            list = shippingDAO.getShippingByStatus(status);
-            request.setAttribute("statusFilter", status);
-        } else {
-            list = shippingDAO.getAllShipping();
-        }
+
+        list = shippingDAO.getShippingByStatus(status, sortBy, sortDir);
+
         String ShipOke = "manager";
         request.setAttribute("ShipOke", ShipOke);
         request.setAttribute("shippingList", list);

@@ -23,7 +23,7 @@ public class UserController extends HttpServlet {
         HttpSession session = request.getSession();
         User users = (User) session.getAttribute("user");
 
-        if (users == null || users.getRole_id() == 2) {
+        if (users == null || users.getRole_id() != 1 && users.getRole_id()!=5) {
             response.sendRedirect("logincontroller");
             return;
         }
