@@ -138,13 +138,13 @@
             <div class="container bg-white rounded shadow p-4">
                 <c:if test="${ShipOke == 'manager'}">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3>Danh sách đơn hàng đang giao</h3>
+                        <h3>Danh sách đơn hàng cho Manager</h3>
                         <a href="shipping?action=create" class="btn btn-add">+ Thêm giao hàng</a>
                     </div>
                 </c:if>
                 <c:if test="${ShipOke == 'shipper'}">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3>Danh sách đơn hàng đang giao</h3>
+                        <h3>Danh sách đơn hàng cho Shipper</h3>
 
                     </div>
                 </c:if>
@@ -166,13 +166,73 @@
                     <table class="table table-bordered table-hover bg-white">
                         <thead class="table-dark">
                             <tr>
-                                <th>ID</th>
+                                <th>
+                                    <a href="shipping?sortBy=shipping_id&sortDir=${param.sortDir == 'asc' ? 'desc' : 'asc'}">
+                                        ID
+                                        <c:choose>
+                                            <c:when test="${param.sortBy == 'shipping_id' && param.sortDir == 'asc'}">
+                                                <i class="fas fa-sort-up"></i>
+                                            </c:when>
+                                            <c:when test="${param.sortBy == 'shipping_id' && param.sortDir == 'desc'}">
+                                                <i class="fas fa-sort-down"></i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fas fa-sort"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </a>
+                                </th>
                                 <th>Order ID</th>
-                                <th>Địa chỉ giao hàng</th>
+                                <th>
+                                    <a href="shipping?sortBy=shipping_address&sortDir=${ param.sortDir == 'asc' ? 'desc' : 'asc'}">
+                                        Địa chỉ giao hàng
+                                        <c:choose>
+                                            <c:when test="${param.sortBy == 'shipping_address' && param.sortDir == 'asc'}">
+                                                <i class="fas fa-sort-up"></i>
+                                            </c:when>
+                                            <c:when test="${param.sortBy == 'shipping_address' && param.sortDir == 'desc'}">
+                                                <i class="fas fa-sort-down"></i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fas fa-sort"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </a>
+                                </th>
                                 <th>Trạng thái</th>
                                 <th>Tracking</th>
-                                <th>Ngày giao</th>
-                                <th>Ngày dự kiến</th>
+                                <th>
+                                    <a href="shipping?sortBy=shipping_date&sortDir=${ param.sortDir == 'asc' ? 'desc' : 'asc'}">
+                                        Ngày giao
+                                        <c:choose>
+                                            <c:when test="${param.sortBy == 'shipping_date' && param.sortDir == 'asc'}">
+                                                <i class="fas fa-sort-up"></i>
+                                            </c:when>
+                                            <c:when test="${param.sortBy == 'shipping_date' && param.sortDir == 'desc'}">
+                                                <i class="fas fa-sort-down"></i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fas fa-sort"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="shipping?sortBy=estimated_delivery&sortDir=${param.sortDir == 'asc' ? 'desc' : 'asc'}">
+                                        Ngày dự kiến
+                                        <c:choose>
+                                            <c:when test="${param.sortBy == 'estimated_delivery' && param.sortDir == 'asc'}">
+                                                <i class="fas fa-sort-up"></i>
+                                            </c:when>
+                                            <c:when test="${param.sortBy == 'estimated_delivery' && param.sortDir == 'desc'}">
+                                                <i class="fas fa-sort-down"></i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fas fa-sort"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </a>
+                                </th>
                                 <th>Ghi chú</th>
                                 <th>Cập nhật</th>
                                 <th>Hành động</th>

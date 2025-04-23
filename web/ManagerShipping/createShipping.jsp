@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="Entity.User" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -121,7 +123,7 @@
                         <option value="">-- Chọn người giao hàng --</option>
                         <c:forEach var="shipper" items="${shipperList}">
                             <option value="${shipper.user_id}" 
-                                    <c:if test="${shipping != null && shipping.shipperId == shipper.user_id}">
+                                    <c:if test="${shipping.shipperId == shipper.user_id}">
                                 selected
                                 </c:if>>
                                 ${shipper.full_name}
