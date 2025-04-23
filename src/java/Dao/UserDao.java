@@ -321,6 +321,8 @@ public class UserDao {
                 user.setUser_id(rs.getInt("user_id"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword_hash(rs.getString("password_hash")); // 🔥 Lấy mật khẩu đã hash từ DB
+                user.setAvatar_url(rs.getString("avatar_url"));
+                user.setFull_name(rs.getString("full_name"));
                 user.setRole_id(rs.getInt("role_id"));
             }
             conn.close();

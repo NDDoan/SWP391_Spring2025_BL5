@@ -4,7 +4,9 @@
  */
 package Controller;
 
+import Dao.BrandDao;
 import Dao.HomePageDao;
+import Entity.Brand;
 import EntityDto.ProductSummaryDto;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ import java.util.List;
 public class HomePageController extends HttpServlet {
 
     private final HomePageDao dao = new HomePageDao();
+    private final BrandDao brandDao = new BrandDao();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -61,6 +65,11 @@ public class HomePageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        // Load danh sách brand để hiển thị đối tác
+        List<Brand> partners = brandDao.getAllBrands();
+        request.setAttribute("partners", partners);
+
         try {
             List<ProductSummaryDto> featured = dao.getFeaturedProducts(8);
             request.setAttribute("featuredList", featured);
@@ -82,7 +91,13 @@ public class HomePageController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute("userId");
+
+        if (userId == null) {
+            response.sendRedirect(request.getContextPath() + "/UserPage/HomePage.jsp");
+            return;
+        }
     }
 
     /**

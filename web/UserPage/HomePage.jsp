@@ -14,6 +14,26 @@
             .carousel-item:hover img {
                 transform: scale(1.05);
             }
+            .partners-section {
+                padding: 4rem 0;
+                background: #f8f9fa;
+            }
+            .partner-logo {
+                transition: transform .3s ease, box-shadow .3s ease;
+                border-radius: .5rem;
+                background: white;
+                padding: 1rem;
+            }
+            .partner-logo img {
+                max-width: 100%;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+            }
+            .partner-logo:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            }
         </style>
     </head>
     <body>
@@ -40,7 +60,7 @@
                 </c:forEach>
             </div>
         </div>
-        
+
         <div class="container my-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2>Sản phẩm giá tốt</h2>
@@ -82,6 +102,25 @@
                 </button>
             </div>
         </div>
+
+        <!-- Partners Section -->
+        <section class="partners-section">
+            <div class="container">
+                <h2 class="text-center mb-4">Đối tác của chúng tôi</h2>
+                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
+                    <c:forEach var="b" items="${partners}">
+                        <div class="col d-flex align-items-center justify-content-center">
+                            <div class="partner-logo w-100 text-center">
+                                    <img src="${b.logoUrl}" alt="${b.brandName} logo">
+                            </div>
+                        </div>
+                    </c:forEach>
+                    <c:if test="${empty partners}">
+                        <p class="text-center text-muted">Chưa có đối tác nào để hiển thị.</p>
+                    </c:if>
+                </div>
+            </div>
+        </section>
 
         <!-- Footer -->
         <jsp:include page="../CommonPage/Footer.jsp"/>
