@@ -59,10 +59,9 @@
                 color: #1e1e2f;
             }
 
-            .dropdown-menu {
-                border-radius: 0.5rem;
+            .user-dropdown.show .dropdown-menu {
+                display: block;
             }
-
             .dropdown-item:hover {
                 background-color: #f8f9fa;
             }
@@ -94,6 +93,7 @@
                 <nav class="d-flex align-items-center gap-3 nav-links">
                     <a href="${pageContext.request.contextPath}/#">Sản phẩm</a>
                     <a href="${pageContext.request.contextPath}/BlogListController">Bài viết</a>
+                    <a href="${pageContext.request.contextPath}/myordercontroller">Đơn Hàng</a>
                     <a href="${pageContext.request.contextPath}/contact">Liên hệ</a>
                 </nav>
 
@@ -113,13 +113,20 @@
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <div class="dropdown">
-                                <a href="#" class="btn btn-outline-light dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user-circle fa-lg me-1"></i>
+                            <div class="dropdown user-dropdown" 
+                                 onmouseover="this.classList.add('show')" 
+                                 onmouseout="this.classList.remove('show')">
+                                <a href="#" 
+                                   class="btn btn-outline-light dropdown-toggle d-flex align-items-center" 
+                                   id="userMenu" 
+                                   data-bs-toggle="dropdown" 
+                                   aria-expanded="false">
+                                    <img src="${sessionScope.user.avatar_url != null ? sessionScope.user.avatar_url : 'default-avatar.png'}"
+                                         alt="avatar" width="24" height="24" class="rounded-circle me-1">
                                     ${sessionScope.user.full_name}
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow">
-                                    <li class="d-flex align-items-center px-3 py-2 border-bottom">
+                                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+                                    <li class="px-3 py-2 d-flex align-items-center border-bottom">
                                         <img src="${sessionScope.user.avatar_url != null ? sessionScope.user.avatar_url : 'default-avatar.png'}"
                                              alt="avatar" width="50" height="50" class="rounded-circle me-2">
                                         <div>
@@ -127,13 +134,19 @@
                                             <small class="text-muted">${sessionScope.user.email}</small>
                                         </div>
                                     </li>
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/UserProfile">
-                                            <i class="fas fa-id-card me-1"></i> Thông tin cá nhân</a></li>
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/CustomerShipping">
-                                            <i class="fas fa-id-card me-1"></i> Đơn hàng vận chuyển</a></li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center" 
+                                           href="${pageContext.request.contextPath}/UserProfile">
+                                            <i class="fas fa-id-card me-2"></i> Thông tin cá nhân
+                                        </a>
+                                    </li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" href="${pageContext.request.contextPath}/logoutcontroller">
-                                            <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất</a></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger d-flex align-items-center" 
+                                           href="${pageContext.request.contextPath}/logoutcontroller">
+                                            <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </c:otherwise>
