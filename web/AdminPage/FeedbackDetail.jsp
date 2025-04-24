@@ -306,6 +306,7 @@
                                         <c:forEach items="${feedback.imageUrls}" var="mediaUrl">
                                             <c:set var="isVideo" value="${mediaUrl.toLowerCase().endsWith('.mp4') || mediaUrl.toLowerCase().endsWith('.webm') || mediaUrl.toLowerCase().endsWith('.ogg') || mediaUrl.toLowerCase().endsWith('.mov')}"/>
                                             
+
                                             <c:choose>
                                                 <c:when test="${isVideo}">
                                                     <div class="feedback-video-container" id="media-container-${mediaUrl.hashCode()}">

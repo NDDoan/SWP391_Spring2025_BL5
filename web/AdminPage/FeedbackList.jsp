@@ -2,11 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback Management</title>
+    <title>Quản Lý Phản Hồi</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -95,6 +95,7 @@
             font-weight: 500;
             padding: 0.35em 0.65em;
             border-radius: 50rem;
+            font-size: 0.85rem;
         }
         
         .table-responsive {
@@ -254,11 +255,11 @@
     <div class="container-fluid py-4">
         <div class="row justify-content-center">
             <div class="col-lg-11">
-                <h2>Feedback Management</h2>
+                <h2>Quản Lý Phản Hồi</h2>
                 
                 <c:if test="${param.statusChanged eq 'true'}">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i> Feedback status updated successfully!
+                        <i class="fas fa-check-circle me-2"></i> Đã cập nhật trạng thái phản hồi thành công!
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </c:if>
@@ -267,14 +268,14 @@
                 <div class="filter-section">
                     <form id="filterForm" action="${pageContext.request.contextPath}/FeedbackList" method="GET" class="row g-3">
                         <div class="col-md-3">
-                            <label for="search" class="form-label"><i class="fas fa-search me-2"></i>Search:</label>
+                            <label for="search" class="form-label"><i class="fas fa-search me-2"></i>Tìm kiếm:</label>
                             <input type="text" class="form-control" id="search" name="search" 
-                                   placeholder="Search by name or content" value="${searchKeyword}">
+                                   placeholder="Tìm kiếm theo tên hoặc nội dung" value="${searchKeyword}">
                         </div>
                         <div class="col-md-3">
-                            <label for="productId" class="form-label"><i class="fas fa-box me-2"></i>Product:</label>
+                            <label for="productId" class="form-label"><i class="fas fa-box me-2"></i>Sản phẩm:</label>
                             <select class="form-select" id="productId" name="productId">
-                                <option value="">All Products</option>
+                                <option value="">Tất cả sản phẩm</option>
                                 <c:forEach items="${productList}" var="product">
                                     <option value="${product.productId}" ${product.productId eq selectedProductId ? 'selected' : ''}>
                                         ${product.productName}
@@ -283,27 +284,27 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="rating" class="form-label"><i class="fas fa-star me-2"></i>Rating:</label>
+                            <label for="rating" class="form-label"><i class="fas fa-star me-2"></i>Đánh giá:</label>
                             <select class="form-select" id="rating" name="rating">
-                                <option value="">All Ratings</option>
-                                <option value="5" ${selectedRating eq 5 ? 'selected' : ''}>5 Stars</option>
-                                <option value="4" ${selectedRating eq 4 ? 'selected' : ''}>4 Stars</option>
-                                <option value="3" ${selectedRating eq 3 ? 'selected' : ''}>3 Stars</option>
-                                <option value="2" ${selectedRating eq 2 ? 'selected' : ''}>2 Stars</option>
-                                <option value="1" ${selectedRating eq 1 ? 'selected' : ''}>1 Star</option>
+                                <option value="">Tất cả đánh giá</option>
+                                <option value="5" ${selectedRating eq 5 ? 'selected' : ''}>5 sao</option>
+                                <option value="4" ${selectedRating eq 4 ? 'selected' : ''}>4 sao</option>
+                                <option value="3" ${selectedRating eq 3 ? 'selected' : ''}>3 sao</option>
+                                <option value="2" ${selectedRating eq 2 ? 'selected' : ''}>2 sao</option>
+                                <option value="1" ${selectedRating eq 1 ? 'selected' : ''}>1 sao</option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="status" class="form-label"><i class="fas fa-toggle-on me-2"></i>Status:</label>
+                            <label for="status" class="form-label"><i class="fas fa-toggle-on me-2"></i>Trạng thái:</label>
                             <select class="form-select" id="status" name="status">
-                                <option value="">All Status</option>
-                                <option value="true" ${selectedStatus eq true ? 'selected' : ''}>Active</option>
-                                <option value="false" ${selectedStatus eq false ? 'selected' : ''}>Inactive</option>
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="true" ${selectedStatus eq true ? 'selected' : ''}>Hoạt động</option>
+                                <option value="false" ${selectedStatus eq false ? 'selected' : ''}>Không hoạt động</option>
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary me-2"><i class="fas fa-filter me-2"></i>Filter</button>
-                            <a href="${pageContext.request.contextPath}FeedbackList" class="btn btn-secondary"><i class="fas fa-undo me-2"></i>Reset</a>
+                            <button type="submit" class="btn btn-primary me-2"><i class="fas fa-filter me-2"></i>Lọc</button>
+                            <a href="${pageContext.request.contextPath}FeedbackList" class="btn btn-secondary"><i class="fas fa-undo me-2"></i>Đặt lại</a>
                         </div>
                     </form>
                 </div>
@@ -316,7 +317,7 @@
                                 <th>#</th>
                                 <th>
                                     <a href="${pageContext.request.contextPath}/FeedbackList?sortBy=fullName&sortOrder=${sortBy eq 'fullName' && sortOrder eq 'asc' ? 'desc' : 'asc'}&search=${searchKeyword}&productId=${selectedProductId}&rating=${selectedRating}&status=${selectedStatus}" class="text-decoration-none text-dark">
-                                        <i class="fas fa-user me-1"></i> Customer Name
+                                        <i class="fas fa-user me-1"></i> Tên Khách Hàng
                                         <span class="sort-icon">
                                             <c:choose>
                                                 <c:when test="${sortBy eq 'fullName' && sortOrder eq 'asc'}">
@@ -334,7 +335,7 @@
                                 </th>
                                 <th>
                                     <a href="${pageContext.request.contextPath}/FeedbackList?sortBy=productName&sortOrder=${sortBy eq 'productName' && sortOrder eq 'asc' ? 'desc' : 'asc'}&search=${searchKeyword}&productId=${selectedProductId}&rating=${selectedRating}&status=${selectedStatus}" class="text-decoration-none text-dark">
-                                        <i class="fas fa-box me-1"></i> Product
+                                        <i class="fas fa-box me-1"></i> Sản Phẩm
                                         <span class="sort-icon">
                                             <c:choose>
                                                 <c:when test="${sortBy eq 'productName' && sortOrder eq 'asc'}">
@@ -352,7 +353,7 @@
                                 </th>
                                 <th>
                                     <a href="${pageContext.request.contextPath}/FeedbackList?sortBy=rating&sortOrder=${sortBy eq 'rating' && sortOrder eq 'asc' ? 'desc' : 'asc'}&search=${searchKeyword}&productId=${selectedProductId}&rating=${selectedRating}&status=${selectedStatus}" class="text-decoration-none text-dark">
-                                        <i class="fas fa-star me-1"></i> Rating
+                                        <i class="fas fa-star me-1"></i> Đánh Giá
                                         <span class="sort-icon">
                                             <c:choose>
                                                 <c:when test="${sortBy eq 'rating' && sortOrder eq 'asc'}">
@@ -368,11 +369,11 @@
                                         </span>
                                     </a>
                                 </th>
-                                <th><i class="fas fa-comment me-1"></i> Comment</th>
-                                <th><i class="fas fa-calendar me-1"></i> Date</th>
+                                <th><i class="fas fa-comment me-1"></i> Bình Luận</th>
+                                <th><i class="fas fa-calendar me-1"></i> Ngày</th>
                                 <th>
                                     <a href="${pageContext.request.contextPath}/FeedbackList?sortBy=status&sortOrder=${sortBy eq 'status' && sortOrder eq 'asc' ? 'desc' : 'asc'}&search=${searchKeyword}&productId=${selectedProductId}&rating=${selectedRating}&status=${selectedStatus}" class="text-decoration-none text-dark">
-                                        <i class="fas fa-toggle-on me-1"></i> Status
+                                        <i class="fas fa-toggle-on me-1"></i> Trạng Thái
                                         <span class="sort-icon">
                                             <c:choose>
                                                 <c:when test="${sortBy eq 'status' && sortOrder eq 'asc'}">
@@ -388,16 +389,16 @@
                                         </span>
                                     </a>
                                 </th>
-                                <th><i class="fas fa-cog me-1"></i> Actions</th>
+                                <th><i class="fas fa-cog me-1"></i> Thao Tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:choose>
-                                <c:when test="${empty feedbackList}">
+                                <c:when test="${empty feedbackList}"> 
                                     <tr>
                                         <td colspan="8" class="text-center py-4">
                                             <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                                            <p class="lead">No feedback found</p>
+                                            <p class="lead">Không có phản hồi nào</p>
                                         </td>
                                     </tr>
                                 </c:when>
@@ -421,18 +422,18 @@
                                             <td><fmt:formatDate value="${feedback.createdAt}" pattern="MM/dd/yyyy HH:mm" /></td>
                                             <td>
                                                 <span class="badge ${feedback.status ? 'bg-success' : 'bg-danger'} status-badge">
-                                                    ${feedback.status ? 'Active' : 'Inactive'}
+                                                    ${feedback.status ? 'Hoạt động' : 'Không hoạt động'}
                                                 </span>
                                             </td>
                                             <td>
                                                 <a href="${pageContext.request.contextPath}/admin/feedback?action=view&id=${feedback.reviewId}" 
-                                                   class="btn btn-sm btn-info me-1" data-bs-toggle="tooltip" title="View Details">
+                                                   class="btn btn-sm btn-info me-1" data-bs-toggle="tooltip" title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="${pageContext.request.contextPath}/FeedbackList?action=changeStatus&id=${feedback.reviewId}&status=${!feedback.status}&page=${currentPage}" 
                                                    class="btn btn-sm ${feedback.status ? 'btn-danger' : 'btn-success'}" 
-                                                   onclick="return confirm('Are you sure you want to ${feedback.status ? 'deactivate' : 'activate'} this feedback?')"
-                                                   data-bs-toggle="tooltip" title="${feedback.status ? 'Deactivate' : 'Activate'}">
+                                                   onclick="return confirm('Bạn có chắc chắn muốn ${feedback.status ? 'vô hiệu hóa' : 'kích hoạt'} phản hồi này không?')"
+                                                   data-bs-toggle="tooltip" title="${feedback.status ? 'Vô hiệu hóa' : 'Kích hoạt'}">
                                                     <i class="fas ${feedback.status ? 'fa-ban' : 'fa-check'}"></i>
                                                 </a>
                                             </td>
@@ -446,14 +447,15 @@
                 
                 <!-- Pagination -->
                 <c:if test="${totalPages > 1}">
-                    <nav aria-label="Page navigation">
+                    <nav aria-label="Phân trang">
                         <ul class="pagination justify-content-center">
                             <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                 <a class="page-link" href="${pageContext.request.contextPath}/FeedbackList?page=${currentPage - 1}&search=${searchKeyword}&productId=${selectedProductId}&rating=${selectedRating}&status=${selectedStatus}&sortBy=${sortBy}&sortOrder=${sortOrder}">
-                                    <i class="fas fa-chevron-left"></i> Previous
+                                    <i class="fas fa-chevron-left"></i> Trước
                                 </a>
                             </li>
                             
+
                             <c:forEach begin="1" end="${totalPages}" var="i">
                                 <li class="page-item ${currentPage == i ? 'active' : ''}">
                                     <a class="page-link" href="${pageContext.request.contextPath}/FeedbackList?page=${i}&search=${searchKeyword}&productId=${selectedProductId}&rating=${selectedRating}&status=${selectedStatus}&sortBy=${sortBy}&sortOrder=${sortOrder}">
@@ -464,7 +466,7 @@
                             
                             <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
                                 <a class="page-link" href="${pageContext.request.contextPath}/FeedbackList?page=${currentPage + 1}&search=${searchKeyword}&productId=${selectedProductId}&rating=${selectedRating}&status=${selectedStatus}&sortBy=${sortBy}&sortOrder=${sortOrder}">
-                                    Next <i class="fas fa-chevron-right"></i>
+                                    Sau <i class="fas fa-chevron-right"></i>
                                 </a>
                             </li>
                         </ul>

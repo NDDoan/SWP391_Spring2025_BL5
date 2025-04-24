@@ -1,323 +1,200 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>
-            <c:choose>
-                <c:when test="${mode == 'create'}">Thêm Bài Viết Mới</c:when>
-                <c:when test="${mode == 'edit'}">Chỉnh Sửa Bài Viết</c:when>
-                <c:otherwise>Xem Bài Viết</c:otherwise>
-            </c:choose>
-        </title>
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <!-- CKEditor 5 -->
-        <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
-        <style>
-            /* General Styles */
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #f8f9fa;
-                color: #343a40;
-            }
-            .container {
-                max-width: 960px;
-            }
-            h2 {
-                color: #495057;
-                margin-bottom: 0.75rem;
-            }
-            /* Card Styles */
-            .card {
-                border: none;
-                box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
-                border-radius: 0.5rem;
-            }
-            .card-body {
-                padding: 1.5rem;
-            }
-            /* Form Styles */
-            .form-label {
-                font-weight: 500;
-                color: #495057;
-            }
-            .form-control,
-            .form-select {
-                border-radius: 0.3rem;
-                border: 1px solid #ced4da;
-                padding: 0.5rem 0.75rem;
-                font-size: 1rem;
-            }
-            .form-control:focus,
-            .form-select:focus {
-                border-color: #80bdff;
-                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-            }
-            .required-field::after {
-                content: "*";
-                color: red;
-                margin-left: 4px;
-            }
-            /* Thumbnail Styles */
-            .post-thumbnail {
-                max-width: 100%;
-                height: auto;
-                border-radius: 0.5rem;
-                margin-bottom: 1rem;
-                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
-            }
-            /* Status Badge */
-            .status-badge {
-                padding: 0.4rem 0.75rem;
-                border-radius: 1rem;
-                font-size: 0.85rem;
-            }
-            .status-active {
-                background-color: #28a745;
-                color: white;
-            }
-            .status-inactive {
-                background-color: #dc3545;
-                color: white;
-            }
-            /* Editor Styles */
-            .ck-editor__editable {
-                min-height: 200px;
-                border-radius: 0.3rem;
-                border: 1px solid #ced4da;
-            }
-            /* Created Info */
-            .created-info {
-                font-size: 0.9rem;
-                color: #6c757d;
-                margin-top: 1rem;
-            }
-            /* Form Switch */
-            .form-check-label {
-                color: #495057;
-            }
-            .form-switch .form-check-input {
-                width: 3em;
-                height: 1.5em;
-                margin-right: 0.5em;
-                background-color: #adb5bd;
-                border-color: #adb5bd;
-                border-radius: 2em;
-                transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-            }
-            .form-switch .form-check-input:checked {
-                background-color: #28a745;
-                border-color: #28a745;
-            }
-            .form-switch .form-check-input:focus {
-                box-shadow: none;
-            }
-            /* Button Styles */
-            .btn {
-                border-radius: 0.3rem;
-                padding: 0.6rem 1.2rem;
-                font-size: 1rem;
-                font-weight: 500;
-                transition: all 0.2s ease-in-out;
-            }
-            .btn-primary {
-                background-color: #007bff;
-                border-color: #007bff;
-            }
-            .btn-primary:hover {
-                background-color: #0069d9;
-                border-color: #0062cc;
-            }
-            .btn-secondary {
-                background-color: #6c757d;
-                border-color: #6c757d;
-            }
-            .btn-secondary:hover {
-                background-color: #5a6268;
-                border-color: #545b62;
-            }
-            .btn-warning {
-                background-color: #ffc107;
-                border-color: #ffc107;
-                color: #212529;
-            }
-            .btn-warning:hover {
-                background-color: #e0a800;
-                border-color: #d39e00;
-            }
-            /*Utility classes*/
-            .mb-3 {
-                margin-bottom: 1.5rem !important;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <!-- Page Header -->
-                    <h2>
-                        <c:choose>
-                            <c:when test="${mode == 'create'}"><i class="fas fa-plus-circle"></i> Thêm Bài Viết Mới</c:when>
-                            <c:when test="${mode == 'edit'}"><i class="fas fa-edit"></i> Chỉnh Sửa Bài Viết</c:when>
-                            <c:otherwise><i class="fas fa-eye"></i> Xem Bài Viết</c:otherwise>
-                        </c:choose>
-                    </h2>
-                    
-                    <!-- Breadcrumb -->
-                    <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/AdminPage/dashboard.jsp">Trang chủ</a></li>
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/PostListController">Bài viết</a></li>
-                            <li class="breadcrumb-item active">
-                                <c:choose>
-                                    <c:when test="${mode == 'create'}">Thêm Bài Viết Mới</c:when>
-                                    <c:when test="${mode == 'edit'}">Chỉnh Sửa Bài Viết</c:when>
-                                    <c:otherwise>Xem Bài Viết</c:otherwise>
-                                </c:choose>
-                            </li>
-                        </ol>
-                    </nav>
-                    
-                    <!-- Main Form -->
-                    <div class="card">
-                        <div class="card-body">
-                            <form action="${pageContext.request.contextPath}/PostDetailController" method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="action" value="save">
-                                
-                                <c:if test="${post != null}">
-                                    <input type="hidden" name="postId" value="${post.postId}">
-                                </c:if>
-                                
-                                <div class="row">
-                                    <!-- Left Column -->
-                                    <div class="col-md-8">
-                                        <!-- Title -->
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label required-field">Tiêu đề</label>
-                                            <input type="text" class="form-control" id="title" name="title" 
-                                                   value="${post.title}" required
-                                                   <c:if test="${mode == 'view'}">readonly</c:if>>
-                                        </div>
-                                        
-                                        <!-- Content -->
-                                        <div class="mb-3">
-                                            <label for="editor" class="form-label required-field">Nội dung</label>
-                                            <c:choose>
-                                                <c:when test="${mode == 'view'}">
-                                                    <div class="form-control content-display p-3" style="min-height:300px; overflow-y:auto;">
-                                                        ${post.content}
-                                                    </div>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <textarea id="editor" name="content" class="form-control" rows="10">${post.content}</textarea>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </div>
-                                    </div>
-                                  
-                                    <!-- Right Column -->
-                                    <div class="col-md-4">
-                                        <!-- Thumbnail -->
-                                        <div class="mb-3">
-                                            <label for="thumbnail" class="form-label">Ảnh đại diện</label>
-                                            
-                                            <c:if test="${post != null && not empty post.thumbnailUrl}">
-                                                <img src="${pageContext.request.contextPath}/${post.thumbnailUrl}" 
-                                                     alt="Ảnh đại diện bài viết" class="post-thumbnail img-fluid d-block">
-                                                <input type="hidden" name="existingThumbnail" value="${post.thumbnailUrl}">
-                                            </c:if>
-                                            
-                                            <c:if test="${mode != 'view'}">
-                                                <input type="file" class="form-control mt-2" id="thumbnail" name="thumbnail" accept="image/*">
-                                                <small class="form-text text-muted">Kích thước đề xuất: 1200x630 pixels, tối đa 2MB</small>
-                                            </c:if>
-                                        </div>
-                                      
-                                        <!-- Category -->
-                                        <div class="mb-3">
-                                            <label for="categoryId" class="form-label required-field">Danh mục</label>
-                                            <select class="form-select" id="categoryId" name="categoryId" required
-                                                    <c:if test="${mode == 'view'}">disabled</c:if> >
-                                                <option value="">Chọn Danh mục</option>
-                                                <c:forEach items="${categories}" var="category">
-                                                    <option value="${category.categoryId}" 
-                                                            <c:if test="${post.categoryId == category.categoryId}">selected</c:if> >
-                                                        ${category.categoryName}
-                                                    </option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
-                                        
-                                        <!-- Status -->
-                                        <div class="mb-3">
-                                            <label class="form-label required-field">Trạng thái</label>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="status" name="status" value="true" 
-                                                       ${post.status ? 'checked' : ''} ${mode == 'view' ? 'disabled' : ''}>
-                                                <label class="form-check-label" for="status">
-                                                    ${post.status ? 'Hoạt động' : 'Không hoạt động'}
-                                                </label>
-                                            </div>
-                                            <small class="text-muted">Bài viết hoạt động sẽ hiển thị cho người dùng</small>
-                                        </div>
-                                        
-                                        <!-- Author Info (if viewing) -->
-                                        <c:if test="${post != null}">
-                                            <div class="created-info">
-                                                <p><strong>Tác giả:</strong> ${post.authorName}</p>
-                                                <p><strong>Ngày tạo:</strong> <fmt:formatDate value="${post.createdAt}" pattern="dd-MM-yyyy HH:mm" /></p>
-                                            </div>
-                                        </c:if>
-                                    </div>
-                                </div>
-                                  
-                                <!-- Action Buttons -->
-                                <div class="mt-4 d-flex justify-content-between">
-                                    <a href="${pageContext.request.contextPath}/PostListController" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left"></i> Quay lại danh sách
-                                    </a>
-                                  
-                                    <div>
-                                        <c:if test="${mode == 'view'}">
-                                            <a href="${pageContext.request.contextPath}/PostDetailController?action=edit&id=${post.postId}" class="btn btn-warning">
-                                                <i class="fas fa-edit"></i> Chỉnh sửa
-                                            </a>
-                                        </c:if>
-                                      
-                                        <c:if test="${mode != 'view'}">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Lưu
-                                            </button>
-                                        </c:if>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <c:choose>
+            <c:when test="${mode == 'create'}">Thêm Bài Viết Mới</c:when>
+            <c:when test="${mode == 'edit'}">Chỉnh Sửa Bài Viết</c:when>
+            <c:otherwise>Xem Bài Viết</c:otherwise>
+        </c:choose>
+    </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f4f4f8; font-family: Arial, sans-serif; }
+        .sidebar { background: #343a40; min-height: 100vh; }
+        .sidebar .nav-link { color: #ddd; }
+        .sidebar .nav-link.active { color: #fff; background: #495057; }
+        .header { background: #fff; padding: 15px; border-bottom: 1px solid #dee2e6; }
+        .card { border-radius: 0.75rem; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1); }
+        .table-responsive { margin-top: 1rem; }
+        .table th, .table td { vertical-align: middle; }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; }
+        .status-active { background-color: #28a745; color: white; }
+        .status-inactive { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 sidebar d-none d-md-block">
+            <jsp:include page="dashboard-sidebar.jsp"/>
+        </nav>
+        <!-- Main Content -->
+        <div class="col-md-10">
+            <!-- Header -->
+            <div class="header d-flex justify-content-between align-items-center">
+                <h3>Quản Lý Bài Viết</h3>
+                <div>
+                    <a href="${pageContext.request.contextPath}/PostDetailController?action=create" class="btn btn-primary me-2">
+                        <i class="fas fa-plus"></i> Thêm Mới
+                    </a>
+                    <a href="${pageContext.request.contextPath}/admin/customers" class="btn btn-success me-2">
+                        <i class="fas fa-users"></i>
+                    </a>
+                    <a href="${pageContext.request.contextPath}/admin/feedbacks" class="btn btn-info">
+                        <i class="fas fa-comments"></i>
+                    </a>
                 </div>
             </div>
+
+            <!-- Thông Báo -->
+            <c:if test="${not empty sessionScope.successMessage}">
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    ${sessionScope.successMessage}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <% session.removeAttribute("successMessage"); %>
+            </c:if>
+            <c:if test="${not empty sessionScope.errorMessage}">
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    ${sessionScope.errorMessage}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <% session.removeAttribute("errorMessage"); %>
+            </c:if>
+
+            <!-- Bộ Lọc -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <form action="${pageContext.request.contextPath}/PostListController" method="get" class="row g-3">
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="categoryId" class="form-label">Danh mục</label>
+                            <select id="categoryId" name="categoryId" class="form-select">
+                                <option value="">Tất cả</option>
+                                <c:forEach var="category" items="${categories}">
+                                    <option value="${category.categoryId}" ${categoryId == category.categoryId ? 'selected' : ''}>
+                                        ${category.categoryName}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="authorId" class="form-label">Tác giả</label>
+                            <select id="authorId" name="authorId" class="form-select">
+                                <option value="">Tất cả</option>
+                                <c:forEach var="author" items="${authors}">
+                                    <option value="${author.user_id}" ${authorId == author.user_id ? 'selected' : ''}>
+                                        ${author.full_name}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="status" class="form-label">Trạng thái</label>
+                            <select id="status" name="status" class="form-select">
+                                <option value="">Tất cả</option>
+                                <option value="True" ${status == 'true' ? 'selected' : ''}>Hoạt động</option>
+                                <option value="False" ${status == 'false' ? 'selected' : ''}>Không hoạt động</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="searchTitle" class="form-label">Tiêu đề</label>
+                            <input id="searchTitle" name="searchTitle" type="text" class="form-control" value="${searchTitle}" placeholder="Tìm kiếm...">
+                        </div>
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-search"></i> Lọc
+                            </button>
+                            <a href="${pageContext.request.contextPath}/PostListController" class="btn btn-secondary">
+                                <i class="fas fa-redo"></i> Đặt lại
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bảng Danh Sách Bài Viết -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Ảnh</th>
+                                <th>
+                                    <a href="?sortBy=title&sortOrder=${sortBy=='title'&&sortOrder!='desc'?'desc':'asc'}">Tiêu đề
+                                        <c:if test="${sortBy=='title'}">
+                                            <i class="fas fa-sort-${sortOrder=='desc'?'down':'up'}"></i>
+                                        </c:if>
+                                    </a>
+                                </th>
+                                <th>Danh mục</th>
+                                <th>Tác giả</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:if test="${empty posts}">
+                                <tr><td colspan="8" class="text-center py-4">Không có bài viết nào.</td></tr>
+                            </c:if>
+                            <c:forEach var="post" items="${posts}">
+                                <tr>
+                                    <td>${post.postId}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${not empty post.thumbnailUrl}">
+                                                <img src="${pageContext.request.contextPath}/${post.thumbnailUrl}" alt="Thumb" class="img-fluid rounded-2" style="max-width:80px;">
+                                            </c:when>
+                                            <c:otherwise><span class="text-muted">Không có ảnh</span></c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>${post.title}</td>
+                                    <td>${post.categoryName}</td>
+                                    <td>${post.authorName}</td>
+                                    <td>
+                                        <span class="status-badge ${post.status ? 'status-active':'status-inactive'}">
+                                            ${post.status ? 'Hoạt động':'Không hoạt động'}
+                                        </span>
+                                    </td>
+                                    <td><fmt:formatDate value="${post.createdAt}" pattern="dd-MM-yyyy HH:mm"/></td>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/PostDetailController?action=view&id=${post.postId}" class="btn btn-sm btn-info me-1"><i class="fas fa-eye"></i></a>
+                                        <a href="${pageContext.request.contextPath}/PostDetailController?action=edit&id=${post.postId}" class="btn btn-sm btn-warning me-1"><i class="fas fa-edit"></i></a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Phân trang -->
+                <c:if test="${totalPages>1}">
+                    <nav class="p-3">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item ${currentPage==1?'disabled':''}"><a class="page-link" href="?page=${currentPage-1}"><i class="fas fa-chevron-left"></i></a></li>
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <li class="page-item ${currentPage==i?'active':''}"><a class="page-link" href="?page=${i}">${i}</a></li>
+                            </c:forEach>
+                            <li class="page-item ${currentPage==totalPages?'disabled':''}"><a class="page-link" href="?page=${currentPage+1}"><i class="fas fa-chevron-right"></i></a></li>
+                        </ul>
+                    </nav>
+                </c:if>
+            </div>
+
         </div>
-        
-        <!-- Bootstrap JS with Popper -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        
-        <c:if test="${mode != 'view'}">
-            <!-- Initialize CKEditor -->
-            <script>
-                ClassicEditor
-                    .create(document.querySelector('#editor'), {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'undo', 'redo']
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            </script>
-        </c:if>
-    </body>
+    </div>
+</div>
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
