@@ -81,98 +81,98 @@
             }
 
             th {
-                background-color: #3498db;
+                background-color: black;
                 color: white;
                 text-transform: uppercase;
-            }
+                }
 
-            tr:hover {
+                tr:hover {
                 background-color: #f1f1f1;
-            }
+                }
 
-            @media screen and (max-width: 768px) {
+                @media screen and (max-width: 768px) {
                 table, thead, tbody, th, td, tr {
-                    display: block;
+                display: block;
                 }
 
                 thead tr {
-                    display: none;
+                display: none;
                 }
 
                 tbody tr {
-                    margin-bottom: 15px;
-                    border: 1px solid #ddd;
-                    border-radius: 5px;
-                    background-color: #fff;
-                    padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #fff;
+                padding: 10px;
                 }
 
                 td {
-                    text-align: left;
-                    padding-left: 50%;
-                    position: relative;
+                text-align: left;
+                padding-left: 50%;
+                position: relative;
                 }
 
                 td::before {
-                    content: attr(data-label);
-                    position: absolute;
-                    left: 15px;
-                    width: 45%;
-                    padding-right: 10px;
-                    font-weight: bold;
-                    color: #333;
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                font-weight: bold;
+                color: #333;
                 }
-            }
-        </style>
-    </head>
-    <body>
-        <jsp:include page="../CommonPage/Header.jsp"/>
-        <div class="container">
-            <h2>Thông tin giao hàng</h2>
+                }
+            </style>
+        </head>
+        <body>
+            <jsp:include page="../CommonPage/Header.jsp"/>
+            <div class="container">
+                <h2>Thông tin giao hàng</h2>
 
-            <!-- Form tìm kiếm -->
-            <form class="search-form" method="get" action="customershipping">
-                <label for="status">Trạng thái:</label>
-                <select name="status" id="status" class="form-select w-auto">
-                    <option value="">-- Tất cả --</option>
-                    <option value="Pending" ${statusFilter == 'Pending' ? 'selected' : ''}>Pending</option>
-                    <option value="Shipped" ${statusFilter == 'Shipped' ? 'selected' : ''}>Shipped</option>
-                    <option value="Delivered" ${statusFilter == 'Delivered' ? 'selected' : ''}>Delivered</option>
-                    <option value="Canceled" ${statusFilter == 'Canceled' ? 'selected' : ''}>Canceled</option>
-                    <option value="Returned" ${statusFilter == 'Returned' ? 'selected' : ''}>Returned</option>
-                </select>
-                <button type="submit">Tìm kiếm</button>
-            </form>
+                <!-- Form tìm kiếm -->
+                <form class="search-form" method="get" action="customershipping">
+                    <label for="status">Trạng thái:</label>
+                    <select name="status" id="status" class="form-select w-auto">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Pending" ${statusFilter == 'Pending' ? 'selected' : ''}>Pending</option>
+                        <option value="Shipped" ${statusFilter == 'Shipped' ? 'selected' : ''}>Shipped</option>
+                        <option value="Delivered" ${statusFilter == 'Delivered' ? 'selected' : ''}>Delivered</option>
+                        <option value="Canceled" ${statusFilter == 'Canceled' ? 'selected' : ''}>Canceled</option>
+                        <option value="Returned" ${statusFilter == 'Returned' ? 'selected' : ''}>Returned</option>
+                    </select>
+                    <button type="submit">Tìm kiếm</button>
+                </form>
 
 
-            <!-- Bảng thông tin giao hàng -->
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mã đơn hàng</th>
-                        <th>Địa chỉ giao hàng</th>
-                        <th>Trạng thái</th>
-                        <th>Mã vận đơn</th>
-                        <th>Ngày giao</th>
-                        <th>Ngày dự kiến</th>
-                        <th>Ghi chú</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="s" items="${shippingList}">
+                <!-- Bảng thông tin giao hàng -->
+                <table>
+                    <thead >
                         <tr>
-                            <td data-label="Mã đơn hàng">${s.orderId}</td>
-                            <td data-label="Địa chỉ giao hàng">${s.shippingAddress}</td>
-                            <td data-label="Trạng thái">${s.shippingStatus}</td>
-                            <td data-label="Mã vận đơn">${s.trackingNumber}</td>
-                            <td data-label="Ngày giao">${s.shippingDate}</td>
-                            <td data-label="Ngày dự kiến">${s.estimatedDelivery}</td>
-                            <td data-label="Ghi chú">${s.deliveryNotes}</td>
+                            <th>Mã đơn hàng</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Trạng thái</th>
+                            <th>Mã vận đơn</th>
+                            <th>Ngày giao</th>
+                            <th>Ngày dự kiến</th>
+                            <th>Ghi chú</th>
                         </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </div>
-        <jsp:include page="../CommonPage/Footer.jsp"/>
-    </body>
-</html>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="s" items="${shippingList}">
+                            <tr>
+                                <td data-label="Mã đơn hàng">${s.orderId}</td>
+                                <td data-label="Địa chỉ giao hàng">${s.shippingAddress}</td>
+                                <td data-label="Trạng thái">${s.shippingStatus}</td>
+                                <td data-label="Mã vận đơn">${s.trackingNumber}</td>
+                                <td data-label="Ngày giao">${s.shippingDate}</td>
+                                <td data-label="Ngày dự kiến">${s.estimatedDelivery}</td>
+                                <td data-label="Ghi chú">${s.deliveryNotes}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+            <jsp:include page="../CommonPage/Footer.jsp"/>
+        </body>
+    </html>

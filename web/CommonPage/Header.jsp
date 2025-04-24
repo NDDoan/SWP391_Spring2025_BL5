@@ -140,6 +140,12 @@
                                             <i class="fas fa-id-card me-2"></i> Thông tin cá nhân
                                         </a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center" 
+                                           href="${pageContext.request.contextPath}/CustomerShipping">
+                                            <i class="fas fa-id-card me-2"></i> Thông tin vận chuyển đơn hàng
+                                        </a>
+                                    </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a class="dropdown-item text-danger d-flex align-items-center" 
