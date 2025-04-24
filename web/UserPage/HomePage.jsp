@@ -111,8 +111,9 @@
                                     <small class="text-muted">${p.brandName} – ${p.categoryName}</small><br/>
                                     <strong>${p.price}₫</strong>
                                 </p>
+                                <a href="#" class="btn btn-sm btn-success"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
                                 <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}"
-                                   class="btn btn-primary btn-sm">Xem chi tiết</a>
+                                   class="btn btn-primary btn-sm"><i class="fas fa-info-circle"></i> Xem chi tiết</a>
                             </div>
                         </div>
                     </div>
@@ -140,10 +141,10 @@
                                             <p class="card-text text-danger fw-bold">${p.price}₫</p>
                                             <a href="${pageContext.request.contextPath}/cart/add?productId=${p.productId}" 
                                                class="btn btn-success btn-sm me-2">
-                                                <i class="fas fa-cart-plus"></i> Add to Cart
+                                                <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
                                             </a>
                                             <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}" 
-                                               class="btn btn-primary btn-sm">Chi tiết</a>
+                                               class="btn btn-primary btn-sm"><i class="fas fa-info-circle"></i> Xem chi tiết</a>
                                         </div>
                                     </div>
                                 </div>
@@ -170,7 +171,7 @@
             <section class="category-section py-4">
                 <div class="container">
                     <h3 class="mb-3">${catName}</h3>
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                         <c:forEach var="p" items="${prods}">
                             <div class="col">
                                 <div class="card h-100">
@@ -182,7 +183,9 @@
                                         <p class="text-muted mb-2">${p.brandName}</p>
                                         <div class="mt-auto d-flex justify-content-between align-items-center">
                                             <span class="fw-bold">${p.price}₫</span>
-                                            <a href="#" class="btn btn-sm btn-success">Add to cart</a>
+                                            <a href="#" class="btn btn-sm btn-success"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
+                                            <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}" 
+                                               class="btn btn-primary btn-sm"><i class="fas fa-info-circle"></i> Xem chi tiết</a>
                                         </div>
                                     </div>
                                 </div>

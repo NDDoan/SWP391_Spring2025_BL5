@@ -90,7 +90,7 @@
                 <p><a href="#">Thông tin vận chuyển</a></p>
             </div>
             <div class="footer-section">
-                <h3>About Us</h3>
+                <h3>Về chúng tôi</h3>
                 <p><a href="#">Chính sách bảo mật</a></p>
                 <p><a href="#">Điều khoản dịch vụ</a></p>
                 <p><strong>Nhóm 2 - SWP391.BL5</strong></p>
