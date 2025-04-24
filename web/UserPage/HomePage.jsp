@@ -99,7 +99,7 @@
         <!-- Header -->
         <jsp:include page="../CommonPage/Header.jsp"/>
         <div class="container my-5">
-            <h2 class="mb-4">Featured Products</h2>
+            <h2 class="mb-4">Sản phẩm nổi bật</h2>
             <div class="row g-4">
                 <c:forEach var="p" items="${featuredList}">
                     <div class="col-md-3">
@@ -111,7 +111,7 @@
                                     <small class="text-muted">${p.brandName} – ${p.categoryName}</small><br/>
                                     <strong>${p.price}₫</strong>
                                 </p>
-                                <a href="${pageContext.request.contextPath}/ProductDetail?productId=${p.productId}"
+                                <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}"
                                    class="btn btn-primary btn-sm">Xem chi tiết</a>
                             </div>
                         </div>
@@ -142,7 +142,7 @@
                                                class="btn btn-success btn-sm me-2">
                                                 <i class="fas fa-cart-plus"></i> Add to Cart
                                             </a>
-                                            <a href="${pageContext.request.contextPath}/ProductDetail?productId=${p.productId}" 
+                                            <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}" 
                                                class="btn btn-primary btn-sm">Chi tiết</a>
                                         </div>
                                     </div>
@@ -174,7 +174,7 @@
                         <c:forEach var="p" items="${prods}">
                             <div class="col">
                                 <div class="card h-100">
-                                    <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${p.productId}&mode=view">
+                                    <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}">
                                         <img src="${p.primaryMediaUrl}" class="card-img-top" alt="${p.productName}" style="height:auto; object-fit:cover;">
                                     </a>
                                     <div class="card-body d-flex flex-column">
