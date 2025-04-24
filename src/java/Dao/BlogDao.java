@@ -48,11 +48,11 @@ public class BlogDao {
     public List<PostDto> getLatestBlogs(int limit) {
         List<PostDto> list = new ArrayList<>();
         String sql = """
-        SELECT TOP (?) p.post_id, p.title, p.content, p.thumbnail_url, 
-                       p.created_at, u.full_name AS author_name, c.name AS category_name
+        SELECT TOP ? p.post_id, p.title, p.content, p.thumbnail_url, 
+                               p.created_at, u.full_name AS author_name, c.category_name 
         FROM post p
-        JOIN [user] u ON p.user_id = u.user_id
-        JOIN category_post c ON p.category_id = c.category_id
+        JOIN [Users] u ON p.user_id = u.user_id
+        JOIN CategoryPost c ON p.category_id = c.category_id
         WHERE p.status = 1
         ORDER BY p.created_at DESC
     """;
