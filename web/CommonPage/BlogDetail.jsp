@@ -36,7 +36,7 @@
         <div class="blog-content">
             <c:out value="${post.content}" escapeXml="false" />
         </div>
-        <a href="${pageContext.request.contextPath}/BlogList" class="back-link">← Back to Blog List</a>
+        <a href="${pageContext.request.contextPath}/BlogListController" class="back-link">← Quay về danh sách bài viết</a>
     </div>
 </body>
 </html>

@@ -2,18 +2,20 @@ package Controller;
 
 import Dao.PostDao;
 import EntityDto.PostDto;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "BlogListController", urlPatterns = {"/BlogListContrroller"})
+/**
+ * Servlet hiển thị danh sách bài viết với phân trang và tìm kiếm.
+ */
+@WebServlet(name = "BlogListController", urlPatterns = {"/BlogListController"})
 public class BlogListController extends HttpServlet {
 
-    private static final int PAGE_SIZE = 5;            // Số bài viết mỗi trang
-    private static final int LATEST_BLOG_LIMIT = 5;    // Số bài viết mới ở sidebar
+    private static final int PAGE_SIZE = 5;
+    private static final int LATEST_BLOG_LIMIT = 5;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -22,52 +24,57 @@ public class BlogListController extends HttpServlet {
         PostDao dao = new PostDao();
         int page = 1;
         String pageParam = request.getParameter("page");
-        String keyword = request.getParameter("keyword"); // Lấy từ khóa tìm kiếm
+        String keyword = request.getParameter("keyword");
 
         if (pageParam != null) {
             try {
                 page = Integer.parseInt(pageParam);
-            } catch (NumberFormatException ignored) {
-            }
+            } catch (NumberFormatException ignored) {}
         }
 
         try {
             List<PostDto> posts;
-            int totalPosts = 0;
+            int totalPosts;
+            int totalPages;
 
             if (keyword != null && !keyword.trim().isEmpty()) {
-                // Nếu có từ khóa tìm kiếm, sử dụng searchPostsByKeyword
+                // Tìm kiếm bài viết theo keyword
                 posts = dao.searchPostsByKeyword(keyword.trim());
-                totalPosts = posts.size(); // Không phân trang khi tìm kiếm
-                page = 1; // Reset về trang 1 khi tìm kiếm
+                totalPosts = posts.size();
+                totalPages = 1;
+                request.setAttribute("keyword", keyword);
             } else {
-                // Không có từ khóa -> phân trang bình thường
+                // Lấy danh sách phân trang, lọc status = true
                 posts = dao.getPosts(
                         page,
                         PAGE_SIZE,
-                        null, null,
-                        "1", // status = true
-                        null,
-                        "created_at",
-                        "DESC"
+                        null,               // categoryId
+                        null,               // authorId
+                        "true",           // status boolean true
+                        null,               // searchTitle
+                        "created_at",      // sortBy
+                        "DESC"             // sortOrder
                 );
-                totalPosts = dao.countPosts("1", null, null, null);
+                totalPosts = dao.countPosts(
+                        null,               // categoryId
+                        null,               // authorId
+                        "true",           // status = true
+                        null                // searchTitle
+                );
+                totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
             }
 
-            // Lấy bài viết mới nhất cho sidebar
+            // Lấy bài viết nổi bật
             List<PostDto> latestPosts = dao.getLatestBlogs(LATEST_BLOG_LIMIT);
-
-            int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
 
             request.setAttribute("posts", posts);
             request.setAttribute("latestPosts", latestPosts);
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
-            request.setAttribute("keyword", keyword); // Truyền keyword lại để giữ trên form
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Đã xảy ra lỗi khi tải danh sách bài viết.");
+            request.setAttribute("error", "Không thể tải danh sách bài viết.");
         }
 
         request.getRequestDispatcher("/CommonPage/BlogList.jsp").forward(request, response);
