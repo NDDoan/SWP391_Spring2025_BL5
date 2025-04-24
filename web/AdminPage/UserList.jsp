@@ -264,7 +264,7 @@
                                         <label>Vai trò</label>
                                         <select class="form-control" name="role_id" id="role_id">
 
-                                            <option value="3">Quản lý</option>
+                                            <option value="3">Marketing</option>
                                             <option value="4">Nhân viên giao hàng</option>
                                             <option value="5">Nhân viên quản lí</option>
                                         </select>
