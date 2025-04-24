@@ -7,9 +7,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>
             <c:choose>
-                <c:when test="${mode == 'create'}">Add New Post</c:when>
-                <c:when test="${mode == 'edit'}">Edit Post</c:when>
-                <c:otherwise>View Post</c:otherwise>
+                <c:when test="${mode == 'create'}">Thêm Bài Viết Mới</c:when>
+                <c:when test="${mode == 'edit'}">Chỉnh Sửa Bài Viết</c:when>
+                <c:otherwise>Xem Bài Viết</c:otherwise>
             </c:choose>
         </title>
         <!-- Bootstrap CSS -->
@@ -163,22 +163,22 @@
                     <!-- Page Header -->
                     <h2>
                         <c:choose>
-                            <c:when test="${mode == 'create'}"><i class="fas fa-plus-circle"></i> Add New Post</c:when>
-                            <c:when test="${mode == 'edit'}"><i class="fas fa-edit"></i> Edit Post</c:when>
-                            <c:otherwise><i class="fas fa-eye"></i> View Post</c:otherwise>
+                            <c:when test="${mode == 'create'}"><i class="fas fa-plus-circle"></i> Thêm Bài Viết Mới</c:when>
+                            <c:when test="${mode == 'edit'}"><i class="fas fa-edit"></i> Chỉnh Sửa Bài Viết</c:when>
+                            <c:otherwise><i class="fas fa-eye"></i> Xem Bài Viết</c:otherwise>
                         </c:choose>
                     </h2>
                     
                     <!-- Breadcrumb -->
                     <nav aria-label="breadcrumb" class="mb-4">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/AdminPage/dashboard.jsp">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/PostListController">Posts</a></li>
+                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/AdminPage/dashboard.jsp">Trang chủ</a></li>
+                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/PostListController">Bài viết</a></li>
                             <li class="breadcrumb-item active">
                                 <c:choose>
-                                    <c:when test="${mode == 'create'}">Add New Post</c:when>
-                                    <c:when test="${mode == 'edit'}">Edit Post</c:when>
-                                    <c:otherwise>View Post</c:otherwise>
+                                    <c:when test="${mode == 'create'}">Thêm Bài Viết Mới</c:when>
+                                    <c:when test="${mode == 'edit'}">Chỉnh Sửa Bài Viết</c:when>
+                                    <c:otherwise>Xem Bài Viết</c:otherwise>
                                 </c:choose>
                             </li>
                         </ol>
@@ -199,7 +199,7 @@
                                     <div class="col-md-8">
                                         <!-- Title -->
                                         <div class="mb-3">
-                                            <label for="title" class="form-label required-field">Title</label>
+                                            <label for="title" class="form-label required-field">Tiêu đề</label>
                                             <input type="text" class="form-control" id="title" name="title" 
                                                    value="${post.title}" required
                                                    <c:if test="${mode == 'view'}">readonly</c:if>>
@@ -207,7 +207,7 @@
                                         
                                         <!-- Content -->
                                         <div class="mb-3">
-                                            <label for="editor" class="form-label required-field">Content</label>
+                                            <label for="editor" class="form-label required-field">Nội dung</label>
                                             <c:choose>
                                                 <c:when test="${mode == 'view'}">
                                                     <div class="form-control content-display p-3" style="min-height:300px; overflow-y:auto;">
@@ -220,34 +220,34 @@
                                             </c:choose>
                                         </div>
                                     </div>
-                                    
+                                  
                                     <!-- Right Column -->
                                     <div class="col-md-4">
                                         <!-- Thumbnail -->
                                         <div class="mb-3">
-                                            <label for="thumbnail" class="form-label">Thumbnail</label>
+                                            <label for="thumbnail" class="form-label">Ảnh đại diện</label>
                                             
                                             <c:if test="${post != null && not empty post.thumbnailUrl}">
                                                 <img src="${pageContext.request.contextPath}/${post.thumbnailUrl}" 
-                                                     alt="Post Thumbnail" class="post-thumbnail img-fluid d-block">
+                                                     alt="Ảnh đại diện bài viết" class="post-thumbnail img-fluid d-block">
                                                 <input type="hidden" name="existingThumbnail" value="${post.thumbnailUrl}">
                                             </c:if>
                                             
                                             <c:if test="${mode != 'view'}">
                                                 <input type="file" class="form-control mt-2" id="thumbnail" name="thumbnail" accept="image/*">
-                                                <small class="form-text text-muted">Recommended size: 1200x630 pixels, max 2MB</small>
+                                                <small class="form-text text-muted">Kích thước đề xuất: 1200x630 pixels, tối đa 2MB</small>
                                             </c:if>
                                         </div>
-                                        
+                                      
                                         <!-- Category -->
                                         <div class="mb-3">
-                                            <label for="categoryId" class="form-label required-field">Category</label>
+                                            <label for="categoryId" class="form-label required-field">Danh mục</label>
                                             <select class="form-select" id="categoryId" name="categoryId" required
-                                                    <c:if test="${mode == 'view'}">disabled</c:if>>
-                                                <option value="">Select Category</option>
+                                                    <c:if test="${mode == 'view'}">disabled</c:if> >
+                                                <option value="">Chọn Danh mục</option>
                                                 <c:forEach items="${categories}" var="category">
                                                     <option value="${category.categoryId}" 
-                                                            <c:if test="${post.categoryId == category.categoryId}">selected</c:if>>
+                                                            <c:if test="${post.categoryId == category.categoryId}">selected</c:if> >
                                                         ${category.categoryName}
                                                     </option>
                                                 </c:forEach>
@@ -256,45 +256,43 @@
                                         
                                         <!-- Status -->
                                         <div class="mb-3">
-                                            <label class="form-label required-field">Status</label>
+                                            <label class="form-label required-field">Trạng thái</label>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="status" name="status" value="true" 
                                                        ${post.status ? 'checked' : ''} ${mode == 'view' ? 'disabled' : ''}>
                                                 <label class="form-check-label" for="status">
-                                                    ${post.status ? 'Active' : 'Inactive'}
+                                                    ${post.status ? 'Hoạt động' : 'Không hoạt động'}
                                                 </label>
                                             </div>
-                                            <small class="text-muted">Active posts are visible to users</small>
+                                            <small class="text-muted">Bài viết hoạt động sẽ hiển thị cho người dùng</small>
                                         </div>
-                                        
-                                        <!-- Remove Featured section -->
                                         
                                         <!-- Author Info (if viewing) -->
                                         <c:if test="${post != null}">
                                             <div class="created-info">
-                                                <p><strong>Author:</strong> ${post.authorName}</p>
-                                                <p><strong>Created:</strong> <fmt:formatDate value="${post.createdAt}" pattern="dd-MM-yyyy HH:mm" /></p>
+                                                <p><strong>Tác giả:</strong> ${post.authorName}</p>
+                                                <p><strong>Ngày tạo:</strong> <fmt:formatDate value="${post.createdAt}" pattern="dd-MM-yyyy HH:mm" /></p>
                                             </div>
                                         </c:if>
                                     </div>
                                 </div>
-                                
+                                  
                                 <!-- Action Buttons -->
                                 <div class="mt-4 d-flex justify-content-between">
                                     <a href="${pageContext.request.contextPath}/PostListController" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left"></i> Back to List
+                                        <i class="fas fa-arrow-left"></i> Quay lại danh sách
                                     </a>
-                                    
+                                  
                                     <div>
                                         <c:if test="${mode == 'view'}">
                                             <a href="${pageContext.request.contextPath}/PostDetailController?action=edit&id=${post.postId}" class="btn btn-warning">
-                                                <i class="fas fa-edit"></i> Edit
+                                                <i class="fas fa-edit"></i> Chỉnh sửa
                                             </a>
                                         </c:if>
-                                        
+                                      
                                         <c:if test="${mode != 'view'}">
                                             <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Save
+                                                <i class="fas fa-save"></i> Lưu
                                             </button>
                                         </c:if>
                                     </div>

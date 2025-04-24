@@ -2,139 +2,146 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <!-- Bootstrap & FontAwesome -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <style>
-            header {
-                background:#1e3c72;
-                padding:.75rem 1.5rem;
-                color:#fff;
-            }
-            .logo {
-                font-size:1.5rem;
-                font-weight:bold;
-                color:#f8d210;
-            }
-            .search-bar .form-control {
-                border-radius:.25rem 0 0 .25rem;
-            }
-            .search-bar .btn {
-                border-radius:0 .25rem .25rem 0;
-                background:#f8d210;
-                font-weight:bold;
-            }
-            .cart-btn {
-                position:relative;
-                background:#28a745;
-                padding:.5rem .75rem;
-                border-radius:.25rem;
-                color:#fff;
-            }
-            .cart-count {
-                position:absolute;
-                top:-5px;
-                right:-8px;
-                background:red;
-                color:#fff;
-                border-radius:50%;
-                font-size:.75rem;
-                padding:2px 6px;
-            }
-            /* show dropdown on hover */
-            .user-dropdown:hover .dropdown-menu {
-                display:block;
-            }
-            .nav-links {
-                display: flex;
-                gap: 15px;
-                align-items: center;
-            }
+<head>
+    <title>Chợ Điện Tử</title>
+    <meta charset="UTF-8">
 
-            .nav-links a {
-                color: white;
-                text-decoration: none;
-                font-weight: 500;
-                padding: 8px 12px;
-                border-radius: 5px;
-                transition: 0.3s;
-                background-color: transparent;
-            }
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-            .nav-links a:hover {
-                background-color: rgba(255, 255, 255, 0.2);
-            }
+    <!-- Custom Style -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
 
-        </style>
-    </head>
-    <body>
-        <header class="d-flex flex-wrap align-items-center justify-content-between">
-            <!-- Logo -->
-            <a href="${pageContext.request.contextPath}/HomePageController" class="logo text-decoration-none">Electro Mart</a>
+        header {
+            background-color: #1e1e2f;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
 
-            <!-- Search -->
-            <form action="${pageContext.request.contextPath}/ProductForManagerListController" 
-                  method="get" class="search-bar d-flex flex-fill mx-3">
-                <input name="search" class="form-control" placeholder="Search products…" />
-                <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-            </form>
-                  
-            <div class="nav-links">
-                <a href="${pageContext.request.contextPath}/#">Sản Phẩm</a>
-                <a href="${pageContext.request.contextPath}/BlogListController">Bài viết</a>
-            </div>
-                  
-            <!-- Right nav -->
-            <nav class="d-flex align-items-center">
-                <!-- Cart -->
-                <a href="${pageContext.request.contextPath}/cartdetailcontroller" class="cart-btn me-3">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count">0</span>
-                </a>
+        .logo {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #ffc107;
+            text-decoration: none;
+        }
 
-                <!-- Login or User dropdown -->
-                <c:choose>
-                    <c:when test="${sessionScope.user == null}">
-                        <a href="${pageContext.request.contextPath}/logincontroller" class="text-white text-decoration-none">
-                            <i class="fas fa-user"></i> Đăng nhập
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffc107;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            font-weight: 500;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #fff;
+            color: #1e1e2f;
+        }
+
+        .dropdown-menu {
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 6px;
+        }
+    </style>
+</head>
+<body>
+
+<header class="py-3 shadow-sm">
+    <div class="container d-flex flex-wrap align-items-center justify-content-between">
+        <!-- Logo -->
+        <a href="${pageContext.request.contextPath}/HomePageController" class="logo">
+            <i class="fas fa-bolt"></i> Chợ Điện Tử
+        </a>
+
+        <!-- Search -->
+        <form action="${pageContext.request.contextPath}/ProductForManagerListController" method="get" class="d-flex flex-grow-1 mx-4" style="max-width: 500px;">
+            <input name="search" class="form-control rounded-start" placeholder="Tìm kiếm sản phẩm…" />
+            <button class="btn btn-warning rounded-end" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+
+        <!-- Navigation Links -->
+        <nav class="d-flex align-items-center gap-3 nav-links">
+            <a href="${pageContext.request.contextPath}/#">Sản phẩm</a>
+            <a href="${pageContext.request.contextPath}/BlogListController">Bài viết</a>
+            <a href="${pageContext.request.contextPath}/contact">Liên hệ</a>
+        </nav>
+
+        <!-- Cart + User -->
+        <div class="d-flex align-items-center ms-3 gap-3">
+            <!-- Cart -->
+            <a href="${pageContext.request.contextPath}/cartdetailcontroller" class="btn btn-success position-relative">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+            </a>
+
+            <!-- Login/User -->
+            <c:choose>
+                <c:when test="${sessionScope.user == null}">
+                    <a href="${pageContext.request.contextPath}/logincontroller" class="btn btn-outline-light">
+                        <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <div class="dropdown">
+                        <a href="#" class="btn btn-outline-light dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle fa-lg me-1"></i>
+                            ${sessionScope.user.full_name}
                         </a>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="dropdown user-dropdown">
-                            <a href="#" 
-                               class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-                               id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle fa-lg me-1"></i>
-                                ${sessionScope.user.full_name}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
-                                <li class="d-flex align-items-center px-3 py-2 border-bottom">
-                                    <img src="${sessionScope.user.avatar_url != null ? sessionScope.user.avatar_url : 'default-avatar.png'}"
-                                         alt="avatar" width="50" height="50" class="rounded-circle me-2">
-                                    <div>
-                                        <div class="fw-bold">${sessionScope.user.full_name}</div>
-                                        <small class="text-muted">${sessionScope.user.email}</small>
-                                    </div>
-                                </li>
-                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/UserProfile">
-                                        <i class="fas fa-id-card me-1"></i> Thông tin cá nhân
-                                    </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="${pageContext.request.contextPath}/logoutcontroller">
-                                        <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
-                                    </a></li>
-                            </ul>
-                        </div>
-                    </c:otherwise>
-                </c:choose>
-            </nav>
-            <div class="nav-links">
-                <a href="#"><i class="fas fa-headset"></i> Đường dây nóng: 1900 9999</a>
-            </div>
-        </header>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li class="d-flex align-items-center px-3 py-2 border-bottom">
+                                <img src="${sessionScope.user.avatar_url != null ? sessionScope.user.avatar_url : 'default-avatar.png'}"
+                                     alt="avatar" width="50" height="50" class="rounded-circle me-2">
+                                <div>
+                                    <div class="fw-bold">${sessionScope.user.full_name}</div>
+                                    <small class="text-muted">${sessionScope.user.email}</small>
+                                </div>
+                            </li>
+                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/UserProfile">
+                                <i class="fas fa-id-card me-1"></i> Thông tin cá nhân</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="${pageContext.request.contextPath}/logoutcontroller">
+                                <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+</header>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
 </html>

@@ -1,9 +1,9 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Reset Password - Electro Mart</title>
+    <title>Đặt lại mật khẩu - Electro Mart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Google Fonts + Font Awesome -->
@@ -21,64 +21,7 @@
             min-height: 100vh;
         }
 
-        /* HEADER */
-        .header {
-            background-color: #1e3c72;
-            color: white;
-            padding: 15px 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 600;
-            color: #a9d6ff;
-        }
-
-        .nav-links, .user-actions {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-links a, .user-actions a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover, .user-actions a:hover {
-            color: #a9d6ff;
-        }
-
-        @media screen and (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .nav-links, .user-actions {
-                margin-top: 10px;
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .nav-links a, .user-actions a {
-                padding: 8px 0;
-            }
-        }
-
-        /* FORM RESET PASSWORD */
+        /* FORM ĐẶT LẠI MẬT KHẨU */
         .forgot-password-container {
             background-color: #fff;
             padding: 35px 30px;
@@ -175,75 +118,12 @@
             background-color: #2ecc71;
             color: #fff;
         }
-
-        /* FOOTER */
-        .footer {
-            background-color: #1e3c72;
-            color: #fff;
-            padding: 40px 20px;
-            font-size: 14px;
-            margin-top: auto;
-        }
-
-        .footer-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            max-width: 1100px;
-            margin: 0 auto;
-            gap: 30px;
-        }
-
-        .footer-section {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .footer-section h3 {
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #a9d6ff;
-        }
-
-        .footer-section p {
-            margin: 8px 0;
-            line-height: 1.5;
-        }
-
-        .footer-section i {
-            margin-right: 8px;
-            color: #a9d6ff;
-        }
-
-        .footer-section a {
-            color: #fff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-            color: #a9d6ff;
-        }
     </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
-    <div class="header-container">
-        <div class="logo">Electro Mart</div>
-        <nav class="nav-links">
-            <a href="home.jsp">Home</a>
-            <a href="products.jsp">Products</a>
-            <a href="about.jsp">About</a>
-            <a href="contact.jsp">Contact</a>
-        </nav>
-        <div class="user-actions">
-            <a href="login.jsp"><i class="fas fa-sign-in-alt"></i> Login</a>
-            <a href="register.jsp"><i class="fas fa-user-plus"></i> Register</a>
-        </div>
-    </div>
-</header>
+<!-- INCLUDE HEADER -->
+<jsp:include page="/CommonPage/Header.jsp" />
 
 <!-- RESET FORM -->
 <%
@@ -252,8 +132,8 @@
 %>
 
 <div class="forgot-password-container">
-    <h1>Forgot Password</h1>
-    <p>Please enter your email to recover your password</p>
+    <h1>Đặt lại mật khẩu</h1>
+    <p>Vui lòng nhập email của bạn để khôi phục mật khẩu</p>
 
     <% if (errorMessage != null) { %>
         <div class="message error"><%= errorMessage %></div>
@@ -265,35 +145,15 @@
     <form action="ForgotPasswordServlet" method="post">
         <div class="input-group">
             <i class="fas fa-envelope"></i>
-            <input type="email" name="email" placeholder="Enter your email" required>
+            <input type="email" name="email" placeholder="Nhập email của bạn" required>
         </div>
-        <input type="submit" value="Recover Password">
+        <input type="submit" value="Khôi phục mật khẩu">
     </form>
-    <a href="login.jsp">Back to login</a>
+    <a href="login.jsp">Quay lại đăng nhập</a>
 </div>
 
-<!-- FOOTER -->
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-section">
-            <h3>Contact</h3>
-            <p><i class="fas fa-envelope"></i> contact@electromart.com</p>
-            <p><i class="fas fa-phone-alt"></i> +84 123 456 789</p>
-            <p><i class="fas fa-map-marker-alt"></i> 123 Tech Street, Hanoi</p>
-        </div>
-        <div class="footer-section">
-            <h3>Customer Support</h3>
-            <p><a href="#">FAQs</a></p>
-            <p><a href="#">Return Policy</a></p>
-            <p><a href="#">Shipping Info</a></p>
-        </div>
-        <div class="footer-section">
-            <h3>About Us</h3>
-            <p><strong>Nhóm 2 - SWP391.BL5</strong></p>
-            <p>&copy; 2025 Electro Mart.</p>
-        </div>
-    </div>
-</footer>
+<!-- INCLUDE FOOTER -->
+<jsp:include page="/CommonPage/Footer.jsp" />
 
 </body>
 </html>

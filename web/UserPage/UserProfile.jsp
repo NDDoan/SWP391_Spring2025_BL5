@@ -1,9 +1,9 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>User Profile - Electro Mart</title>
+    <title>Hồ Sơ Người Dùng - Electro Mart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Font + Icon -->
@@ -19,63 +19,6 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-        }
-
-        /* HEADER */
-        .header {
-            background-color: #1e3c72;
-            color: white;
-            padding: 15px 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 600;
-            color: #a9d6ff;
-        }
-
-        .nav-links, .user-actions {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-links a, .user-actions a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover, .user-actions a:hover {
-            color: #a9d6ff;
-        }
-
-        @media screen and (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .nav-links, .user-actions {
-                margin-top: 10px;
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .nav-links a, .user-actions a {
-                padding: 8px 0;
-            }
         }
 
         /* PROFILE CONTENT */
@@ -181,80 +124,17 @@
         .alert i {
             margin-right: 10px;
         }
-
-        /* FOOTER */
-        .footer {
-            background-color: #1e3c72;
-            color: #fff;
-            padding: 40px 20px;
-            font-size: 14px;
-            margin-top: auto;
-        }
-
-        .footer-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            max-width: 1100px;
-            margin: 0 auto;
-            gap: 30px;
-        }
-
-        .footer-section {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .footer-section h3 {
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #a9d6ff;
-        }
-
-        .footer-section p {
-            margin: 8px 0;
-            line-height: 1.5;
-        }
-
-        .footer-section i {
-            margin-right: 8px;
-            color: #a9d6ff;
-        }
-
-        .footer-section a {
-            color: #fff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-            color: #a9d6ff;
-        }
     </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
-    <div class="header-container">
-        <div class="logo">Electro Mart</div>
-        <nav class="nav-links">
-            <a href="HomePageController">Home</a>
-            <a href="products.jsp">Products</a>
-            <a href="about.jsp">About</a>
-            <a href="contact.jsp">Contact</a>
-        </nav>
-        <div class="user-actions">
-            <a href="profile.jsp"><i class="fas fa-user-circle"></i> Profile</a>
-            <a href="logout.jsp"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-    </div>
-</header>
+<!-- INCLUDE HEADER -->
+<jsp:include page="/CommonPage/Header.jsp" />
 
 <!-- PROFILE CONTENT -->
 <div class="profile-container">
 
-    <h1>User Profile</h1>
+    <h1>Hồ Sơ Người Dùng</h1>
 
     <!-- Avatar -->
     <img src="${user.avatar_url != null ? user.avatar_url : 'default-avatar.png'}" alt="Avatar">
@@ -284,30 +164,30 @@
     <!-- Update Avatar -->
     <form action="${pageContext.request.contextPath}/uploadavatarcontroller" method="post" enctype="multipart/form-data">
         <div class="input-group">
-            <label>Update Avatar</label>
+            <label>Cập nhật Avatar</label>
             <input type="file" name="avatar" accept="image/*" required>
         </div>
-        <button type="submit" class="btn btn-orange">Update Avatar</button>
+        <button type="submit" class="btn btn-orange">Cập nhật Avatar</button>
     </form>
 
     <!-- Change Password -->
     <button type="button" class="btn btn-green"
             onclick="window.location.href = '${pageContext.request.contextPath}/UserPage/ChangePassword.jsp'">
-        Change Password
+        Đổi mật khẩu
     </button>
 
     <!-- User Info -->
     <form action="${pageContext.request.contextPath}/userprofile" method="post">
         <div class="input-group">
-            <label>Full Name</label>
+            <label>Họ và tên</label>
             <input type="text" name="full_name" value="${user.full_name}" required>
         </div>
         <div class="input-group">
-            <label>Gender</label>
+            <label>Giới tính</label>
             <select name="gender" required>
-                <option value="Male" ${user.gender == "Male" ? "selected" : ""}>Male</option>
-                <option value="Female" ${user.gender == "Female" ? "selected" : ""}>Female</option>
-                <option value="Other" ${user.gender == "Other" ? "selected" : ""}>Other</option>
+                <option value="Male" ${user.gender == "Male" ? "selected" : ""}>Nam</option>
+                <option value="Female" ${user.gender == "Female" ? "selected" : ""}>Nữ</option>
+                <option value="Other" ${user.gender == "Other" ? "selected" : ""}>Khác</option>
             </select>
         </div>
         <div class="input-group">
@@ -315,39 +195,19 @@
             <input type="email" name="email" value="${user.email}" readonly style="background-color: #e9ecef; cursor: not-allowed;">
         </div>
         <div class="input-group">
-            <label>Phone Number</label>
+            <label>Số điện thoại</label>
             <input type="text" name="phone_number" value="${user.phone_number}" required>
         </div>
         <div class="input-group">
-            <label>Address</label>
+            <label>Địa chỉ</label>
             <input type="text" name="address" value="${user.address}" required>
         </div>
-        <input type="submit" value="Save Changes">
+        <input type="submit" value="Lưu thay đổi">
     </form>
 </div>
 
-<!-- FOOTER -->
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-section">
-            <h3>Contact</h3>
-            <p><i class="fas fa-envelope"></i> contact@electromart.com</p>
-            <p><i class="fas fa-phone-alt"></i> +84 123 456 789</p>
-            <p><i class="fas fa-map-marker-alt"></i> 123 Tech Street, Hanoi</p>
-        </div>
-        <div class="footer-section">
-            <h3>Customer Support</h3>
-            <p><a href="#">FAQs</a></p>
-            <p><a href="#">Return Policy</a></p>
-            <p><a href="#">Shipping Info</a></p>
-        </div>
-        <div class="footer-section">
-            <h3>About Us</h3>
-            <p><strong>Nhóm 2 - SWP391.BL5</strong></p>
-            <p>&copy; 2025 Electro Mart.</p>
-        </div>
-    </div>
-</footer>
+<!-- INCLUDE FOOTER -->
+<jsp:include page="/CommonPage/Footer.jsp" />
 
 </body>
 </html>
