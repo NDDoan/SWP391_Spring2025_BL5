@@ -28,7 +28,9 @@
                 display: flex;
                 align-items: center;
                 padding: 0 20px;
+                z-index: 101; /* <-- GOOD */
             }
+
 
             .content-container {
                 margin-left: 250px;
@@ -47,13 +49,42 @@
             .table th, .table td {
                 vertical-align: middle;
             }
+            .sidebar {
+                position: fixed;
+                top: 80px; /* Để không đè lên header */
+                left: 0;
+                width: 250px;
+                height: calc(100% - 80px); /* Trừ phần header */
+                background-color: #343a40;
+                color: white;
+                z-index: 100; /* nhỏ hơn header */
+            }
+            @media (max-width: 768px) {
+                .sidebar {
+                    width: 100%;
+                    height: auto;
+                    position: relative;
+                }
+
+                .content-container {
+                    margin-left: 0;
+                    padding: 100px 10px 40px 10px;
+                }
+            }
+
         </style>
     </head>
     <body>
 
         <!-- Header -->
+        <!-- Header -->
         <div class="dashboard-header">
             <jsp:include page="/AdminPage/dashboard-header.jsp"/>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <jsp:include page="/AdminPage/dashboard-sidebar.jsp"/>
         </div>
 
         <!-- Main Content -->
