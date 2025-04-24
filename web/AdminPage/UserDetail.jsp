@@ -72,7 +72,9 @@
             </div>
 
             <div class="container">
-                <h2 class="mb-4">Chi tiết người dùng</h2>
+                <div class="text-center">
+                    <h2 class="mb-4">Chi tiết người dùng</h2>
+                </div>
 
                 <div class="card shadow p-4">
                     <div class="row">
