@@ -46,7 +46,11 @@
                         </a>
                     </li>
                     
-                    
+                     <li class="nav-item mb-2">
+                        <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/FeedbackList">
+                            <i class="bi bi-bar-chart-line me-2"></i> quản lí phản hồi
+                        </a>
+                    </li>
                     <li class="nav-item mt-4">
                         <form id="logoutForm" action="${pageContext.request.contextPath}/logoutcontroller" method="post">
                             <button type="submit" class="btn btn-link nav-link text-danger d-flex align-items-center" style="padding: 0; border: none; background: none;">

@@ -126,7 +126,7 @@
         </style>
     </head>
     <body>
-
+        <jsp:include page="../CommonPage/Header.jsp"/>
         <div class="container">
             <h2>Thông tin giao hàng</h2>
 
@@ -173,6 +173,6 @@
                 </tbody>
             </table>
         </div>
-
+        <jsp:include page="../CommonPage/Footer.jsp"/>
     </body>
 </html>
