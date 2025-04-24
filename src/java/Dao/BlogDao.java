@@ -1,115 +1,83 @@
 package Dao;
 
 import DBContext.DBContext;
-import Entity.Blog;
+import EntityDto.PostDto;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BlogDao {
 
-    public List<Blog> getBlogs(int pageIndex, int pageSize) {
-        List<Blog> list = new ArrayList<>();
-        String sql = "SELECT * FROM Blogs ORDER BY updated_at DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+    public List<PostDto> searchPostsByKeyword(String keyword) {
+        List<PostDto> list = new ArrayList<>();
+        String sql = """
+            SELECT p.post_id, p.title, p.content, p.thumbnail_url, 
+                   p.created_at, u.full_name AS author_name, c.name AS category_name
+            FROM post p
+            JOIN [user] u ON p.user_id = u.user_id
+            JOIN category_post c ON p.category_id = c.category_id
+            WHERE p.status = 1 AND (p.title LIKE ? OR p.content LIKE ?)
+            ORDER BY p.created_at DESC
+        """;
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection connection = new DBContext().getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setInt(1, (pageIndex - 1) * pageSize);
-            ps.setInt(2, pageSize);
+            String likeKeyword = "%" + keyword + "%";
+            ps.setString(1, likeKeyword);
+            ps.setString(2, likeKeyword);
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Blog blog = new Blog();
-                blog.setBlogId(rs.getInt("blog_id"));
-                blog.setTitle(rs.getString("title"));
-                blog.setContent(rs.getString("content"));
-                blog.setCreatedAt(rs.getTimestamp("created_at"));
-                blog.setUpdatedAt(rs.getTimestamp("updated_at"));
-                list.add(blog);
+                PostDto post = new PostDto();
+                post.setPostId(rs.getInt("post_id"));
+                post.setTitle(rs.getString("title"));
+                post.setContent(rs.getString("content"));
+                post.setThumbnailUrl(rs.getString("thumbnail_url"));
+                post.setCreatedAt(rs.getTimestamp("created_at"));
+                post.setAuthorName(rs.getString("author_name"));
+                post.setCategoryName(rs.getString("category_name"));
+                list.add(post);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
-    public int countBlogs() {
-        String sql = "SELECT COUNT(*) FROM Blogs";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) return rs.getInt(1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
+    public List<PostDto> getLatestBlogs(int limit) {
+        List<PostDto> list = new ArrayList<>();
+        String sql = """
+        SELECT TOP (?) p.post_id, p.title, p.content, p.thumbnail_url, 
+                       p.created_at, u.full_name AS author_name, c.name AS category_name
+        FROM post p
+        JOIN [user] u ON p.user_id = u.user_id
+        JOIN category_post c ON p.category_id = c.category_id
+        WHERE p.status = 1
+        ORDER BY p.created_at DESC
+    """;
 
-    public List<Blog> getLatestBlogs(int limit) {
-        List<Blog> list = new ArrayList<>();
-        String sql = "SELECT TOP(?) * FROM Blogs ORDER BY updated_at DESC";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection connection = new DBContext().getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
+
             ps.setInt(1, limit);
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
-                Blog blog = new Blog();
-                blog.setBlogId(rs.getInt("blog_id"));
-                blog.setTitle(rs.getString("title"));
-                blog.setContent(rs.getString("content"));
-                blog.setCreatedAt(rs.getTimestamp("created_at"));
-                blog.setUpdatedAt(rs.getTimestamp("updated_at"));
-                list.add(blog);
+                PostDto post = new PostDto();
+                post.setPostId(rs.getInt("post_id"));
+                post.setTitle(rs.getString("title"));
+                post.setContent(rs.getString("content"));
+                post.setThumbnailUrl(rs.getString("thumbnail_url"));
+                post.setCreatedAt(rs.getTimestamp("created_at"));
+                post.setAuthorName(rs.getString("author_name"));
+                post.setCategoryName(rs.getString("category_name"));
+                list.add(post);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
-    public List<Blog> searchBlogsByKeyword(String keyword) {
-        List<Blog> list = new ArrayList<>();
-        String sql = "SELECT * FROM Blogs WHERE title LIKE ? OR content LIKE ? ORDER BY updated_at DESC";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            String searchValue = "%" + keyword + "%";
-            ps.setString(1, searchValue);
-            ps.setString(2, searchValue);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Blog blog = new Blog();
-                blog.setBlogId(rs.getInt("blog_id"));
-                blog.setTitle(rs.getString("title"));
-                blog.setContent(rs.getString("content"));
-                blog.setCreatedAt(rs.getTimestamp("created_at"));
-                blog.setUpdatedAt(rs.getTimestamp("updated_at"));
-                list.add(blog);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-
-
-    public Blog getBlogById(int id) {
-        String sql = "SELECT * FROM Blogs WHERE blog_id = ?";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                Blog blog = new Blog();
-                blog.setBlogId(rs.getInt("blog_id"));
-                blog.setTitle(rs.getString("title"));
-                blog.setContent(rs.getString("content"));
-                blog.setCreatedAt(rs.getTimestamp("created_at"));
-                blog.setUpdatedAt(rs.getTimestamp("updated_at"));
-                return blog;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

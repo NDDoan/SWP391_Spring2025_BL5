@@ -1,7 +1,7 @@
 package Controller;
 
 import Dao.BlogDao;
-import Entity.Blog;
+import EntityDto.PostDto;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,10 +25,10 @@ public class BlogSearchController extends HttpServlet {
         BlogDao blogDao = new BlogDao();
 
         // Tìm kiếm bài viết theo từ khóa trong tiêu đề hoặc nội dung
-        List<Blog> searchResults = blogDao.searchBlogsByKeyword(keyword);
+        List<PostDto> searchResults = blogDao.searchPostsByKeyword(keyword);
 
         // Lấy các blog mới nhất để hiển thị sidebar
-        List<Blog> latestBlogs = blogDao.getLatestBlogs(5);
+        List<PostDto> latestBlogs = blogDao.getLatestBlogs(5);
 
         // Gửi dữ liệu sang JSP
         request.setAttribute("keyword", keyword);
