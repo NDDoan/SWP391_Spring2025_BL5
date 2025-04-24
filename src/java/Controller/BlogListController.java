@@ -9,7 +9,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "BlogListController", urlPatterns = {"/BlogList"})
+@WebServlet(name = "BlogListController", urlPatterns = {"/BlogListContrroller"})
 public class BlogListController extends HttpServlet {
 
     private static final int PAGE_SIZE = 5;            // Số bài viết mỗi trang
