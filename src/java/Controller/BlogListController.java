@@ -59,8 +59,8 @@ public class BlogListController extends HttpServlet {
 
             int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
 
-            request.setAttribute("blogs", posts);
-            request.setAttribute("latestBlogs", latestPosts);
+            request.setAttribute("posts", posts);
+            request.setAttribute("latestPosts", latestPosts);
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("keyword", keyword); // Truyền keyword lại để giữ trên form
