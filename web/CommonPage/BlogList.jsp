@@ -48,7 +48,7 @@
                 <!-- Danh sách bài viết -->
                 <div class="col-md-8">
                     <h2>Bài viết mới nhất</h2>
-                    <c:forEach var="post" items="${posts}">
+                    <c:forEach var="post" items="${post}">
                         <div class="card card-post">
                             <div class="row g-0">
                                 <div class="col-md-4">

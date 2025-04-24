@@ -22,6 +22,7 @@ public class BlogListController extends HttpServlet {
         PostDao dao = new PostDao();
         int page = 1;
         String pageParam = request.getParameter("page");
+        String keyword = request.getParameter("keyword"); // Lấy từ khóa tìm kiếm
 
         if (pageParam != null) {
             try {
@@ -31,44 +32,44 @@ public class BlogListController extends HttpServlet {
         }
 
         try {
-            // Lấy danh sách bài viết theo phân trang
-            List<PostDto> posts = dao.getPosts(
-                    page,
-                    PAGE_SIZE,
-                    null, null,
-                    "1", // status = true
-                    null,
-                    "created_at",
-                    "DESC"
-            );
+            List<PostDto> posts;
+            int totalPosts = 0;
 
-            // Lấy bài viết mới nhất
-            List<PostDto> latestPosts = dao.getPosts(
-                    1,
-                    LATEST_BLOG_LIMIT,
-                    null, null,
-                    "1",
-                    null,
-                    "created_at",
-                    "DESC"
-            );
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                // Nếu có từ khóa tìm kiếm, sử dụng searchPostsByKeyword
+                posts = dao.searchPostsByKeyword(keyword.trim());
+                totalPosts = posts.size(); // Không phân trang khi tìm kiếm
+                page = 1; // Reset về trang 1 khi tìm kiếm
+            } else {
+                // Không có từ khóa -> phân trang bình thường
+                posts = dao.getPosts(
+                        page,
+                        PAGE_SIZE,
+                        null, null,
+                        "1", // status = true
+                        null,
+                        "created_at",
+                        "DESC"
+                );
+                totalPosts = dao.countPosts("1", null, null, null);
+            }
 
-            // Tổng số bài viết (có status=true)
-            int totalPosts = dao.countPosts("1", null, null, null);
+            // Lấy bài viết mới nhất cho sidebar
+            List<PostDto> latestPosts = dao.getLatestBlogs(LATEST_BLOG_LIMIT);
+
             int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
 
-            // Truyền sang JSP
             request.setAttribute("blogs", posts);
             request.setAttribute("latestBlogs", latestPosts);
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
+            request.setAttribute("keyword", keyword); // Truyền keyword lại để giữ trên form
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Đã xảy ra lỗi khi tải danh sách bài viết.");
         }
 
-        // Forward
         request.getRequestDispatcher("/CommonPage/BlogList.jsp").forward(request, response);
     }
 }
