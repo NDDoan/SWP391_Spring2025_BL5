@@ -384,15 +384,32 @@
                         <div class="modal-dialog">
                             <form action="${pageContext.request.contextPath}/ProductForManagerDetailController" method="post">
                                 <div class="modal-content">
+
+                                    <!-- Modal header -->
                                     <div class="modal-header">
                                         <h5 class="modal-title">
                                             <c:choose>
-                                                <c:when test="${not empty variantToEdit}">Sửa phiên bản</c:when>
-                                                <c:otherwise>Thêm phiên bản</c:otherwise>
+                                                <c:when test="${not empty variantToEdit}">
+                                                    Sửa phiên bản
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Thêm phiên bản
+                                                </c:otherwise>
                                             </c:choose>
                                         </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        <button
+                                            type="button"
+                                            class="btn-close"
+                                            <c:if test="${not empty variantToEdit}">
+                                                onclick="window.location.href = '${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=edit'"
+                                            </c:if>
+                                            <c:if test="${empty variantToEdit}">
+                                                data-bs-dismiss="modal"
+                                            </c:if>
+                                            ></button>
                                     </div>
+
+                                    <!-- Modal body -->
                                     <div class="modal-body">
                                         <input type="hidden" name="productId" value="${product.productId}">
                                         <c:if test="${not empty variantToEdit}">
@@ -402,79 +419,130 @@
                                         <c:if test="${empty variantToEdit}">
                                             <input type="hidden" name="variantAction" value="add">
                                         </c:if>
-                                        <div class="mb-3"><label>CPU</label>
-                                            <select name="cpu_id" class="form-select mb-2">
+
+                                        <div class="mb-3">
+                                            <label>CPU</label>
+                                            <select name="cpu_id" class="form-select">
                                                 <option value="">Chọn CPU</option>
                                                 <c:forEach var="o" items="${cpuOptions}">
-                                                    <option value="${o.cpuId}" ${o.cpu == variantToEdit.cpu ? 'selected' : ''}>${o.cpu}</option>
+                                                    <option value="${o.cpuId}" ${o.cpu == variantToEdit.cpu ? 'selected' : ''}>
+                                                        ${o.cpu}
+                                                    </option>
                                                 </c:forEach>
-                                            </select></div>
-                                        <div class="mb-3"><label>RAM</label>
-                                            <select name="ram_id" class="form-select mb-2">
-                                                <option value="">Chọn Ram</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>RAM</label>
+                                            <select name="ram_id" class="form-select">
+                                                <option value="">Chọn RAM</option>
                                                 <c:forEach var="o" items="${ramOptions}">
-                                                    <option value="${o.ramId}" ${(o.ram==variantToEdit.ram)?'selected':''}>${o.ram}</option>
+                                                    <option value="${o.ramId}" ${o.ram == variantToEdit.ram ? 'selected' : ''}>
+                                                        ${o.ram}
+                                                    </option>
                                                 </c:forEach>
-                                            </select></div>
-                                        <div class="mb-3"><label>Màn hình</label>
-                                            <select name="screen_id" class="form-select mb-2">
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Màn hình</label>
+                                            <select name="screen_id" class="form-select">
                                                 <option value="">Chọn Màn hình</option>
                                                 <c:forEach var="o" items="${screenOptions}">
-                                                    <option value="${o.screenId}" ${(o.screen==variantToEdit.screen)?'selected':''}>${o.screen}</option>
+                                                    <option value="${o.screenId}" ${o.screen == variantToEdit.screen ? 'selected' : ''}>
+                                                        ${o.screen}
+                                                    </option>
                                                 </c:forEach>
-                                            </select></div>
-                                        <div class="mb-3"><label>Dung lượng</label>
-                                            <select name="storage_id" class="form-select mb-2">
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Dung lượng</label>
+                                            <select name="storage_id" class="form-select">
                                                 <option value="">Chọn Dung lượng</option>
                                                 <c:forEach var="o" items="${storageOptions}">
-                                                    <option value="${o.storageId}" ${(o.storage==variantToEdit.storage)?'selected':''}>${o.storage}</option>
+                                                    <option value="${o.storageId}" ${o.storage == variantToEdit.storage ? 'selected' : ''}>
+                                                        ${o.storage}
+                                                    </option>
                                                 </c:forEach>
-                                            </select></div>
-                                        <div class="mb-3"><label>Màu sắc</label>
-                                            <select name="color_id" class="form-select mb-2">
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Màu sắc</label>
+                                            <select name="color_id" class="form-select">
                                                 <option value="">Chọn Màu sắc</option>
                                                 <c:forEach var="o" items="${colorOptions}">
-                                                    <option value="${o.colorId}" ${(o.color==variantToEdit.color)?'selected':''}>${o.color}</option>
+                                                    <option value="${o.colorId}" ${o.color == variantToEdit.color ? 'selected' : ''}>
+                                                        ${o.color}
+                                                    </option>
                                                 </c:forEach>
-                                            </select></div>
-                                        <div class="mb-3"><label>Giá</label>
-                                            <input type="number" step="0.01" name="price" class="form-control" value="${variantToEdit.price}" required></div>
-                                        <div class="mb-3"><label>Tồn kho</label>
-                                            <input type="number" name="stockQuantity" class="form-control" value="${variantToEdit.stockQuantity}" required></div>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Giá</label>
+                                            <input
+                                                type="number" step="0.01" name="price" class="form-control"
+                                                value="${variantToEdit.price}" required
+                                                >
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Tồn kho</label>
+                                            <input
+                                                type="number" name="stockQuantity" class="form-control"
+                                                value="${variantToEdit.stockQuantity}" required
+                                                >
+                                        </div>
                                     </div>
+
+                                    <!-- Modal footer -->
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <c:choose>
+                                            <c:when test="${not empty variantToEdit}">
+                                                <button
+                                                    type="button" class="btn btn-secondary"
+                                                    onclick="window.location.href = '${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=edit'"
+                                                    >
+                                                    Đóng
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                            </c:otherwise>
+                                        </c:choose>
                                         <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                     </div>
+
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Bootstrap JS bundle -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-                                                       const select = document.getElementById('mediaTypeSelect');
-                                                       const container = document.getElementById('primary-checkbox-container');
-                                                       function togglePrimaryCheckbox() {
-                                                           if (select.value === 'video') {
-                                                               container.style.display = 'none';
-                                                               // nếu cần: container.querySelector('input').checked = false;
-                                                           } else {
-                                                               container.style.display = 'block';
-                                                           }
-                                                       }
-                                                       // Chạy khi load trang và khi thay đổi select
-                                                       window.addEventListener('DOMContentLoaded', togglePrimaryCheckbox);
-                                                       select.addEventListener('change', togglePrimaryCheckbox);
-                                                       window.addEventListener('DOMContentLoaded', () => {
-            <c:if test="${not empty variantToEdit}">
-                                                           const modal = new bootstrap.Modal(document.getElementById('variantModal'));
-                                                           modal.show();
-            </c:if>
-                                                       });
-        </script>
+            <!-- Bootstrap JS bundle -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script>
+                                                        const select = document.getElementById('mediaTypeSelect');
+                                                        const container = document.getElementById('primary-checkbox-container');
+                                                        function togglePrimaryCheckbox() {
+                                                            if (select.value === 'video') {
+                                                                container.style.display = 'none';
+                                                                // nếu cần: container.querySelector('input').checked = false;
+                                                            } else {
+                                                                container.style.display = 'block';
+                                                            }
+                                                        }
+                                                        // Chạy khi load trang và khi thay đổi select
+                                                        window.addEventListener('DOMContentLoaded', togglePrimaryCheckbox);
+                                                        select.addEventListener('change', togglePrimaryCheckbox);
+                                                        window.addEventListener('DOMContentLoaded', () => {
+                <c:if test="${not empty variantToEdit}">
+                                                            const modal = new bootstrap.Modal(document.getElementById('variantModal'));
+                                                            modal.show();
+                </c:if>
+                                                        });
+            </script>
     </body>
 </html>

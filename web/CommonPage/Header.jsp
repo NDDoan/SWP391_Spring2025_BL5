@@ -81,8 +81,8 @@
             </form>
                   
             <div class="nav-links">
-                <a href="#">Sản Phẩm</a>
-                <a href="#">Bài viết</a>
+                <a href="${pageContext.request.contextPath}/#">Sản Phẩm</a>
+                <a href="${pageContext.request.contextPath}/BlogListController">Bài viết</a>
             </div>
                   
             <!-- Right nav -->

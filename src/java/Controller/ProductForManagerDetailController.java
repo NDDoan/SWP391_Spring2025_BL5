@@ -158,6 +158,19 @@ public class ProductForManagerDetailController extends HttpServlet {
         String variantAction = request.getParameter("variantAction");
         if (variantAction != null) {
             int productId = Integer.parseInt(request.getParameter("productId"));
+            String qtyStr = request.getParameter("stockQuantity").trim();
+            int qty;
+            try {
+                qty = Integer.parseInt(qtyStr);
+            } catch (NumberFormatException e) {
+                qty = -1;
+            }
+            if (qty < 0) {
+                // gán error và hiển thị lại trang mà không redirect
+                request.setAttribute("errorVariant", "Bạn không thể để tồn kho nhỏ hơn 0.");
+                processRequest(request, response);
+                return;
+            }
             // Parse lookup IDs
             ProductVariant v = new ProductVariant();
             v.setProductId(productId);

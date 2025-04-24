@@ -9,10 +9,6 @@
         <servlet-name>CustomerShipping</servlet-name>
         <servlet-class>Controller.CustomerShipping</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>HomePageController</servlet-name>
-        <servlet-class>Controller.HomePageController</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>ProductForManagerListController</servlet-name>
         <url-pattern>/ProductForManagerListController</url-pattern>
@@ -98,8 +94,30 @@
         <servlet-name>CustomerShipping</servlet-name>
         <url-pattern>/CustomerShipping</url-pattern>
     </servlet-mapping>
+    <!-- HomePage -->
+    <servlet>
+        <servlet-name>HomePageController</servlet-name>
+        <servlet-class>Controller.HomePageController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomePageController</servlet-name>
         <url-pattern>/HomePageController</url-pattern>
+    </servlet-mapping>
+    <!-- Blog -->
+    <servlet>
+        <servlet-name>BlogListController</servlet-name>
+        <servlet-class>Controller.BlogListController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BlogListController</servlet-name>
+        <url-pattern>/BlogListController</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>BlogDetailController</servlet-name>
+        <servlet-class>Controller.BlogDetailController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BlogDetailController</servlet-name>
+        <url-pattern>/BlogDetailController</url-pattern>
     </servlet-mapping>
 </web-app>
