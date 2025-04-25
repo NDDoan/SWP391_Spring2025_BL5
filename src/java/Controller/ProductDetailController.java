@@ -5,6 +5,7 @@
 package Controller;
 
 import Dao.ProductUserDetailDao;
+import EntityDto.ProductSummaryDto;
 import EntityDto.ProductUserDetailDto;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
@@ -67,9 +69,17 @@ public class ProductDetailController extends HttpServlet {
                 response.sendError(404);
                 return;
             }
+            // fetch 6 related products
+            List<ProductSummaryDto> related = dao.getRelatedProducts(
+                    product.getCategoryName(), pid, 6);
             request.setAttribute("product", product);
+            request.setAttribute("relatedProducts", related);
+
             request.getRequestDispatcher("/UserPage/ProductUserDetail.jsp")
                     .forward(request, response);
+
+        } catch (NumberFormatException e) {
+            response.sendError(400, "Invalid productId");
         } catch (Exception e) {
             throw new ServletException(e);
         }
