@@ -2,11 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Phản Hồi</title>
+    <title>Feedback Detail</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -246,9 +246,9 @@
     <div class="container">
         <div class="row page-header">
             <div class="col-md-12 d-flex justify-content-between align-items-center">
-                <h2><i class="fas fa-comment-dots me-2"></i>Chi Tiết Phản Hồi</h2>
+                <h2><i class="fas fa-comment-dots me-2"></i>Feedback Details</h2>
                 <a href="${pageContext.request.contextPath}/FeedbackList" class="btn btn-back btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách phản hồi
+                    <i class="fas fa-arrow-left me-2"></i>Back to Feedbacks
                 </a>
             </div>
         </div>
@@ -257,19 +257,19 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Phản hồi cho ${feedback.productName}</h5>
+                        <h5 class="mb-0">Review for ${feedback.productName}</h5>
                         <span class="badge ${feedback.status ? 'bg-success' : 'bg-danger'}">
-                            ${feedback.status ? 'Hoạt động' : 'Không hoạt động'}
+                            ${feedback.status ? 'Active' : 'Inactive'}
                         </span>
                     </div>
                     <div class="card-body">
                         <div class="customer-info">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><i class="fas fa-user me-2"></i><strong>Khách hàng:</strong> ${feedback.userFullName}</p>
-                                    <p><i class="fas fa-calendar-alt me-2"></i><strong>Ngày:</strong> <fmt:formatDate value="${feedback.createdAt}" pattern="MMMM dd, yyyy HH:mm" /></p>
+                                    <p><i class="fas fa-user me-2"></i><strong>Customer:</strong> ${feedback.userFullName}</p>
+                                    <p><i class="fas fa-calendar-alt me-2"></i><strong>Date:</strong> <fmt:formatDate value="${feedback.createdAt}" pattern="MMMM dd, yyyy HH:mm" /></p>
                                     <div class="star-rating">
-                                        <strong>Đánh giá: </strong>
+                                        <strong>Rating: </strong>
                                         <span class="ms-2">
                                             <c:forEach begin="1" end="${feedback.rating}">
                                                 <i class="fas fa-star text-warning"></i>
@@ -283,30 +283,29 @@
                                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                                     <a href="${pageContext.request.contextPath}/FeedbackList?action=changeStatus&id=${feedback.reviewId}&status=${!feedback.status}" 
                                        class="status-action-btn btn ${feedback.status ? 'btn-danger' : 'btn-success'}"
-                                       onclick="return confirm('Bạn có chắc chắn muốn ${feedback.status ? 'vô hiệu hóa' : 'kích hoạt'} phản hồi này không?')">
+                                       onclick="return confirm('Are you sure you want to ${feedback.status ? 'deactivate' : 'activate'} this feedback?')">
                                         <i class="fas ${feedback.status ? 'fa-ban' : 'fa-check'} me-2"></i>
-                                        ${feedback.status ? 'Vô hiệu hóa' : 'Kích hoạt'} Phản hồi
+                                        ${feedback.status ? 'Deactivate' : 'Activate'} Feedback
                                     </a>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="comment-card">
-                            <h6 class="mb-3"><i class="fas fa-comment me-2"></i>Bình luận</h6>
+                            <h6 class="mb-3"><i class="fas fa-comment me-2"></i>Comment</h6>
                             <p class="mb-0">${feedback.comment}</p>
                         </div>
                         
                         <c:if test="${not empty feedback.imageUrls}">
                             <div class="card">
                                 <div class="card-header">
-                                    <i class="fas fa-images me-2"></i>Phương tiện đính kèm
+                                    <i class="fas fa-images me-2"></i>Attached Media
                                 </div>
                                 <div class="card-body">
                                     <div class="feedback-images">
                                         <c:forEach items="${feedback.imageUrls}" var="mediaUrl">
                                             <c:set var="isVideo" value="${mediaUrl.toLowerCase().endsWith('.mp4') || mediaUrl.toLowerCase().endsWith('.webm') || mediaUrl.toLowerCase().endsWith('.ogg') || mediaUrl.toLowerCase().endsWith('.mov')}"/>
                                             
-
                                             <c:choose>
                                                 <c:when test="${isVideo}">
                                                     <div class="feedback-video-container" id="media-container-${mediaUrl.hashCode()}">
@@ -352,13 +351,13 @@
             <div class="col-lg-4">
                 <div class="card h-100">
                     <div class="card-header">
-                        <i class="fas fa-box-open me-2"></i>Thông Tin Sản Phẩm
+                        <i class="fas fa-box-open me-2"></i>Product Information
                     </div>
                     <div class="card-body d-flex flex-column">
                         <div class="product-info flex-grow-1">
                             <h5>${feedback.productName}</h5>
                             <div class="mt-auto">
-                                  
+                                
                             </div>
                         </div>
                     </div>
@@ -391,7 +390,7 @@
                 });
                 
                 video.addEventListener('error', function() {
-                    this.parentNode.innerHTML = '<div class="image-error"><i class="fas fa-exclamation-circle mb-2"></i><br>Video không khả dụng</div>';
+                    this.parentNode.innerHTML = '<div class="image-error"><i class="fas fa-exclamation-circle mb-2"></i><br>Video not available</div>';
                 });
             });
             

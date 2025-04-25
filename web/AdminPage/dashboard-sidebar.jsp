@@ -1,74 +1,117 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Admin Dashboard</title>
-        <!-- Bootstrap CSS & Icons -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    </head>
-    <body>
+<html lang="vi">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <style>
+        /* Tùy chỉnh sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 250px;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .nav-link {
+            font-size: 1rem;
+            padding: 10px 20px;
+            color: #495057;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+            color: #007bff;
+        }
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .sidebar h5 {
+            font-weight: bold;
+        }
 
-        <!-- Sidebar -->
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar py-4 position-fixed shadow-sm" style="height: 100vh;">
-            <div class="position-sticky px-3">
-                <h5 class="text-primary mb-4">Menu chính</h5>
-                <ul class="nav flex-column">
-                    <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="${pageContext.request.contextPath}/AdminPage/AdminDashBoard.jsp">
-                            <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="order">
-                            <i class="bi bi-cart-check me-2"></i> Quản lý đơn hàng
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/UserController">
-                            <i class="bi bi-people me-2"></i> Quản lý người dùng
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ShippingController">
-                            <i class="bi bi-truck me-2"></i> Quản lý giao hàng
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ProductForManagerListController">
-                            <i class="bi bi-box-seam me-2"></i> Quản lý sản phẩm
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/PostListController">
-                            <i class="bi bi-bar-chart-line me-2"></i> quản lí bài đăng
-                        </a>
-                    </li>
-                    
-                     <li class="nav-item mb-2">
-                        <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/FeedbackList">
-                            <i class="bi bi-bar-chart-line me-2"></i> quản lí phản hồi
-                        </a>
-                    </li>
-                    <li class="nav-item mt-4">
-                        <form id="logoutForm" action="${pageContext.request.contextPath}/logoutcontroller" method="post">
-                            <button type="submit" class="btn btn-link nav-link text-danger d-flex align-items-center" style="padding: 0; border: none; background: none;">
-                                <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
-                            </button>
-                        </form>
-                    </li>
-                        
-                </ul>
-            </div>
-        </nav>
+        /* Main content */
+        .content-wrapper {
+            margin-left: 250px;
+            padding-top: 20px;
+        }
 
-        <!-- Main Content -->
-        <div class="container-fluid" style="margin-left: 16.7%; padding-top: 20px;">
-            <!-- Nội dung chính ở đây -->
+        /* Tối ưu cho các màn hình nhỏ */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            .content-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="px-3">
+            <h5 class="text-primary mb-4">Menu Chính</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center" href="${pageContext.request.contextPath}/AdminPage/AdminDashBoard.jsp">
+                        <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center" href="order">
+                        <i class="bi bi-cart-check me-2"></i> Quản lý đơn hàng
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/UserController">
+                        <i class="bi bi-people me-2"></i> Quản lý người dùng
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ShippingController">
+                        <i class="bi bi-truck me-2"></i> Quản lý giao hàng
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ProductForManagerListController">
+                        <i class="bi bi-box-seam me-2"></i> Quản lý sản phẩm
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/PostListController">
+                        <i class="bi bi-bar-chart-line me-2"></i> Quản lý bài đăng
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/FeedbackList">
+                        <i class="bi bi-bar-chart-line me-2"></i> Quản lý phản hồi
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <form id="logoutForm" action="${pageContext.request.contextPath}/logoutcontroller" method="post">
+                        <button type="submit" class="btn btn-link nav-link text-danger d-flex align-items-center" style="padding: 0; border: none; background: none;">
+                            <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                        </button>
+                    </form>
+                </li>
+            </ul>
         </div>
+    </nav>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+    <!-- Main Content -->
+    <div class="content-wrapper container-fluid">
+        <!-- Nội dung chính sẽ xuất hiện ở đây -->
+    </div>
+
+    <!-- Bootstrap JS & Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

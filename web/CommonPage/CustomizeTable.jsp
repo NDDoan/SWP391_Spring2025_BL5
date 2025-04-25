@@ -1,7 +1,7 @@
 <%-- 
-    Document   : CustomizeTable
-    Created on : Mar 3, 2025, 2:32:32 PM
-    Author     : Acer
+    Tài liệu   : CustomizeTable
+    Tạo vào : Mar 3, 2025, 2:32:32 PM
+    Tác giả     : Acer
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -9,10 +9,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customize Table</title>
+    <title>Tùy Chỉnh Bảng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        /* Nút Customize Table */
+        /* Nút Tùy Chỉnh Bảng */
         .customize-btn {
             background-color: #ff7f50;
             color: white;
@@ -23,7 +23,7 @@
             border-radius: 5px;
         }
 
-        /* Modal (popup) ẩn ban đầu */
+        /* Modal (hộp thoại) ẩn ban đầu */
         .modal {
             display: none; 
             position: fixed; 
@@ -67,7 +67,7 @@
             margin: 10px 0;
         }
 
-        /* Nút Apply */
+        /* Nút Áp Dụng */
         .apply-btn {
             background-color: #28a745;
             color: white;
@@ -83,25 +83,25 @@
 </head>
 <body>
 
-    <!-- Nút Customize Table -->
-    <button class="customize-btn" onclick="openModal()">Customize Table</button>
+    <!-- Nút Tùy Chỉnh Bảng -->
+    <button class="customize-btn" onclick="openModal()">Tùy Chỉnh Bảng</button>
 
     <!-- Modal (Hộp thoại tùy chỉnh) -->
     <div id="customModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h2>Customize Table</h2>
+            <h2>Tùy Chỉnh Bảng</h2>
             
-            <label for="rows">Rows Per Table:</label>
+            <label for="rows">Số Dòng Mỗi Bảng:</label>
             <input type="number" id="rows" min="1" max="100">
 
             <div class="checkbox-group">
-                <label><input type="checkbox" checked> Column A</label><br>
-                <label><input type="checkbox"> Column B</label><br>
-                <label><input type="checkbox"> Column C</label><br>
+                <label><input type="checkbox" checked> Cột A</label><br>
+                <label><input type="checkbox"> Cột B</label><br>
+                <label><input type="checkbox"> Cột C</label><br>
             </div>
 
-            <button class="apply-btn" onclick="applySettings()">Apply Settings</button>
+            <button class="apply-btn" onclick="applySettings()">Áp Dụng Cài Đặt</button>
         </div>
     </div>
 
@@ -116,7 +116,7 @@
             document.getElementById("customModal").style.display = "none";
         }
 
-        // Xử lý khi người dùng bấm Apply
+        // Xử lý khi người dùng bấm Áp Dụng
         function applySettings() {
             let rows = document.getElementById("rows").value;
             alert("Số dòng: " + rows);
