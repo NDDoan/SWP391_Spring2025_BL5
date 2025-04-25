@@ -1,5 +1,6 @@
 package Dao;
 
+import DBContext.DBContext;
 import Entity.Shipping;
 import java.sql.*;
 import java.util.*;
@@ -261,21 +262,42 @@ public class ShippingDAO {
         return count;
     }
 
-    public List<Shipping> getShippingByCustomerIdStatus(int customerId, String status) throws SQLException {
+    public List<Shipping> getShippingByCustomerIdStatus(int customerId, String status, String sortBy, String sortDir, int offset, int pageSize) throws SQLException {
         List<Shipping> list = new ArrayList<>();
         String sql = "SELECT s.* FROM Shipping s "
                 + "JOIN Orders o ON s.order_id = o.order_id "
-                + "WHERE o.user_id = ? AND s.shipping_status LIKE ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, customerId);
-            ps.setString(2, "%" + status + "%"); // Thêm lọc theo trạng thái
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(extractShipping(rs));
-                }
-            }
+                + "WHERE o.user_id = ? ";
+
+        boolean hasStatus = status != null && !status.isEmpty();
+
+        if (hasStatus) {
+            sql += "AND s.shipping_status LIKE ? ";
         }
-        return list;
+
+        sql += "ORDER BY " + sortBy + " " + sortDir + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            int paramIndex = 1;
+
+            // ✅ Đầu tiên: luôn set customerId
+            statement.setInt(paramIndex++, customerId);
+
+            // ✅ Nếu có status, set tiếp
+            if (hasStatus) {
+                statement.setString(paramIndex++, "%" + status + "%");
+            }
+
+            // ✅ Cuối cùng: offset và pageSize
+            statement.setInt(paramIndex++, offset);
+            statement.setInt(paramIndex, pageSize);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                list.add(extractShipping(resultSet));
+            }
+
+            return list;
+        }
     }
 
     public Shipping getShippingDetailById(int id) {
@@ -298,5 +320,32 @@ public class ShippingDAO {
         return shipping;
     }
 
-    
+//    public static void main(String[] args) {
+//        try {
+//            // Tạo kết nối database
+//            Connection conn = new DBContext().getConnection();
+//
+//            // Khởi tạo DAO
+//            ShippingDAO shippingDAO = new ShippingDAO(conn);
+//
+//            // Gọi phương thức: Lấy danh sách shipping theo user_id
+//            int customerId = 1;
+//            List<Shipping> shippingList = shippingDAO.getShippingByCustomerIdStatus(5, null, "shipping_id", "asc", 0, 5);
+//
+//            if (shippingList != null && !shippingList.isEmpty()) {
+//                for (Shipping shipping : shippingList) {
+//                    System.out.println("Shipping ID: " + shipping.getId());
+//                    System.out.println("Address: " + shipping.getShippingAddress());
+//                    System.out.println("Status: " + shipping.getShippingStatus());
+//                    System.out.println("-------------");
+//                }
+//            } else {
+//                System.out.println("Không tìm thấy đơn shipping nào cho user_id: " + customerId);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+    //}
 }

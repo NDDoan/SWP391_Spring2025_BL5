@@ -7,12 +7,30 @@
         <meta charset="UTF-8">
         <title>Thông tin giao hàng</title>
         <style>
-            body {
-                font-family: 'Segoe UI', sans-serif;
-                background-color: #f4f7f9;
+            html, body {
+                height: 100%;
                 margin: 0;
                 padding: 0;
             }
+
+            .wrapper {
+                min-height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .container {
+                flex: 1; /* chiếm hết chiều cao còn lại để đẩy footer xuống */
+            }
+
+            footer {
+                background-color: #f1f1f1;
+                text-align: center;
+                padding: 15px 0;
+                color: #555;
+            }
+
+
 
             h2 {
                 color: #333;
@@ -84,48 +102,49 @@
                 background-color: black;
                 color: white;
                 text-transform: uppercase;
-                }
+            }
 
-                tr:hover {
+            tr:hover {
                 background-color: #f1f1f1;
-                }
+            }
 
-                @media screen and (max-width: 768px) {
+            @media screen and (max-width: 768px) {
                 table, thead, tbody, th, td, tr {
-                display: block;
+                    display: block;
                 }
 
                 thead tr {
-                display: none;
+                    display: none;
                 }
 
                 tbody tr {
-                margin-bottom: 15px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                background-color: #fff;
-                padding: 10px;
+                    margin-bottom: 15px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    background-color: #fff;
+                    padding: 10px;
                 }
 
                 td {
-                text-align: left;
-                padding-left: 50%;
-                position: relative;
+                    text-align: left;
+                    padding-left: 50%;
+                    position: relative;
                 }
 
                 td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 15px;
-                width: 45%;
-                padding-right: 10px;
-                font-weight: bold;
-                color: #333;
+                    content: attr(data-label);
+                    position: absolute;
+                    left: 15px;
+                    width: 45%;
+                    padding-right: 10px;
+                    font-weight: bold;
+                    color: #333;
                 }
-                }
-            </style>
-        </head>
-        <body>
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
             <jsp:include page="../CommonPage/Header.jsp"/>
             <div class="container">
                 <h2>Thông tin giao hàng</h2>
@@ -149,12 +168,60 @@
                 <table>
                     <thead >
                         <tr>
-                            <th>Mã đơn hàng</th>
-                            <th>Địa chỉ giao hàng</th>
+                            <th>
+                                Mã Đơn Hàng
+
+                            </th>
+                            <th>
+                                <a href="customershipping?sortBy=shipping_address&sortDir=${ param.sortDir == 'asc' ? 'desc' : 'asc'}&page=${currentPage}&status=${param.status}">
+                                    Địa chỉ giao hàng
+                                    <c:choose>
+                                        <c:when test="${param.sortBy == 'shipping_address' && param.sortDir == 'asc'}">
+                                            <i class="fas fa-sort-up"></i>
+                                        </c:when>
+                                        <c:when test="${param.sortBy == 'shipping_address' && param.sortDir == 'desc'}">
+                                            <i class="fas fa-sort-down"></i>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <i class="fas fa-sort"></i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </a>
+                            </th>
                             <th>Trạng thái</th>
                             <th>Mã vận đơn</th>
-                            <th>Ngày giao</th>
-                            <th>Ngày dự kiến</th>
+                            <th>
+                                <a href="customershipping?sortBy=shipping_date&sortDir=${ param.sortDir == 'asc' ? 'desc' : 'asc'}&page=${currentPage}&status=${param.status}">
+                                    Ngày giao
+                                    <c:choose>
+                                        <c:when test="${param.sortBy == 'shipping_date' && param.sortDir == 'asc'}">
+                                            <i class="fas fa-sort-up"></i>
+                                        </c:when>
+                                        <c:when test="${param.sortBy == 'shipping_date' && param.sortDir == 'desc'}">
+                                            <i class="fas fa-sort-down"></i>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <i class="fas fa-sort"></i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="customershipping?sortBy=estimated_delivery&sortDir=${param.sortDir == 'asc' ? 'desc' : 'asc'}&page=${currentPage}&status=${param.status}">
+                                    Ngày dự kiến
+                                    <c:choose>
+                                        <c:when test="${param.sortBy == 'estimated_delivery' && param.sortDir == 'asc'}">
+                                            <i class="fas fa-sort-up"></i>
+                                        </c:when>
+                                        <c:when test="${param.sortBy == 'estimated_delivery' && param.sortDir == 'desc'}">
+                                            <i class="fas fa-sort-down"></i>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <i class="fas fa-sort"></i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </a>
+                            </th>
                             <th>Ghi chú</th>
                         </tr>
                     </thead>
@@ -172,7 +239,47 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                <!-- Phân trang -->
+                <div style="text-align: center; margin-top: 20px;">
+                    <c:if test="${totalPages > 1}">
+                        <!-- Previous button -->
+                        <c:choose>
+                            <c:when test="${currentPage > 1}">
+                                <a href="customershipping?page=${currentPage - 1}&status=${param.status}" style="margin: 0 5px;">Previous</a>
+                            </c:when>
+                            <c:otherwise>
+                                <span style="margin: 0 5px; color: gray;">Previous</span>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <!-- Page number links -->
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <c:choose>
+                                <c:when test="${i == currentPage}">
+                                    <strong style="margin: 0 5px;">${i}</strong>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="customershipping?page=${i}&status=${param.status}" style="margin: 0 5px;">${i}</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+
+                        <!-- Next button -->
+                        <c:choose>
+                            <c:when test="${currentPage < totalPages}">
+                                <a href="customershipping?page=${currentPage + 1}&status=${param.status}" style="margin: 0 5px;">Next</a>
+                            </c:when>
+                            <c:otherwise>
+                                <span style="margin: 0 5px; color: gray;">Next</span>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
+                </div>
             </div>
+
+
+
             <jsp:include page="../CommonPage/Footer.jsp"/>
-        </body>
-    </html>
+        </div>
+    </body>
+</html>

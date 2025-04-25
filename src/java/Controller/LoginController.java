@@ -162,7 +162,10 @@ public class LoginController extends HttpServlet {
              response.sendRedirect(request.getContextPath() + "/ShippingController");
                 return;
             }
-   
+            else if (roleId == 5) { 
+             response.sendRedirect(request.getContextPath() + "/AdminPage/AdminDashBoard.jsp");
+                return;
+            }
 
 //        // Remember Me (lưu email vào cookie)
 //        if ("on".equals(rememberMe)) {
