@@ -48,19 +48,21 @@ public class BlogListController extends HttpServlet {
                 posts = dao.getPosts(
                         page,
                         PAGE_SIZE,
-                        null,               // categoryId
-                        null,               // authorId
-                        "true",           // status boolean true
-                        null,               // searchTitle
-                        "created_at",      // sortBy
-                        "DESC"             // sortOrder
+                        null, // categoryId
+                        null, // authorId
+                        null, // status => bỏ lọc status
+                        null, // searchTitle
+                        "created_at",
+                        "DESC"
                 );
+
                 totalPosts = dao.countPosts(
-                        null,               // categoryId
-                        null,               // authorId
-                        "true",           // status = true
-                        null                // searchTitle
+                        null, // categoryId
+                        null, // authorId
+                        null, // status => bỏ lọc status
+                        null // searchTitle
                 );
+
                 totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
             }
 
