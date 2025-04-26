@@ -50,14 +50,17 @@
                 vertical-align: middle;
             }
             .sidebar {
+                margin-top: 75px;
                 position: fixed;
-                top: 80px; /* Để không đè lên header */
+                top: 80px; /* Start below the header */
                 left: 0;
+                bottom: 0;
                 width: 250px;
-                height: calc(100% - 80px); /* Trừ phần header */
-                background-color: #343a40;
-                color: white;
-                z-index: 100; /* nhỏ hơn header */
+                background-color: #f8f9fa;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+                z-index: 99; /* Below header */
+                height: calc(100% - 80px); /* Adjust height to account for header */
+                overflow-y: auto; /* Scroll if content overflows */
             }
             @media (max-width: 768px) {
                 .sidebar {

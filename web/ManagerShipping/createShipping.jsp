@@ -13,16 +13,17 @@
             }
 
             .sidebar {
+                margin-top: 75px;
                 position: fixed;
-                top: 80px;
+                top: 80px; /* Start below the header */
                 left: 0;
                 bottom: 0;
                 width: 250px;
-                background-color: #ffffff;
-                border-right: 1px solid #dee2e6;
-                padding: 20px;
-                overflow-y: auto;
-                z-index: 100;
+                background-color: #f8f9fa;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+                z-index: 99; /* Below header */
+                height: calc(100% - 80px); /* Adjust height to account for header */
+                overflow-y: auto; /* Scroll if content overflows */
             }
 
             .dashboard-header {
@@ -124,8 +125,8 @@
                         <c:forEach var="shipper" items="${shipperList}">
                             <option value="${shipper.user_id}" 
                                     <c:if test="${shipping.shipperId == shipper.user_id}">
-                                selected
-                                </c:if>>
+                                        selected
+                                    </c:if>>
                                 ${shipper.full_name}
                             </option>
                         </c:forEach>
