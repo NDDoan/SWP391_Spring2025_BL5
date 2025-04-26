@@ -50,6 +50,7 @@ public class OrderDao {
 
         return new ArrayList<>(orderMap.values());
     }
+
     //lấy order theo order id
     public OrderDto getOrderById(int orderId) {
         OrderDto order = null;
@@ -79,6 +80,7 @@ public class OrderDao {
         }
         return order;
     }
+
     //lấy order theo status
     public List<OrderDto> getOrdersByStatus(String status) {
         Map<Integer, OrderDto> orderMap = new HashMap<>();
@@ -111,6 +113,7 @@ public class OrderDao {
         }
         return new ArrayList<>(orderMap.values());
     }
+
     //search order theo date
     public List<OrderDto> getOrdersByDateRange(Timestamp startDate, Timestamp endDate) {
         Map<Integer, OrderDto> orderMap = new HashMap<>();
@@ -145,6 +148,100 @@ public class OrderDao {
         }
         return new ArrayList<>(orderMap.values());
     }
+
+    public List<OrderDto> getOrdersFiltered(Timestamp startDate, Timestamp endDate, String status, String sortBy, String sortDir, int offset, int limit) throws Exception {
+        Map<Integer, OrderDto> orderMap = new LinkedHashMap<>(); // giữ thứ tự
+
+        StringBuilder sql = new StringBuilder(
+                "SELECT o.order_id, o.created_at, o.total_amount, o.order_status, p.product_name "
+                + "FROM Orders o "
+                + "JOIN Order_Items oi ON o.order_id = oi.order_id "
+                + "JOIN Products p ON oi.product_id = p.product_id "
+                + "WHERE 1 = 1 "
+        );
+
+        List<Object> params = new ArrayList<>();
+
+        if (startDate != null && endDate != null) {
+            sql.append("AND o.created_at BETWEEN ? AND ? ");
+            params.add(startDate);
+            params.add(endDate);
+        }
+
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND o.order_status = ? ");
+            params.add(status);
+        }
+
+        sql.append("ORDER BY o.").append(sortBy).append(" ").append(sortDir).append(" ");
+        sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        params.add(offset);
+        params.add(limit);
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            // set param
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+                OrderDto order = orderMap.get(orderId);
+                if (order == null) {
+                    order = new OrderDto();
+                    order.setOrderId(orderId);
+                    order.setOrderDate(rs.getTimestamp("created_at"));
+                    order.setTotalCost(rs.getDouble("total_amount"));
+                    order.setStatus(rs.getString("order_status"));
+                    order.setProductNames(new ArrayList<>());
+                    orderMap.put(orderId, order);
+                }
+                order.getProductNames().add(rs.getString("product_name"));
+            }
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "SQL Error", e);
+        }
+
+        return new ArrayList<>(orderMap.values());
+    }
+
+    public int countFilteredOrders(Timestamp startDate, Timestamp endDate, String status) throws Exception {
+        int count = 0;
+        StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT o.order_id) FROM Orders o WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
+
+        if (startDate != null && endDate != null) {
+            sql.append("AND o.created_at BETWEEN ? AND ? ");
+            params.add(startDate);
+            params.add(endDate);
+        }
+
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND o.order_status = ? ");
+            params.add(status);
+        }
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi đếm đơn hàng", e);
+        }
+
+        return count;
+    }
+
     //phân trang cho order
     public List<OrderDto> getOrdersWithPagination(int offset, int limit) {
         Map<Integer, OrderDto> orderMap = new HashMap<>();
@@ -179,6 +276,7 @@ public class OrderDao {
         }
         return new ArrayList<>(orderMap.values());
     }
+
     //đếm các bản ghi orders 
     public int getTotalPages(int userId, int pageSize) {
         int totalOrders = 0;
@@ -202,8 +300,8 @@ public class OrderDao {
     }
 
     /**
-     * Gets an Order entity by order ID
-     * Used for the feedback feature
+     * Gets an Order entity by order ID Used for the feedback feature
+     *
      * @param orderId The order ID to retrieve
      * @return Order entity or null if not found
      */
@@ -212,17 +310,17 @@ public class OrderDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Orders order = null;
-        
+
         try {
             conn = new DBContext().getConnection();
             String sql = "SELECT [order_id], [user_id], [order_status], [total_amount], "
-                       + "[created_at], [updated_at] "
-                       + "FROM [dbo].[Orders] "
-                       + "WHERE [order_id] = ?";
-            
+                    + "[created_at], [updated_at] "
+                    + "FROM [dbo].[Orders] "
+                    + "WHERE [order_id] = ?";
+
             ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
-            
+
             rs = ps.executeQuery();
             if (rs.next()) {
                 order = new Orders();
@@ -238,13 +336,13 @@ public class OrderDao {
         } finally {
             closeResources(conn, ps, rs);
         }
-        
+
         return order;
     }
 
     /**
-     * Gets order items for an order
-     * Used for the feedback feature
+     * Gets order items for an order Used for the feedback feature
+     *
      * @param orderId The order ID
      * @return List of order items
      */
@@ -253,17 +351,17 @@ public class OrderDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<OrderItems> items = new ArrayList<>();
-        
+
         try {
             conn = new DBContext().getConnection();
             String sql = "SELECT [order_item_id], [order_id], [product_id], "
-                       + "[quantity], [price], [subtotal] "
-                       + "FROM [dbo].[Order_Items] "
-                       + "WHERE [order_id] = ?";
-            
+                    + "[quantity], [price], [subtotal] "
+                    + "FROM [dbo].[Order_Items] "
+                    + "WHERE [order_id] = ?";
+
             ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
-            
+
             rs = ps.executeQuery();
             while (rs.next()) {
                 OrderItems item = new OrderItems();
@@ -273,7 +371,7 @@ public class OrderDao {
                 item.setQuantity(rs.getInt("quantity"));
                 item.setPrice(rs.getDouble("price"));
                 item.setSubtotal(rs.getDouble("subtotal"));
-                
+
                 items.add(item);
             }
         } catch (Exception e) {
@@ -281,18 +379,24 @@ public class OrderDao {
         } finally {
             closeResources(conn, ps, rs);
         }
-        
+
         return items;
     }
-    
+
     /**
      * Helper method to close database resources
      */
     private void closeResources(Connection conn, PreparedStatement ps, ResultSet rs) {
         try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (conn != null) conn.close();
+            if (rs != null) {
+                rs.close();
+            }
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error closing resources: " + e.getMessage(), e);
         }

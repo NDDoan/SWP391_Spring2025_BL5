@@ -10,30 +10,46 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
         <style>
             html, body {
-                height:100%;
-                margin:0;
-                display:flex;
-                flex-direction:column;
+                height: 100%;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
             }
+
+            body {
+                font-family: Arial, sans-serif;
+            }
+
             .main-content {
-                flex:1;
-                overflow:auto;
-                padding-top:20px;
+                flex: 1;
+                padding: 40px 20px;
+                background-color: #f9f9f9;
             }
+
             .thumb {
-                width:150px;
-                height:100px;
-                object-fit:cover;
+                width: 150px;
+                height: 100px;
+                object-fit: cover;
             }
+
             .card-post {
-                margin-bottom:20px;
+                margin-bottom: 20px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 6px;
             }
+
             .sidebar .list-unstyled a {
-                text-decoration:none;
-                color:#007bff;
+                text-decoration: none;
+                color: #007bff;
             }
+
             .sidebar .list-unstyled a:hover {
-                text-decoration:underline;
+                text-decoration: underline;
+            }
+
+            .pagination {
+                justify-content: center;
             }
         </style>
     </head>

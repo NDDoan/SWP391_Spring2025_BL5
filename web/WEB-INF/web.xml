@@ -17,6 +17,10 @@
         <servlet-name>ProductUserListController</servlet-name>
         <servlet-class>Controller.ProductUserListController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OrderList</servlet-name>
+        <servlet-class>Controller.OrderList</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ProductForManagerListController</servlet-name>
         <url-pattern>/ProductForManagerListController</url-pattern>
@@ -135,5 +139,9 @@
     <servlet-mapping>
         <servlet-name>ProductUserListController</servlet-name>
         <url-pattern>/ProductUserListController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrderList</servlet-name>
+        <url-pattern>/OrderList</url-pattern>
     </servlet-mapping>
 </web-app>
