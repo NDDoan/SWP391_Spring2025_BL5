@@ -13,6 +13,10 @@
         <servlet-name>ProductDetailController</servlet-name>
         <servlet-class>Controller.ProductDetailController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProductUserListController</servlet-name>
+        <servlet-class>Controller.ProductUserListController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ProductForManagerListController</servlet-name>
         <url-pattern>/ProductForManagerListController</url-pattern>
@@ -127,5 +131,9 @@
     <servlet-mapping>
         <servlet-name>ProductDetailController</servlet-name>
         <url-pattern>/ProductDetailController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductUserListController</servlet-name>
+        <url-pattern>/ProductUserListController</url-pattern>
     </servlet-mapping>
 </web-app>
