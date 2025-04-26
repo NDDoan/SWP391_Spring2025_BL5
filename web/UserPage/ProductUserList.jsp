@@ -42,13 +42,21 @@
                 </div>
             </c:forEach>
 
+            <c:set var="selCat" value="${selectedCategory}" />
+
             <h5>Categories</h5>
             <c:forEach var="categ" items="${categoryList}">
                 <div class="form-check">
-                    <input class="form-check-input cat-filter" type="checkbox" value="${categ}" id="cat_${categ}">
-                    <label class="form-check-label" for="cat_${categ}">${categ}</label>
+                    <input class="form-check-input cat-filter"
+                           type="checkbox"
+                           value="${categ}"
+                           id="cat_${categ}"
+                           <c:if test="${categ == selCat}">checked</c:if>
+                               >
+                           <label class="form-check-label" for="cat_${categ}">${categ}</label>
                 </div>
             </c:forEach>
+
 
             <h5>Price (₫)</h5>
             <div class="d-flex gap-2 mb-3">
@@ -101,7 +109,8 @@
                 priceMin = document.getElementById('priceMin'),
                 priceMax = document.getElementById('priceMax'),
                 applyBtn = document.getElementById('applyFilters'),
-                clearBtn = document.getElementById('clearFilters');
+                clearBtn = document.getElementById('clearFilters'),
+                selCat = "${fn:escapeXml(selectedCategory)}";
 
         // 3) render one page
         function renderPage(page) {
@@ -178,6 +187,14 @@
 
         applyBtn.addEventListener('click', applyFilters);
         clearBtn.addEventListener('click', clearFilters);
+
+        if (selCat) {
+            // find and check the matching box (redundant with JSP but safe)
+            const box = document.querySelector(`.cat-filter[value="${selCat}"]`);
+            if (box)
+                box.checked = true;
+            applyFilters();
+        }
 
         // initial
         renderPage(1);

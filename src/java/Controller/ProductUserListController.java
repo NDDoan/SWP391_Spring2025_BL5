@@ -60,11 +60,15 @@ public class ProductUserListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String category = request.getParameter("category");
         try {
             List<ProductUserListDto> products = dao.getAllProductsSummary();
             request.setAttribute("productList", products);
             request.setAttribute("categoryList", dao.getAllCategories());
             request.setAttribute("brandList", dao.getAllBrands());
+            if (category != null) {
+                request.setAttribute("selectedCategory", category);
+            }
             request.getRequestDispatcher("/UserPage/ProductUserList.jsp")
                     .forward(request, response);
         } catch (Exception e) {
