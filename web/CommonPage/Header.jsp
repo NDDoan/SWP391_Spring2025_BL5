@@ -100,7 +100,7 @@
                 <!-- Cart + User -->
                 <div class="d-flex align-items-center ms-3 gap-3">
                     <!-- Cart -->
-                    <a href="${pageContext.request.contextPath}/cartdetailcontroller" class="btn btn-success position-relative">
+                    <a href="${pageContext.request.contextPath}/CartDetailController" class="btn btn-success position-relative">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                     </a>

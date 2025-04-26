@@ -55,14 +55,13 @@ public class BlogListController extends HttpServlet {
                         "created_at",
                         "DESC"
                 );
-
+                
                 totalPosts = dao.countPosts(
                         null, // categoryId
                         null, // authorId
                         null, // status => bỏ lọc status
                         null // searchTitle
                 );
-
                 totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
             }
 

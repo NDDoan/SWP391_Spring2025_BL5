@@ -117,14 +117,6 @@
     </servlet-mapping>
     <!-- Blog -->
     <servlet>
-        <servlet-name>BlogListController</servlet-name>
-        <servlet-class>Controller.BlogListController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>BlogListController</servlet-name>
-        <url-pattern>/BlogListController</url-pattern>
-    </servlet-mapping>
-    <servlet>
         <servlet-name>BlogDetailController</servlet-name>
         <servlet-class>Controller.BlogDetailController</servlet-class>
     </servlet>
