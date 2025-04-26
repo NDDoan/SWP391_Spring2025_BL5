@@ -217,7 +217,7 @@
                                                 <p class="form-control-plaintext">${product.description}</p>
                                             </c:when>
                                             <c:otherwise>
-                                                <textarea name="description" class="form-control" rows="4" required>${product.description}</textarea>
+                                                <textarea id="descriptionEditor" name="description" class="form-control" rows="4" required>${product.description}</textarea>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
@@ -523,6 +523,8 @@
             </div>
             <!-- Bootstrap JS bundle -->
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- CKEditor 5 Classic build CDN -->
+            <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
             <script>
                                                         const select = document.getElementById('mediaTypeSelect');
                                                         const container = document.getElementById('primary-checkbox-container');
@@ -543,6 +545,24 @@
                                                             modal.show();
                 </c:if>
                                                         });
+            </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    ClassicEditor
+                            .create(document.querySelector('#descriptionEditor'), {
+                                toolbar: [
+                                    'heading', '|',
+                                    'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                                    'blockQuote', 'insertTable', 'undo', 'redo'
+                                ],
+                                table: {
+                                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                                }
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                });
             </script>
     </body>
 </html>
