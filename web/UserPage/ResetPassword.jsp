@@ -1,147 +1,116 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đặt lại mật khẩu - Electro Mart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password - Electro Mart Management System</title>
 
-    <!-- Google Fonts + Font Awesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Include Header -->
+    <jsp:include page="/CommonPage/Header.jsp" />
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #1e3c72, #2a5298);
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
             display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
         }
 
-        /* FORM ĐẶT LẠI MẬT KHẨU */
         .forgot-password-container {
-            background-color: #fff;
-            padding: 35px 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 420px;
-            margin: 60px auto 30px auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            width: 400px;
             text-align: center;
-            animation: fadeIn 0.7s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-15px); }
-            to { opacity: 1; transform: translateY(0); }
+            position: relative;
         }
 
         .forgot-password-container h1 {
-            color: #1e3c72;
-            font-size: 26px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .forgot-password-container p {
-            font-size: 14px;
-            color: #444;
+            color: #0c64dc;
             margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: bold;
         }
 
-        .input-group {
+        .forgot-password-container form {
+            margin-top: 20px;
+        }
+
+        .forgot-password-container .input-group {
             position: relative;
             margin-bottom: 20px;
         }
 
-        .input-group input {
+        .forgot-password-container .input-group input {
             width: 100%;
-            padding: 14px 15px 14px 45px;
+            padding: 15px 15px 15px 45px;
             border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
         }
 
-        .input-group i {
+        .forgot-password-container .input-group i {
             position: absolute;
-            top: 50%;
             left: 15px;
+            top: 50%;
             transform: translateY(-50%);
-            color: #777;
+            color: #aaa;
+            font-size: 18px;
         }
 
         .forgot-password-container input[type="submit"] {
-            background-color: #1e3c72;
+            background-color: #0c64dc;
             color: #fff;
             border: none;
-            padding: 14px;
+            padding: 15px 0;
+            border-radius: 5px;
             width: 100%;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 18px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         .forgot-password-container input[type="submit"]:hover {
-            background-color: #163062;
+            background-color: #094ea1;
         }
 
         .forgot-password-container a {
             display: block;
-            margin-top: 15px;
-            color: #1e3c72;
+            margin-top: 10px;
+            color: #0c64dc;
             text-decoration: none;
-            font-size: 14px;
+            transition: color 0.3s ease;
         }
 
         .forgot-password-container a:hover {
-            color: #2a5298;
+            color: #0072ff;
         }
 
-        .message {
-            margin-bottom: 15px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .message.error {
-            background-color: #ff4d4d;
-            color: #fff;
-        }
-
-        .message.success {
-            background-color: #2ecc71;
-            color: #fff;
+        .forgot-password-container img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
-<!-- INCLUDE HEADER -->
-<jsp:include page="/CommonPage/Header.jsp" />
-
-<!-- RESET FORM -->
-<%
-    String errorMessage = (String) request.getAttribute("errorMessage");
-    String successMessage = (String) request.getAttribute("successMessage");
-%>
-
 <div class="forgot-password-container">
-    <h1>Đặt lại mật khẩu</h1>
-    <p>Vui lòng nhập email của bạn để khôi phục mật khẩu</p>
-
-    <% if (errorMessage != null) { %>
-        <div class="message error"><%= errorMessage %></div>
-    <% } %>
-    <% if (successMessage != null) { %>
-        <div class="message success"><%= successMessage %></div>
-    <% } %>
-
+    <!-- Logo -->
+    <img src="https://vectorseek.com/wp-content/uploads/2023/10/FPT-Retail-Nha-thuoc-Long-Chau-Logo-Vector.svg-.png" alt="Logo Electro Mart">
+    <h1>Forgot password</h1>
+    <p>Vui lòng nhập email để khôi phục mật khẩu</p>
     <form action="ForgotPasswordServlet" method="post">
         <div class="input-group">
             <i class="fas fa-envelope"></i>
@@ -149,10 +118,10 @@
         </div>
         <input type="submit" value="Khôi phục mật khẩu">
     </form>
-    <a href="login.jsp">Quay lại đăng nhập</a>
+    <a href="Login.jsp">Quay lại đăng nhập</a>
 </div>
 
-<!-- INCLUDE FOOTER -->
+<!-- Include Footer -->
 <jsp:include page="/CommonPage/Footer.jsp" />
 
 </body>

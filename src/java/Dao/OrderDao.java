@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import EntityDto.OrderDto;
+import EntityDto.OrderItemDto;
 
 public class OrderDao {
 
@@ -81,6 +82,39 @@ public class OrderDao {
         return order;
     }
 
+    public List<OrderItemDto> getOrderItemsByOrderId(int orderId) {
+    List<OrderItemDto> orderItemsList = new ArrayList<>();
+    String sql = "SELECT oi.*, p.product_name " +
+                 "FROM Order_Items oi " +
+                 "JOIN Products p ON oi.product_id = p.product_id " +
+                 "WHERE oi.order_id = ?";
+
+    try (Connection conn = new DBContext().getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+         
+        ps.setInt(1, orderId);
+        
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                OrderItemDto item = new OrderItemDto();
+                item.setOrderItemId(rs.getInt("order_item_id"));
+                item.setOrderId(rs.getInt("order_id"));           
+                item.setQuantity(rs.getInt("quantity"));
+                item.setPrice(rs.getDouble("price"));
+                item.setSubtotal(rs.getDouble("subtotal"));
+                item.setProductName(rs.getString("product_name")); // <-- lấy thêm product name
+                
+                orderItemsList.add(item);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return orderItemsList;
+}
+
+
     //lấy order theo status
     public List<OrderDto> getOrdersByStatus(String status) {
         Map<Integer, OrderDto> orderMap = new HashMap<>();
@@ -149,7 +183,7 @@ public class OrderDao {
         return new ArrayList<>(orderMap.values());
     }
 
-    public List<OrderDto> getOrdersFiltered(Timestamp startDate, Timestamp endDate, String status, String sortBy, String sortDir, int offset, int limit) throws Exception {
+    public List<OrderDto> getOrdersFiltered(Timestamp startDate, Timestamp endDate, int orderid, String sortBy, String sortDir, int offset, int limit, String staus) throws Exception {
         Map<Integer, OrderDto> orderMap = new LinkedHashMap<>(); // giữ thứ tự
 
         StringBuilder sql = new StringBuilder(
@@ -163,16 +197,19 @@ public class OrderDao {
         List<Object> params = new ArrayList<>();
 
         if (startDate != null && endDate != null) {
-            sql.append("AND o.created_at BETWEEN ? AND ? ");
+            sql.append(" AND o.created_at BETWEEN ? AND ? ");
             params.add(startDate);
             params.add(endDate);
         }
 
-        if (status != null && !status.isEmpty()) {
-            sql.append("AND o.order_status = ? ");
-            params.add(status);
+        if (orderid != 0) {
+            sql.append("AND o.order_id = ? ");
+            params.add(orderid);
         }
-
+        if (staus != null && !staus.isEmpty()) {
+            sql.append(" AND o.order_status = ? ");
+            params.add(staus);
+        }
         sql.append("ORDER BY o.").append(sortBy).append(" ").append(sortDir).append(" ");
         sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         params.add(offset);
@@ -208,7 +245,7 @@ public class OrderDao {
         return new ArrayList<>(orderMap.values());
     }
 
-    public int countFilteredOrders(Timestamp startDate, Timestamp endDate, String status) throws Exception {
+    public int countFilteredOrders(Timestamp startDate, Timestamp endDate, int orderid, String staus) throws Exception {
         int count = 0;
         StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT o.order_id) FROM Orders o WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
@@ -219,9 +256,13 @@ public class OrderDao {
             params.add(endDate);
         }
 
-        if (status != null && !status.isEmpty()) {
-            sql.append("AND o.order_status = ? ");
-            params.add(status);
+        if (orderid != 0) {
+            sql.append("AND o.order_id = ? ");
+            params.add(orderid);
+        }
+        if (staus != null && !staus.isEmpty()) {
+            sql.append(" AND o.order_status = ? ");
+            params.add(staus);
         }
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
@@ -275,6 +316,20 @@ public class OrderDao {
             LOGGER.log(Level.SEVERE, "Lỗi kết nối CSDL", e);
         }
         return new ArrayList<>(orderMap.values());
+    }
+
+    public boolean updateOrderStatus(int orderId, String status) {
+        String sql = "UPDATE orders SET order_status = ? WHERE order_id = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, orderId);
+
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     //đếm các bản ghi orders 
@@ -404,7 +459,7 @@ public class OrderDao {
 
     public static void main(String[] args) {
         OrderDao orderDao = new OrderDao();
-
+           
 //    int testUserId = 3; // Thay bằng ID thực tế trong database
 //    List<OrderDto> orders = orderDao.getOrdersByUserId(testUserId);
 //

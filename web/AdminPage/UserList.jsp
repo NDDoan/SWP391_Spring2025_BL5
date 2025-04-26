@@ -13,6 +13,7 @@
         <style>
             /* Sidebar Fixed to the left */
             .sidebar {
+                margin-top: 75px;
                 position: fixed;
                 top: 80px; /* Start below the header */
                 left: 0;

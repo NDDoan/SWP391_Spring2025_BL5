@@ -66,7 +66,7 @@
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center" href="order">
+                    <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/OrderList">
                         <i class="bi bi-cart-check me-2"></i> Quản lý đơn hàng
                     </a>
                 </li>
