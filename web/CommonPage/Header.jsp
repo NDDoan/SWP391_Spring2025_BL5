@@ -91,7 +91,7 @@
 
                 <!-- Navigation Links -->
                 <nav class="d-flex align-items-center gap-3 nav-links">
-                    <a href="${pageContext.request.contextPath}/#">Sản phẩm</a>
+                    <a href="${pageContext.request.contextPath}/ProductUserListController">Sản phẩm</a>
                     <a href="${pageContext.request.contextPath}/BlogListController">Bài viết</a>
                     <a href="${pageContext.request.contextPath}/myordercontroller">Đơn Hàng</a>
                     <a href="${pageContext.request.contextPath}/contact">Liên hệ</a>
