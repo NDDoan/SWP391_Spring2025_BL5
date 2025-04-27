@@ -88,7 +88,7 @@
 
         <c:if test="${not empty cartItems}">
             <div class="text-end">
-                <a href="${pageContext.request.contextPath}/cartdetailcontroller" class="btn btn-primary btn-lg">
+                <a href="${pageContext.request.contextPath}/HomePageController" class="btn btn-primary btn-lg">
                     Tiếp tục mua hàng
                 </a>
             </div>

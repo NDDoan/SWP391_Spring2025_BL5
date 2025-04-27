@@ -18,9 +18,15 @@ public class CartDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        int cartId = 1; // Giả lập cartId = 1, sau này lấy từ session user
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        if (userId == null) {
+            response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp"); // hoặc về trang đăng nhập
+            return;
+        }
 
         CartDao cartDao = new CartDao();
+        int cartId = cartDao.getCartIdByUserId(userId);
+
         List<CartItem> cartItems = cartDao.getCartItemsByCartId(cartId);
         double totalOrderPrice = cartDao.getTotalOrderPrice(cartId);
 

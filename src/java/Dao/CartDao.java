@@ -89,6 +89,26 @@ public class CartDao {
         }
         return total;
     }
+    
+    public int getCartIdByUserId(int userId) {
+    int cartId = -1;
+    String query = "SELECT cart_id FROM cart WHERE user_id = ?";
+    try {
+        conn = new DBContext().getConnection();
+        ps = conn.prepareStatement(query);
+        ps.setInt(1, userId);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            cartId = rs.getInt("cart_id");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        close();
+    }
+    return cartId;
+}
+
 
     private void close() {
         try {
