@@ -29,12 +29,22 @@
     <div class="row">
         <!-- FILTER SIDEBAR -->
         <div class="col-md-3 sidebar">
-            <h4>Filters</h4>
-            <div class="mb-3">
-                <input id="searchInput" type="text" class="form-control" placeholder="Search…">
-            </div>
-
-            <h5>Brands</h5>
+            <h4>Tìm kiếm</h4>
+            <form id="searchForm" action="${pageContext.request.contextPath}/ProductUserListController" method="get" class="mb-4">
+                <div class="input-group">
+                    <input id="searchInput"
+                           name="search"
+                           value="${fn:escapeXml(searchTerm)}"
+                           type="text"
+                           class="form-control"
+                           placeholder="Tìm kiếm sản phẩm…"
+                           onkeydown="if (event.key === 'Enter') {
+                                       event.preventDefault();
+                                       applyFilters();
+                                   }">
+                </div>
+            </form>
+            <h5>Thương hiệu</h5>
             <c:forEach var="b" items="${brandList}">
                 <div class="form-check">
                     <input class="form-check-input brand-filter" type="checkbox" value="${b}" id="brand_${b}">
@@ -44,7 +54,7 @@
 
             <c:set var="selCat" value="${selectedCategory}" />
 
-            <h5>Categories</h5>
+            <h5>Danh mục</h5>
             <c:forEach var="categ" items="${categoryList}">
                 <div class="form-check">
                     <input class="form-check-input cat-filter"
@@ -58,14 +68,14 @@
             </c:forEach>
 
 
-            <h5>Price (₫)</h5>
+            <h5>Thành tiền (₫)</h5>
             <div class="d-flex gap-2 mb-3">
                 <input id="priceMin" type="number" class="form-control" placeholder="Min" min="0">
                 <input id="priceMax" type="number" class="form-control" placeholder="Max" min="0">
             </div>
 
-            <button id="applyFilters" class="btn btn-primary mb-2">Apply</button>
-            <button id="clearFilters" class="btn btn-secondary">Clear</button>
+            <button id="applyFilters" class="btn btn-primary">Áp dụng</button>
+            <button id="clearFilters" class="btn btn-secondary">Dọn Dẹp</button>
         </div>
 
         <!-- PRODUCT GRID & PAGINATION -->
@@ -98,7 +108,7 @@
         ];
 
         const pageSize = 9;
-        let filtered = allProducts;
+        let filtered = allProducts.slice();
 
         // 2) DOM refs
         const gridEl = document.getElementById('productGrid'),
@@ -137,19 +147,41 @@
                 gridEl.appendChild(col);
             });
 
-            // pagination
             const totalPages = Math.ceil(filtered.length / pageSize);
             pagEl.innerHTML = '';
+            // Prev button
+            const prevLi = document.createElement('li');
+            prevLi.className = 'page-item' + (page === 1 ? ' disabled' : '');
+            prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous">&lsaquo;</a>`;
+            prevLi.addEventListener('click', e => {
+                e.preventDefault();
+                if (page > 1)
+                    renderPage(page - 1);
+            });
+            pagEl.appendChild(prevLi);
+
+            // Numbered buttons
             for (let i = 1; i <= totalPages; i++) {
                 const li = document.createElement('li');
                 li.className = 'page-item' + (i === page ? ' active' : '');
-                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.innerHTML = '<a class="page-link" href="#">' + i + '</a>';
                 li.addEventListener('click', e => {
                     e.preventDefault();
                     renderPage(i);
                 });
                 pagEl.appendChild(li);
             }
+
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = 'page-item' + (page === totalPages ? ' disabled' : '');
+            nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next">&rsaquo;</a>`;
+            nextLi.addEventListener('click', e => {
+                e.preventDefault();
+                if (page < totalPages)
+                    renderPage(page + 1);
+            });
+            pagEl.appendChild(nextLi);
         }
 
         // 4) apply filters
@@ -172,6 +204,13 @@
                 return true;
             });
             renderPage(1);
+            // cập nhật URL cho `search` (history API)
+            const params = new URLSearchParams(window.location.search);
+            if (q)
+                params.set('search', q);
+            else
+                params.delete('search');
+            history.replaceState(null, '', '?' + params.toString());
         }
 
         // 5) clear filters
@@ -196,6 +235,12 @@
             applyFilters();
         }
 
+        // Khi load trang, nếu đã có searchTerm, tự apply
+        if (searchInput.value) {
+            applyFilters();
+        } else {
+            renderPage(1);
+        }
         // initial
         renderPage(1);
     })();

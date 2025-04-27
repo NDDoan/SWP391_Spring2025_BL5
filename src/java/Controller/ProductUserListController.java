@@ -61,10 +61,13 @@ public class ProductUserListController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String category = request.getParameter("category");
+        String search = request.getParameter("search");
         try {
             List<ProductUserListDto> products = dao.getAllProductsSummary();
             request.setAttribute("productList", products);
             request.setAttribute("categoryList", dao.getAllCategories());
+            request.setAttribute("productList", products);
+            request.setAttribute("searchTerm", search == null ? "" : search);
             request.setAttribute("brandList", dao.getAllBrands());
             if (category != null) {
                 request.setAttribute("selectedCategory", category);

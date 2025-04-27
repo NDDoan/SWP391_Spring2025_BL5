@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -81,9 +82,15 @@
                     <i class="fas fa-bolt"></i> Chợ Điện Tử
                 </a>
 
-                <!-- Search -->
-                <form action="${pageContext.request.contextPath}/ProductForManagerListController" method="get" class="d-flex flex-grow-1 mx-4" style="max-width: 500px;">
-                    <input name="search" class="form-control rounded-start" placeholder="Tìm kiếm sản phẩm…" />
+                <!-- Search (đổi action về productUserList) -->
+                <form action="${pageContext.request.contextPath}/ProductUserListController" 
+                      method="get" 
+                      class="d-flex flex-grow-1 mx-4" 
+                      style="max-width: 500px;">
+                    <input name="search"
+                           value="${param.search != null ? fn:escapeXml(param.search) : ''}"
+                           class="form-control rounded-start"
+                           placeholder="Tìm kiếm sản phẩm…"/>
                     <button class="btn btn-warning rounded-end" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
