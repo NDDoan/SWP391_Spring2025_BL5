@@ -177,7 +177,7 @@
     </button>
 
     <!-- User Info -->
-    <form action="${pageContext.request.contextPath}/userprofile" method="post">
+    <form action="${pageContext.request.contextPath}/UserProfile" method="post">
         <div class="input-group">
             <label>Họ và tên</label>
             <input type="text" name="full_name" value="${user.full_name}" required>

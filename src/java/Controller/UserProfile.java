@@ -97,7 +97,7 @@ public class UserProfile extends HttpServlet {
             session.setAttribute("updateMessage", "Cập nhật thất bại, vui lòng thử lại!");
         }
         
-        response.sendRedirect("userprofile");
+        response.sendRedirect("UserProfile");
     }
     
     @Override
