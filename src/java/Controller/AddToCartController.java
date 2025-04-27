@@ -60,7 +60,43 @@ public class AddToCartController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Redirect GET requests về controller của giỏ hàng
+        // Lấy thông tin sản phẩm và số lượng từ URL parameters
+        int productId;
+        int quantity = 1;  // Mặc định số lượng là 1
+        try {
+            // Lấy tham số productId và quantity từ URL
+            productId = Integer.parseInt(request.getParameter("productId"));
+            // Kiểm tra nếu có tham số quantity, nếu không sẽ mặc định là 1
+            if (request.getParameter("quantity") != null) {
+                quantity = Integer.parseInt(request.getParameter("quantity"));
+            }
+        } catch (Exception e) {
+            // Nếu không có tham số hợp lệ, chuyển hướng về trang chi tiết giỏ hàng
+            response.sendRedirect(request.getContextPath() + "/CartDetailController");
+            return;
+        }
+
+        // Kiểm tra người dùng đã đăng nhập chưa
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+            response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp");
+            return;
+        }
+
+        // Khởi tạo CartDao để thao tác với giỏ hàng
+        CartDao cartDao = new CartDao();
+        // Lấy cartId, nếu chưa có giỏ hàng thì tạo giỏ hàng mới
+        int cartId = cartDao.getCartIdByUserId(userId);
+        if (cartId < 0) {
+            cartId = cartDao.createCartForUser(userId);
+        }
+
+        // Thêm sản phẩm vào giỏ hàng
+        cartDao.addCartItem(cartId, productId, quantity);
+
+        // Chuyển hướng về trang chi tiết giỏ hàng sau khi thêm sản phẩm
         response.sendRedirect(request.getContextPath() + "/CartDetailController");
     }
 

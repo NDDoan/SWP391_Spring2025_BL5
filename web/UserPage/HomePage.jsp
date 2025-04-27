@@ -120,7 +120,10 @@
                                         ₫
                                     </strong>
                                 </p>
-                                <a href="#" class="btn btn-sm btn-success"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
+                                <a href="${pageContext.request.contextPath}/AddToCartController?productId=${p.productId}&quantity=1"
+                                   class="btn btn-sm btn-success">
+                                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
+                                </a>
                                 <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}"
                                    class="btn btn-primary btn-sm"><i class="fas fa-info-circle"></i> Xem chi tiết</a>
                             </div>
@@ -154,7 +157,7 @@
                                                                   minFractionDigits="0"
                                                                   maxFractionDigits="0"/>₫
                                             </p>
-                                            <a href="${pageContext.request.contextPath}/cart/add?productId=${p.productId}" 
+                                            <a href="${pageContext.request.contextPath}/CartDetailController?productId=${p.productId}&quantity=1" 
                                                class="btn btn-success btn-sm me-2">
                                                 <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
                                             </a>
@@ -204,7 +207,9 @@
                                                                   minFractionDigits="0"
                                                                   maxFractionDigits="0"/>₫
                                             </span>
-                                            <a href="#" class="btn btn-sm btn-success"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
+                                                <button class="btn btn-sm btn-success add-to-cart" data-product-id="${p.productId}">
+                                                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
+                                                </button>
                                             <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}" 
                                                class="btn btn-primary btn-sm"><i class="fas fa-info-circle"></i> Xem chi tiết</a>
                                         </div>

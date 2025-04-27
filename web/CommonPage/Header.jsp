@@ -109,7 +109,16 @@
                     <!-- Cart -->
                     <a href="${pageContext.request.contextPath}/CartDetailController" class="btn btn-success position-relative">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.cartCount && sessionScope.cartCount > 0}">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    ${sessionScope.cartCount}
+                                </span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                            </c:otherwise>
+                        </c:choose>
                     </a>
 
                     <!-- Login/User -->
