@@ -39,9 +39,24 @@ public class CartDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Nếu bạn chưa cần post xử lý gì thì có thể để trống
-        doGet(request, response);
+
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        if (userId == null) {
+            response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp");
+            return;
+        }
+
+        int productId = Integer.parseInt(request.getParameter("productId"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+        CartDao cartDao = new CartDao();
+        int cartId = cartDao.getCartIdByUserId(userId);
+
+        cartDao.addCartItem(cartId, productId, quantity);  // Gọi DAO để thêm vào CSDL
+
+        response.sendRedirect(request.getContextPath() + "/CartDetailController"); // Load lại giỏ hàng sau khi thêm
     }
+
 
     @Override
     public String getServletInfo() {

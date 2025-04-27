@@ -102,13 +102,14 @@
                         <div>Tồn kho: <span id="stockDisplay"></span></div>
                     </div>
 
-                    <div class="d-flex align-items-center mb-5 gap-3">
-                        <input type="number" id="qtyInput" class="form-control" 
-                               value="1" min="1" style="width:100px;"/>
-                        <button class="btn btn-lg btn-primary">
+                    <!-- Form Thêm vào giỏ -->
+                    <form action="${pageContext.request.contextPath}/AddToCartController" method="POST" class="d-flex align-items-center mb-5 gap-3">
+                        <input type="hidden" name="productId" value="${p.productId}"/>
+                        <input type="number" name="quantity" id="qtyInput" class="form-control" value="1" min="1" style="width:100px;"/>
+                        <button type="submit" class="btn btn-lg btn-primary">
                             <i class="fas fa-cart-plus me-2"></i>Thêm vào giỏ
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
 
