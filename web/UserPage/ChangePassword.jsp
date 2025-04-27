@@ -2,50 +2,47 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<jsp:include page="/CommonPage/Header.jsp" />
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Change Password - Electro Mart Management System</title>
+    <title>Đổi mật khẩu</title>
 
-    <!-- Include Header -->
-    <jsp:include page="/CommonPage/Header.jsp" />
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
-        /* Custom styles for Change Password page */
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #00c6ff, #0072ff);
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .change-password-page {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: #fff;
+            padding: 80px 0;
+            min-height: calc(100vh - 160px); /* trừ header + footer */
         }
 
-        .container {
-            background-color: rgba(255, 255, 255, 0.9);
+        .change-password-box {
+            background: #fff;
             padding: 40px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
             text-align: center;
         }
 
-        .container h1 {
-            color: #0c64dc;
-            margin-bottom: 20px;
-            font-size: 28px;
-            font-weight: bold;
+        .change-password-box h1 {
+            color: #1e3c72;
+            margin-bottom: 24px;
+            font-size: 26px;
         }
 
         .input-group {
@@ -55,87 +52,119 @@
 
         .input-group input {
             width: 100%;
-            padding: 15px 15px 15px 45px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 16px;
             box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #1e3c72;
+            outline: none;
         }
 
         .input-group i {
             position: absolute;
-            left: 15px;
             top: 50%;
+            left: 12px;
             transform: translateY(-50%);
-            color: #aaa;
-            font-size: 18px;
+            color: #888;
         }
 
-        .container input[type="submit"] {
-            background-color: #0c64dc;
-            color: #fff;
-            border: none;
-            padding: 15px 0;
-            border-radius: 5px;
+        input[type="submit"] {
             width: 100%;
-            font-size: 18px;
+            padding: 12px;
+            background: #1e3c72;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background 0.2s;
         }
 
-        .container input[type="submit"]:hover {
-            background-color: #094ea1;
+        input[type="submit"]:hover {
+            background: #162d56;
         }
 
-        .container a {
-            display: block;
-            margin-top: 10px;
-            color: #0c64dc;
+        .change-password-box a {
+            display: inline-block;
+            margin-top: 16px;
+            color: #1e3c72;
             text-decoration: none;
-            transition: color 0.3s ease;
+            font-size: 14px;
+            transition: color 0.2s;
         }
 
-        .container a:hover {
-            color: #0072ff;
+        .change-password-box a:hover {
+            color: #162d56;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .success-message {
+            color: green;
+        }
+
+        @media(max-width:576px) {
+            .change-password-box {
+                padding: 24px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Change Password</h1>
+
+<div class="change-password-page">
+    <div class="change-password-box">
+        <h1>Đổi mật khẩu</h1>
+
         <% 
-        String errorMessagePassChanging = (String) request.getAttribute("errorMessagePassChanging"); 
-        String successMessageChanging = (String) request.getAttribute("successMessageChanging");
+            String errorMessagePassChanging = (String) request.getAttribute("errorMessagePassChanging"); 
+            String successMessageChanging = (String) request.getAttribute("successMessageChanging");
         %>
-        <div style="margin-bottom: 20px;">
+
+        <div class="message">
             <% if (errorMessagePassChanging != null) { %>
-            <div style="color: red; font-weight: bold;"><%= errorMessagePassChanging %></div>
+                <div class="error-message"><%= errorMessagePassChanging %></div>
             <% } %>
             <% if (successMessageChanging != null) { %>
-            <div style="color: green; font-weight: bold;"><%= successMessageChanging %></div>
+                <div class="success-message"><%= successMessageChanging %></div>
             <% } %>
         </div>
 
         <form action="${pageContext.request.contextPath}/changepasswordcontroller" method="post">
             <div class="input-group">
                 <i class="fas fa-lock"></i>
-                <input type="password" name="currentPassword" placeholder="Current Password" required>
+                <input type="password" name="currentPassword" placeholder="Mật khẩu hiện tại" required>
             </div>
             <div class="input-group">
                 <i class="fas fa-key"></i>
-                <input type="password" name="newPassword" placeholder="New Password" required>
+                <input type="password" name="newPassword" placeholder="Mật khẩu mới" required>
             </div>
             <div class="input-group">
                 <i class="fas fa-key"></i>
-                <input type="password" name="confirmPassword" placeholder="Confirm New Password" required>
+                <input type="password" name="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>
             </div>
-            <input type="submit" value="Change Password">
+            <input type="submit" value="Xác nhận đổi mật khẩu">
         </form>
-        <a href="home.jsp">Back to Home</a>
-    </div>
 
-    <!-- Include Footer -->
-    <jsp:include page="/CommonPage/Footer.jsp" />
+        <a href="${pageContext.request.contextPath}/home.jsp">Quay lại trang chủ</a>
+    </div>
+</div>
+
+<jsp:include page="/CommonPage/Footer.jsp" />
+
 </body>
 </html>
