@@ -38,7 +38,9 @@
                 padding-top: 20px;
             }
             .qt{
-                 margin-top: 70px;
+               
+                padding-top: 70px; /* né header */
+                padding-left: 60px; /* né sidebar */
             }
             /* Định dạng header */
             #header {
@@ -53,10 +55,15 @@
 
             /* Đảm bảo nội dung không bị che khuất bởi sidebar */
             body {
-                margin-top: 100px;  /* Khoảng cách cho header */
-                margin-left: 220px; /* Khoảng cách cho sidebar */
+                margin: 0;
+                padding-top: 70px; /* Né header */
+                padding-left: 220px; /* Né sidebar */
+                background-color: #f8f9fa;
+                min-height: 100vh;
             }
-
+            .container {
+                padding: 20px;
+            }
             .thead-black {
                 background-color: #000;
                 color: #fff;
@@ -185,7 +192,7 @@
                                                         data-bs-target="#updateStatusModal"
                                                         data-order-id="${order.orderId}"
                                                         data-order-status="${order.status}">
-                                                     <i class="fas fa-edit"></i>
+                                                    <i class="fas fa-edit"></i>
                                                 </button>
                                             </td>
 
