@@ -63,4 +63,40 @@ public class ProductUserListDao {
         }
         return bs;
     }
+
+    public List<ProductUserListDto> getProductsSummary(String search) throws Exception {
+        String sql = "SELECT p.product_id, p.product_name, b.brand_name, c.category_name, "
+                + " MIN(v.price) AS price, pm.media_url "
+                + "FROM Products p "
+                + "JOIN ProductVariants v ON p.product_id = v.product_id "
+                + "LEFT JOIN Brands b ON p.brand_id = b.brand_id "
+                + "LEFT JOIN Categories c ON p.category_id = c.category_id "
+                + "LEFT JOIN ProductMedia pm ON p.product_id = pm.product_id AND pm.is_primary = 1 "
+                + (search != null && !search.isBlank()
+                ? "WHERE p.product_name LIKE ? "
+                : "")
+                + "GROUP BY p.product_id, p.product_name, b.brand_name, c.category_name, pm.media_url "
+                + "ORDER BY MIN(v.price) ASC";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (search != null && !search.isBlank()) {
+                ps.setString(1, "%" + search.trim() + "%");
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                List<ProductUserListDto> list = new ArrayList<>();
+                while (rs.next()) {
+                    list.add(new ProductUserListDto(
+                            rs.getInt("product_id"),
+                            rs.getString("product_name"),
+                            rs.getString("brand_name"),
+                            rs.getString("category_name"),
+                            rs.getDouble("price"),
+                            rs.getString("media_url")
+                    ));
+                }
+                return list;
+            }
+        }
+    }
 }

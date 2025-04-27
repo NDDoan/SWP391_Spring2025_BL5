@@ -217,7 +217,7 @@
                                                 <p class="form-control-plaintext">${product.description}</p>
                                             </c:when>
                                             <c:otherwise>
-                                                <textarea id="descriptionEditor" name="description" class="form-control" rows="4" required>${product.description}</textarea>
+                                                <textarea id="descriptionEditor" name="description" class="form-control" rows="6">${product.description}</textarea>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
@@ -526,43 +526,38 @@
             <!-- CKEditor 5 Classic build CDN -->
             <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
             <script>
-                                                        const select = document.getElementById('mediaTypeSelect');
-                                                        const container = document.getElementById('primary-checkbox-container');
-                                                        function togglePrimaryCheckbox() {
-                                                            if (select.value === 'video') {
-                                                                container.style.display = 'none';
-                                                                // nếu cần: container.querySelector('input').checked = false;
-                                                            } else {
-                                                                container.style.display = 'block';
+                                                        document.addEventListener('DOMContentLoaded', function () {
+                                                            // 1) Toggle cho phần upload media nếu có
+                                                            const mediaTypeSelect = document.getElementById('mediaTypeSelect');
+                                                            const primaryCheckbox = document.getElementById('primary-checkbox-container');
+                                                            if (mediaTypeSelect && primaryCheckbox) {
+                                                                const togglePrimary = () => {
+                                                                    primaryCheckbox.style.display = mediaTypeSelect.value === 'video' ? 'none' : 'block';
+                                                                };
+                                                                mediaTypeSelect.addEventListener('change', togglePrimary);
+                                                                togglePrimary();
                                                             }
-                                                        }
-                                                        // Chạy khi load trang và khi thay đổi select
-                                                        window.addEventListener('DOMContentLoaded', togglePrimaryCheckbox);
-                                                        select.addEventListener('change', togglePrimaryCheckbox);
-                                                        window.addEventListener('DOMContentLoaded', () => {
+
+                                                            // 2) Nếu đang edit variant, show modal
                 <c:if test="${not empty variantToEdit}">
-                                                            const modal = new bootstrap.Modal(document.getElementById('variantModal'));
-                                                            modal.show();
+                                                            new bootstrap.Modal(document.getElementById('variantModal')).show();
                 </c:if>
+
+                                                            // 3) Khởi tạo CKEditor cho textarea description
+                                                            const descEl = document.querySelector('#descriptionEditor');
+                                                            if (descEl) {
+                                                                ClassicEditor
+                                                                        .create(descEl, {
+                                                                            toolbar: [
+                                                                                'heading', '|',
+                                                                                'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                                                                                'blockQuote', 'insertTable', 'undo', 'redo'
+                                                                            ],
+                                                                            table: {contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']}
+                                                                        })
+                                                                        .catch(err => console.error(err));
+                                                            }
                                                         });
-            </script>
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    ClassicEditor
-                            .create(document.querySelector('#descriptionEditor'), {
-                                toolbar: [
-                                    'heading', '|',
-                                    'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
-                                    'blockQuote', 'insertTable', 'undo', 'redo'
-                                ],
-                                table: {
-                                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-                                }
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
-                });
             </script>
     </body>
 </html>

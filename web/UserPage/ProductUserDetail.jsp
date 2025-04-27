@@ -2,7 +2,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<style>
+    .thumbnail-item {
+        border: 2px solid transparent;
+        transition: border-color .2s;
+    }
+    .thumbnail-item.border-primary {
+        border-color: #0d6efd;
+    }
 
+</style>
 <jsp:include page="/CommonPage/Header.jsp"/>
 
 <div class="container my-5">
@@ -53,6 +62,26 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
+                    </c:forEach>
+                </div>
+                <!-- <<< Chèn phần thumbnails ở đây >>> -->
+                <div class="d-flex mt-3 justify-content-center flex-wrap gap-2">
+                    <c:forEach var="m" items="${p.mediaList}" varStatus="st">
+                        <c:set var="thumbUrl">
+                            <c:choose>
+                                <c:when test="${m.mediaType=='image'}">
+                                    ${m.mediaUrl}
+                                </c:when>
+                                <c:otherwise>
+                                    https://img.youtube.com/vi/${fn:split(m.mediaUrl,'/')[fn:length(fn:split(m.mediaUrl,'/'))-1]}/mqdefault.jpg
+                                </c:otherwise>
+                            </c:choose>
+                        </c:set>
+                        <img src="${thumbUrl}"
+                             class="thumbnail-item rounded ${st.first ? 'border-primary' : 'border'}"
+                             style="width:60px; height:60px; object-fit:cover; cursor:pointer;"
+                             data-bs-target="#mediaCarousel"
+                             data-bs-slide-to="${st.index}"/>
                     </c:forEach>
                 </div>
                 <button class="carousel-control-prev" type="button"
@@ -175,5 +204,15 @@
             sel.addEventListener('change', updateInfo);
             updateInfo();
         }
+        // highlight
+        document.querySelectorAll('.thumbnail-item').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.thumbnail-item').forEach(x => x.classList.remove('border-primary'));
+                el.classList.add('border-primary');
+            });
+        });
+        // khởi tạo highlight lần đầu
+        document.querySelector('.thumbnail-item[data-bs-slide-to="0"]')
+                .classList.add('border-primary');
     })();
 </script>

@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -109,7 +111,14 @@
                                 <h5 class="card-title">${p.productName}</h5>
                                 <p class="card-text">
                                     <small class="text-muted">${p.brandName} – ${p.categoryName}</small><br/>
-                                    <strong>${p.price}₫</strong>
+                                    <strong>
+                                        <fmt:formatNumber value="${p.price}"
+                                                          type="number"
+                                                          groupingUsed="true"
+                                                          minFractionDigits="0"
+                                                          maxFractionDigits="0"/>
+                                        ₫
+                                    </strong>
                                 </p>
                                 <a href="#" class="btn btn-sm btn-success"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
                                 <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}"
@@ -138,7 +147,13 @@
                                         <div class="card-body text-center">
                                             <h5 class="card-title">${p.productName}</h5>
                                             <p class="card-text text-muted">${p.brandName} – ${p.categoryName}</p>
-                                            <p class="card-text text-danger fw-bold">${p.price}₫</p>
+                                            <p class="card-text text-danger fw-bold">
+                                                <fmt:formatNumber value="${p.price}"
+                                                                  type="number"
+                                                                  groupingUsed="true"
+                                                                  minFractionDigits="0"
+                                                                  maxFractionDigits="0"/>₫
+                                            </p>
                                             <a href="${pageContext.request.contextPath}/cart/add?productId=${p.productId}" 
                                                class="btn btn-success btn-sm me-2">
                                                 <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
@@ -182,7 +197,13 @@
                                         <h5 class="card-title">${p.productName}</h5>
                                         <p class="text-muted mb-2">${p.brandName}</p>
                                         <div class="mt-auto d-flex justify-content-between align-items-center">
-                                            <span class="fw-bold">${p.price}₫</span>
+                                            <span class="fw-bold">
+                                                <fmt:formatNumber value="${p.price}"
+                                                                  type="number"
+                                                                  groupingUsed="true"
+                                                                  minFractionDigits="0"
+                                                                  maxFractionDigits="0"/>₫
+                                            </span>
                                             <a href="#" class="btn btn-sm btn-success"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
                                             <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${p.productId}" 
                                                class="btn btn-primary btn-sm"><i class="fas fa-info-circle"></i> Xem chi tiết</a>

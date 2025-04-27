@@ -42,6 +42,7 @@
                 border: none; /* Ensure no borders on child elements */
             }
             .sidebar {
+                margin-top: 70px;
                 width: 250px;
                 background-color: #f8f9fa;
                 padding: 20px;
@@ -98,8 +99,8 @@
                                     <th>Giới tính:</th>
                                     <td>
                                         <c:choose>
-                                            <c:when test="${user.gender eq 'M'}">Nam</c:when>
-                                            <c:when test="${user.gender eq 'F'}">Nữ</c:when>
+                                            <c:when test="${user.gender eq 'Male'}">Nam</c:when>
+                                            <c:when test="${user.gender eq 'Female'}">Nữ</c:when>
                                             <c:otherwise>Khác</c:otherwise>
                                         </c:choose>
                                     </td>

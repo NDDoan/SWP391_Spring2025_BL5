@@ -139,7 +139,7 @@
             <div class="container bg-white rounded shadow p-4">
                 <c:if test="${ShipOke == 'manager'}">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3>Danh sách đơn hàng cho Manager</h3>
+                        <h3>Danh sách giao hàng cho Manager</h3>
                         <a href="shipping?action=create" class="btn btn-add">+ Thêm giao hàng</a>
                     </div>
                 </c:if>

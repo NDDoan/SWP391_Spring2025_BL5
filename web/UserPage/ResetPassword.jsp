@@ -1,127 +1,135 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<jsp:include page="/CommonPage/Header.jsp" />
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password - Electro Mart Management System</title>
-
-    <!-- Include Header -->
-    <jsp:include page="/CommonPage/Header.jsp" />
-
+    <title>Khôi phục mật khẩu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to right, #00c6ff, #0072ff);
+        }
+
+        .reset-page {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: #fff;
+            padding: 80px 0;
+            min-height: calc(100vh - 160px); /* trừ header + footer */
         }
 
-        .forgot-password-container {
-            background-color: rgba(255, 255, 255, 0.9);
+        .reset-box {
+            background: #fff;
             padding: 40px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            width: 400px;
-            text-align: center;
-            position: relative;
-        }
-
-        .forgot-password-container h1 {
-            color: #0c64dc;
-            margin-bottom: 20px;
-            font-size: 32px;
-            font-weight: bold;
-        }
-
-        .forgot-password-container form {
-            margin-top: 20px;
-        }
-
-        .forgot-password-container .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .forgot-password-container .input-group input {
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            max-width: 400px;
             width: 100%;
-            padding: 15px 15px 15px 45px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            text-align: center;
+        }
+
+        .reset-box h1 {
+            color: #1e3c72;
+            margin-bottom: 16px;
+            font-size: 26px;
+        }
+
+        .reset-box p {
+            color: #555;
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 16px;
             box-sizing: border-box;
+            transition: border-color 0.2s;
         }
 
-        .forgot-password-container .input-group i {
+        .input-group input:focus {
+            border-color: #1e3c72;
+            outline: none;
+        }
+
+        .input-group i {
             position: absolute;
-            left: 15px;
             top: 50%;
+            left: 12px;
             transform: translateY(-50%);
-            color: #aaa;
-            font-size: 18px;
+            color: #888;
         }
 
-        .forgot-password-container input[type="submit"] {
-            background-color: #0c64dc;
-            color: #fff;
-            border: none;
-            padding: 15px 0;
-            border-radius: 5px;
+        input[type="submit"] {
             width: 100%;
-            font-size: 18px;
+            padding: 12px;
+            background: #1e3c72;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background 0.2s;
         }
 
-        .forgot-password-container input[type="submit"]:hover {
-            background-color: #094ea1;
+        input[type="submit"]:hover {
+            background: #162d56;
         }
 
-        .forgot-password-container a {
-            display: block;
-            margin-top: 10px;
-            color: #0c64dc;
+        .reset-box a {
+            display: inline-block;
+            margin-top: 16px;
+            color: #1e3c72;
             text-decoration: none;
-            transition: color 0.3s ease;
+            font-size: 14px;
+            transition: color 0.2s;
         }
 
-        .forgot-password-container a:hover {
-            color: #0072ff;
+        .reset-box a:hover {
+            color: #162d56;
         }
 
-        .forgot-password-container img {
-            width: 120px;
-            height: auto;
-            margin-bottom: 20px;
+        @media(max-width:576px) {
+            .reset-box {
+                padding: 24px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="forgot-password-container">
-    <!-- Logo -->
-    <img src="https://vectorseek.com/wp-content/uploads/2023/10/FPT-Retail-Nha-thuoc-Long-Chau-Logo-Vector.svg-.png" alt="Logo Electro Mart">
-    <h1>Forgot password</h1>
-    <p>Vui lòng nhập email để khôi phục mật khẩu</p>
-    <form action="ForgotPasswordServlet" method="post">
-        <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" name="email" placeholder="Nhập email của bạn" required>
-        </div>
-        <input type="submit" value="Khôi phục mật khẩu">
-    </form>
-    <a href="Login.jsp">Quay lại đăng nhập</a>
+<div class="reset-page">
+    <div class="reset-box">
+        <h1>Khôi phục mật khẩu</h1>
+        <p>Nhập email đã đăng ký để lấy lại mật khẩu của bạn</p>
+        <form action="ForgotPasswordServlet" method="post">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" placeholder="Email của bạn" required>
+            </div>
+            <input type="submit" value="Gửi yêu cầu">
+        </form>
+        <a href="${pageContext.request.contextPath}/UserPage/Login.jsp">Quay lại đăng nhập</a>
+    </div>
 </div>
 
-<!-- Include Footer -->
 <jsp:include page="/CommonPage/Footer.jsp" />
 
 </body>
