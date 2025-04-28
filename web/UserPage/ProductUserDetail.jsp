@@ -106,20 +106,48 @@
 
             <div class="card mb-4 shadow-sm">
                 <div class="card-body">
-                    <!-- Variant Selector -->
-                    <c:if test="${not empty p.variants}">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Phiên bản</label>
-                            <select id="variantSelect" class="form-select">
-                                <c:forEach var="v" items="${p.variants}">
-                                    <option value="${v.variantId}"
-                                            data-price="${v.price}"
-                                            data-stock="${v.stockQuantity}">
-                                        ${v.cpu} / ${v.ram} / ${v.screen} / ${v.storage} / ${v.color}
-                                    </option>
-                                </c:forEach>
-                            </select>
+                    <!-- Variant Controls -->
+                    <c:if test="${fn:length(p.variants) > 1}">
+                        <div class="mb-4">
+                            <div class="row gy-2">
+                                <!-- CPU -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Bộ vi xử lý (CPU)</label>
+                                    <div id="cpuGroup" class="btn-group w-100" role="group"></div>
+                                </div>
+                                <!-- RAM -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">RAM</label>
+                                    <div id="ramGroup" class="btn-group w-100" role="group"></div>
+                                </div>
+                                <!-- Màn hình -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Màn hình</label>
+                                    <div id="screenGroup" class="btn-group w-100" role="group"></div>
+                                </div>
+                                <!-- Dung lượng lưu trữ -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Dung lượng</label>
+                                    <div id="storageGroup" class="btn-group w-100" role="group"></div>
+                                </div>
+                                <!-- Màu sắc -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Màu sắc</label>
+                                    <div id="colorGroup" class="btn-group w-100" role="group"></div>
+                                </div>
+                            </div>
                         </div>
+                    </c:if>
+
+                    <c:if test="${fn:length(p.variants) == 1}">
+                        <!-- Nếu chỉ có 1 phiên bản, hiển thị giá & tồn kho ngay -->
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const v = ${p.variants[0].price}, s = ${p.variants[0].stockQuantity};
+                                document.getElementById('priceDisplay').textContent = Number(v).toLocaleString();
+                                document.getElementById('stockDisplay').textContent = s;
+                            });
+                        </script>
                     </c:if>
 
                     <!-- Price & Stock -->
@@ -188,31 +216,96 @@
 <jsp:include page="/CommonPage/Footer.jsp"/>
 
 <script>
-    (function () {
-        const sel = document.getElementById('variantSelect'),
-                priceE = document.getElementById('priceDisplay'),
-                stockE = document.getElementById('stockDisplay');
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1) Build array variants từ JSP
+        const variants = [
+    <c:forEach var="v" items="${p.variants}" varStatus="st">
+        {
+        cpu:    "${v.cpu}",
+                ram:    "${v.ram}",
+                screen: "${v.screen}",
+                storage:"${v.storage}",
+                color:  "${v.color}",
+                price:  ${v.price},
+                stock:  ${v.stockQuantity}
+        }<c:if test="${!st.last}">,</c:if>
+    </c:forEach>
+        ];
 
-        function updateInfo() {
-            if (!sel)
-                return;
-            const o = sel.selectedOptions[0];
-            priceE.textContent = Number(o.dataset.price || 0).toLocaleString();
-            stockE.textContent = o.dataset.stock || 0;
+        // 2) Danh sách thuộc tính và containers
+        const attrs = ['cpu', 'ram', 'screen', 'storage', 'color'];
+        const containers = {
+            cpu: document.getElementById('cpuGroup'),
+            ram: document.getElementById('ramGroup'),
+            screen: document.getElementById('screenGroup'),
+            storage: document.getElementById('storageGroup'),
+            color: document.getElementById('colorGroup')
+        };
+
+        // 3) State lưu mỗi attr đã chọn
+        const state = {};
+
+        // 4) Giá và tồn kho
+        const priceEl = document.getElementById('priceDisplay');
+        const stockEl = document.getElementById('stockDisplay');
+
+        // 5) Hàm tính tập giá trị hợp lệ của attr dựa vào state các attr khác
+        function allowedValues(attr) {
+            return [...new Set(
+                        variants
+                        .filter(v =>
+                            attrs.every(a => a === attr || !state[a] || v[a] === state[a])
+                        )
+                        .map(v => v[attr])
+                        )];
         }
-        if (sel) {
-            sel.addEventListener('change', updateInfo);
-            updateInfo();
-        }
-        // highlight
-        document.querySelectorAll('.thumbnail-item').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('.thumbnail-item').forEach(x => x.classList.remove('border-primary'));
-                el.classList.add('border-primary');
+
+        // 6) Tạo nút cho mỗi attr
+        function build(attr) {
+            const vals = allowedValues(attr);
+            const div = containers[attr];
+            div.innerHTML = '';
+            vals.forEach(val => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-outline-primary';
+                btn.textContent = val;
+                btn.addEventListener('click', () => {
+                    state[attr] = val;
+                    updateAll();
+                });
+                div.appendChild(btn);
             });
-        });
-        // khởi tạo highlight lần đầu
-        document.querySelector('.thumbnail-item[data-bs-slide-to="0"]')
-                .classList.add('border-primary');
-    })();
+            // Nếu state[attr] không còn hợp lệ thì reset về đầu
+            if (!state[attr] || !vals.includes(state[attr])) {
+                state[attr] = vals[0];
+            }
+        }
+
+        // 7) Cập nhật giao diện sau mỗi thay đổi
+        function updateAll() {
+            // Re-build tất cả nhóm
+            attrs.forEach(attr => build(attr));
+            // Highlight
+            attrs.forEach(attr => {
+                Array.from(containers[attr].children).forEach(btn =>
+                    btn.classList.toggle('active', btn.textContent === state[attr])
+                );
+            });
+            // Khi đã đủ 5 attr (với >1 variant), tìm variant và show giá/tồn kho
+            if (attrs.every(a => state[a])) {
+                const found = variants.find(v =>
+                    attrs.every(a => v[a] === state[a])
+                );
+                if (found) {
+                    priceEl.textContent = Number(found.price).toLocaleString();
+                    stockEl.textContent = found.stock;
+                }
+            }
+        }
+
+        // 8) Khởi tạo: build & chọn mặc định
+        attrs.forEach(attr => build(attr));
+                updateAll();
+    });
 </script>
