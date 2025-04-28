@@ -1,335 +1,387 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>
-            <c:choose>
-                <c:when test="${mode == 'create'}">Add New Post</c:when>
-                <c:when test="${mode == 'edit'}">Edit Post</c:when>
-                <c:otherwise>View Post</c:otherwise>
-            </c:choose>
-        </title>
+        <meta charset="UTF-8">
+        <title>Chi Tiết Sản Phẩm – Quản Lí</title>
         <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <!-- CKEditor 5 -->
-        <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
-            /* General Styles */
             body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #f8f9fa;
-                color: #343a40;
+                background-color: #f4f6f9;
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+            }
+            .dashboard-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 80px;
+                background-color: #ffffff;
+                border-bottom: 1px solid #dee2e6;
+                display: flex;
+                align-items: center;
+                padding: 0 20px;
+                z-index: 1000;
+            }
+            .main-layout {
+                display: flex;
+                flex-wrap: nowrap;
+                margin-top: 80px;
+                min-height: calc(100vh - 80px);
+            }
+            .sidebar {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 20%;
+                background-color: #ffffff;
+                border-right: 1px solid #dee2e6;
+                padding: 20px;
+                height: calc(100vh - 80px);
+                overflow-y: auto;
+                z-index: 999;
+            }
+            .content-container {
+                margin-left: 20%;
+                padding: 20px;
+                background-color: #f4f6f9;
+                flex: 1;
+                min-height: calc(100vh - 80px);
+                margin-bottom: 20px;
             }
             .container {
-                max-width: 960px;
+                max-width: 1100px;
             }
-            h2 {
-                color: #495057;
-                margin-bottom: 0.75rem;
+            .media-preview img, .media-preview video {
+                max-width: 150px;
+                margin: .5rem;
             }
-            /* Card Styles */
-            .card {
-                border: none;
-                box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
-                border-radius: 0.5rem;
-            }
-            .card-body {
-                padding: 1.5rem;
-            }
-            /* Form Styles */
-            .form-label {
-                font-weight: 500;
-                color: #495057;
-            }
-            .form-control,
-            .form-select {
-                border-radius: 0.3rem;
-                border: 1px solid #ced4da;
-                padding: 0.5rem 0.75rem;
-                font-size: 1rem;
-            }
-            .form-control:focus,
-            .form-select:focus {
-                border-color: #80bdff;
-                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-            }
-            .required-field::after {
-                content: "*";
-                color: red;
-                margin-left: 4px;
-            }
-            /* Thumbnail Styles */
-            .post-thumbnail {
-                max-width: 100%;
-                height: auto;
-                border-radius: 0.5rem;
+            .media-item {
+                position: relative;
                 margin-bottom: 1rem;
-                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
             }
-            /* Status Badge */
-            .status-badge {
-                padding: 0.4rem 0.75rem;
-                border-radius: 1rem;
-                font-size: 0.85rem;
+            .media-item .media-content {
+                z-index: 1;
             }
-            .status-active {
-                background-color: #28a745;
-                color: white;
+            .media-item .actions {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+                z-index: 10;
             }
-            .status-inactive {
-                background-color: #dc3545;
-                color: white;
-            }
-            /* Editor Styles */
-            .ck-editor__editable {
-                min-height: 200px;
-                border-radius: 0.3rem;
-                border: 1px solid #ced4da;
-            }
-            /* Created Info */
-            .created-info {
-                font-size: 0.9rem;
-                color: #6c757d;
-                margin-top: 1rem;
-            }
-            /* Form Switch */
-            .form-check-label {
-                color: #495057;
-            }
-            .form-switch .form-check-input {
-                width: 3em;
-                height: 1.5em;
-                margin-right: 0.5em;
-                background-color: #adb5bd;
-                border-color: #adb5bd;
-                border-radius: 2em;
-                transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-            }
-            .form-switch .form-check-input:checked {
-                background-color: #28a745;
-                border-color: #28a745;
-            }
-            .form-switch .form-check-input:focus {
-                box-shadow: none;
-            }
-            /* Button Styles */
-            .btn {
-                border-radius: 0.3rem;
-                padding: 0.6rem 1.2rem;
-                font-size: 1rem;
-                font-weight: 500;
-                transition: all 0.2s ease-in-out;
-            }
-            .btn-primary {
-                background-color: #007bff;
-                border-color: #007bff;
-            }
-            .btn-primary:hover {
-                background-color: #0069d9;
-                border-color: #0062cc;
-            }
-            .btn-secondary {
-                background-color: #6c757d;
-                border-color: #6c757d;
-            }
-            .btn-secondary:hover {
-                background-color: #5a6268;
-                border-color: #545b62;
-            }
-            .btn-warning {
-                background-color: #ffc107;
-                border-color: #ffc107;
-                color: #212529;
-            }
-            .btn-warning:hover {
-                background-color: #e0a800;
-                border-color: #d39e00;
-            }
-            /*Utility classes*/
-            .mb-3 {
-                margin-bottom: 1.5rem !important;
+            .actions .btn {
+                font-size: 0.75rem;
+                margin-left: 0.25rem;
             }
         </style>
     </head>
-    <body class="bg-light p-4">
-        <!-- Sidebar -->
-        <div class="sidebar py-4">
-            <jsp:include page="dashboard-sidebar.jsp"/>
+    <body>
+        <!-- Header -->
+        <div class="dashboard-header">
+            <jsp:include page="dashboard-header.jsp"/>
         </div>
-
-        <div class="content-container">
-            <!-- Header -->
-            <div class="dashboard-header">
-                <jsp:include page="dashboard-header.jsp"/>
+        <!-- Sidebar + Content -->
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <jsp:include page="dashboard-sidebar.jsp"/>
             </div>
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <!-- Page Header -->
-                    <h2>
-                        <c:choose>
-                            <c:when test="${mode == 'create'}"><i class="fas fa-plus-circle"></i> Add New Post</c:when>
-                            <c:when test="${mode == 'edit'}"><i class="fas fa-edit"></i> Edit Post</c:when>
-                            <c:otherwise><i class="fas fa-eye"></i> View Post</c:otherwise>
-                        </c:choose>
-                    </h2>
-                    
-                    <!-- Breadcrumb -->
-                    <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/AdminPage/dashboard.jsp">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/PostListController">Posts</a></li>
-                            <li class="breadcrumb-item active">
-                                <c:choose>
-                                    <c:when test="${mode == 'create'}">Add New Post</c:when>
-                                    <c:when test="${mode == 'edit'}">Edit Post</c:when>
-                                    <c:otherwise>View Post</c:otherwise>
-                                </c:choose>
-                            </li>
-                        </ol>
-                    </nav>
-                    
-                    <!-- Main Form -->
-                    <div class="card">
+            <div class="content-container">
+                <div class="container-fluid">
+
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1>
+                            <c:choose>
+                                <c:when test="${mode == 'view'}">Xem Sản Phẩm</c:when>
+                                <c:when test="${mode == 'edit'}">Chỉnh Sửa Sản Phẩm</c:when>
+                                <c:when test="${mode == 'add'}">Thêm 1 Sản Phẩm Mới</c:when>
+                            </c:choose>
+                        </h1>
+                        <div>
+                            <!-- Nút chuyển từ view → edit -->
+                            <c:if test="${mode == 'view'}">
+                                <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=edit"
+                                   class="btn btn-warning me-2">Chỉnh Sửa Sản Phẩm</a>
+                            </c:if>
+                            <a href="${pageContext.request.contextPath}/ProductForManagerListController" class="btn btn-secondary">
+                                &larr; Trở về danh sách
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ALERT MESSAGE -->
+                    <c:if test="${not empty message}">
+                        <div class="alert alert-info">${message}</div>
+                    </c:if>
+                    <!-- Nếu có lỗi tên Product -->
+                    <c:if test="${not empty errorName}">
+                        <div class="alert alert-warning">
+                            <strong>Warning:</strong> ${errorName}
+                        </div>
+                    </c:if>
+
+                    <!-- Nếu có lỗi Variant -->
+                    <c:if test="${not empty errorVariant}">
+                        <div class="alert alert-warning">
+                            <strong>Warning:</strong> ${errorVariant}
+                        </div>
+                    </c:if>
+
+                    <!-- PRODUCT FORM -->
+                    <form action="${pageContext.request.contextPath}/ProductForManagerDetailController" method="post">
+                        <input type="hidden" name="mode" value="${mode}" />
+                        <c:if test="${mode != 'add'}">
+                            <input type="hidden" name="productId" value="${product.productId}" />
+                        </c:if>
+
+                        <div class="card mb-4">
+                            <div class="card-header">Thông tin sản phẩm</div>
+                            <div class="card-body">
+                                <!-- Name -->
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Tên</label>
+                                    <div class="col-sm-10">
+                                        <c:choose>
+                                            <c:when test="${mode == 'view'}">
+                                                <p class="form-control-plaintext">${product.productName}</p>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <input type="text" name="productName" class="form-control" value="${product.productName}" required>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                                <!-- Brand -->
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Thương hiệu</label>
+                                    <div class="col-sm-10">
+                                        <c:choose>
+                                            <c:when test="${mode == 'view'}">
+                                                <p class="form-control-plaintext">${product.brandName}</p>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <select name="brandName" class="form-select" required>
+                                                    <c:forEach var="b" items="${brandList}">
+                                                        <option value="${b}" ${b == product.brandName ? 'selected' : ''}>${b}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                                <!-- Category -->
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Danh mục</label>
+                                    <div class="col-sm-10">
+                                        <c:choose>
+                                            <c:when test="${mode == 'view'}">
+                                                <p class="form-control-plaintext">${product.categoryName}</p>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <select name="categoryName" class="form-select" required>
+                                                    <c:forEach var="c" items="${categoryList}">
+                                                        <option value="${c}" ${c == product.categoryName ? 'selected' : ''}>${c}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                                <!-- Description -->
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Mô tả</label>
+                                    <div class="col-sm-10">
+                                        <c:choose>
+                                            <c:when test="${mode == 'view'}">
+                                                <p class="form-control-plaintext">${product.description}</p>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <textarea id="descriptionEditor" name="description" class="form-control" rows="4" required>${product.description}</textarea>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SAVE / CANCEL -->
+                        <c:if test="${mode != 'view'}">
+                            <div class="mb-4 text-end">
+                                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                <a href="${pageContext.request.contextPath}/ProductForManagerDetailController?productId=${product.productId}&mode=view" class="btn btn-secondary">Hủy</a>
+                            </div>
+                        </c:if>
+                    </form>
+
+                    <!-- VARIANT SECTION -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Variants</span>
+                            <!-- Chỉ hiện nút Add Variant khi đang ở edit hoặc add mode -->
+                            <c:if test="${mode == 'edit'}">
+                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#variantModal">Thêm Phiên bản</button>
+                            </c:if>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>CPU</th>
+                                        <th>RAM</th>
+                                        <th>Màn hình</th>
+                                        <th>Dung lượng</th>
+                                        <th>Màu</th>
+                                        <th>Giá</th>
+                                        <th>Tồn kho</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="v" items="${product.variants}">
+                                        <tr>
+                                            <td>${v.variantId}</td>
+                                            <td>${v.cpu}</td>
+                                            <td>${v.ram}</td>
+                                            <td>${v.screen}</td>
+                                            <td>${v.storage}</td>
+                                            <td>${v.color}</td>
+                                            <td>${v.price}</td>
+                                            <td>${v.stockQuantity}</td>
+                                            <td>
+                                                <!-- Chỉ show Edit/Delete khi mode != view -->
+                                                <c:if test="${mode != 'view'}">
+                                                    <a href="?productId=${product.productId}&editVariantId=${v.variantId}&mode=${mode}"
+                                                       class="btn btn-warning btn-sm">Sửa</a>
+                                                    <a href="?productId=${product.productId}&deleteVariantId=${v.variantId}&mode=${mode}"
+                                                       class="btn btn-danger btn-sm"
+                                                       onclick="return confirm('Delete this variant?');">Xóa</a>
+                                                </c:if>
+                                                <!-- Khi đang ở view, chỉ show nothing -->
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    <c:if test="${empty product.variants}">
+                                        <tr><td colspan="9" class="text-center">Hiện không có phiên bản</td></tr>
+                                    </c:if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MEDIA SECTION -->
+                    <div class="card mb-4">
+                        <div class="card-header">Media</div>
                         <div class="card-body">
-                            <form action="${pageContext.request.contextPath}/PostDetailController" method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="action" value="save">
-                                
-                                <c:if test="${post != null}">
-                                    <input type="hidden" name="postId" value="${post.postId}">
-                                </c:if>
-                                
-                                <div class="row">
-                                    <!-- Left Column -->
-                                    <div class="col-md-8">
-                                        <!-- Title -->
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label required-field">Title</label>
-                                            <input type="text" class="form-control" id="title" name="title" 
-                                                   value="${post.title}" required
-                                                   <c:if test="${mode == 'view'}">readonly</c:if>>
-                                        </div>
-                                        
-                                        <!-- Content -->
-                                        <div class="mb-3">
-                                            <label for="editor" class="form-label required-field">Content</label>
+                            <div class="row g-3">
+                                <!-- Loop through each media item -->
+                                <c:forEach var="m" items="${product.mediaList}">
+                                    <div class="col-md-3 media-item">
+                                        <div class="media-content">
                                             <c:choose>
-                                                <c:when test="${mode == 'view'}">
-                                                    <div class="form-control content-display p-3" style="min-height:300px; overflow-y:auto;">
-                                                        ${post.content}
-                                                    </div>
+                                                <c:when test="${m.mediaType == 'image'}">
+                                                    <img src="${m.mediaUrl}" class="img-fluid img-thumbnail" alt="Image Media">
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <textarea id="editor" name="content" class="form-control" rows="10">${post.content}</textarea>
+                                                    <div class="ratio ratio-16x9">
+                                                        <c:choose>
+                                                            <c:when test="${fn:contains(m.mediaUrl,'youtu')}">
+                                                                <iframe src="https://www.youtube.com/embed/${fn:split(m.mediaUrl,'/')[fn:length(fn:split(m.mediaUrl,'/'))-1]}" allowfullscreen class="w-100 h-100"></iframe>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                <video controls class="w-100 h-auto">
+                                                                    <source src="${m.mediaUrl}" type="video/mp4">
+                                                                    Your browser does not support the video tag.
+                                                                </video>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
+
+                                        <c:if test="${mode != 'view'}">
+                                            <div class="actions position-absolute top-0 end-0 p-2">
+                                                <c:if test="${m.mediaType == 'image'}">
+                                                    <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=setPrimary"
+                                                       class="btn btn-sm ${m.primary ? 'btn-outline-secondary' : 'btn-outline-primary'} me-1">
+                                                        <c:choose>
+                                                            <c:when test="${m.primary}">Đã ưu tiên</c:when>
+                                                            <c:otherwise>Chọn ưu tiên</c:otherwise>
+                                                        </c:choose>
+                                                    </a>
+                                                </c:if>
+                                                <a href="${pageContext.request.contextPath}/MediaUploadController?productId=${product.productId}&mediaId=${m.mediaId}&action=delete"
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Xóa media này bạn chắc chứ?');">×</a>
+                                            </div>
+                                        </c:if>
+
                                     </div>
-                                    
-                                    <!-- Right Column -->
-                                    <div class="col-md-4">
-                                        <!-- Thumbnail -->
-                                        <div class="mb-3">
-                                            <label for="thumbnail" class="form-label">Thumbnail</label>
-                                            
-                                            <c:if test="${post != null && not empty post.thumbnailUrl}">
-                                                <img src="${pageContext.request.contextPath}/${post.thumbnailUrl}" 
-                                                     alt="Post Thumbnail" class="post-thumbnail img-fluid d-block">
-                                                <input type="hidden" name="existingThumbnail" value="${post.thumbnailUrl}">
-                                            </c:if>
-                                            
-                                            <c:if test="${mode != 'view'}">
-                                                <input type="file" class="form-control mt-2" id="thumbnail" name="thumbnail" accept="image/*">
-                                                <small class="form-text text-muted">Recommended size: 1200x630 pixels, max 2MB</small>
-                                            </c:if>
-                                        </div>
-                                        
-                                        <!-- Category -->
-                                        <div class="mb-3">
-                                            <label for="categoryId" class="form-label required-field">Category</label>
-                                            <select class="form-select" id="categoryId" name="categoryId" required
-                                                    <c:if test="${mode == 'view'}">disabled</c:if>>
-                                                <option value="">Select Category</option>
-                                                <c:forEach items="${categories}" var="category">
-                                                    <option value="${category.categoryId}" 
-                                                            <c:if test="${post.categoryId == category.categoryId}">selected</c:if>>
-                                                        ${category.categoryName}
-                                                    </option>
-                                                </c:forEach>
+                                </c:forEach>
+                                <c:if test="${empty product.mediaList}">
+                                    <p class="text-muted text-center w-100">Không có media uploaded.</p>
+                                </c:if>
+                            </div>
+
+                            <c:if test="${mode == 'edit'}">
+                                <div class="add-media-section mt-4">
+                                    <h5>Thêm Media</h5>
+                                    <form action="${pageContext.request.contextPath}/MediaUploadController" method="post" enctype="multipart/form-data" class="row g-3">
+                                        <input type="hidden" name="productId" value="${product.productId}">
+                                        <div class="col-md-2">
+                                            <select name="mediaType" id="mediaTypeSelect" class="form-select" required>
+                                                <option value="image">Ảnh</option>
+                                                <option value="video">Video</option>
                                             </select>
                                         </div>
-                                        
-                                        <!-- Status -->
-                                        <div class="mb-3">
-                                            <label class="form-label required-field">Status</label>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="status" name="status" value="true" 
-                                                       ${post.status ? 'checked' : ''} ${mode == 'view' ? 'disabled' : ''}>
-                                                <label class="form-check-label" for="status">
-                                                    ${post.status ? 'Active' : 'Inactive'}
-                                                </label>
-                                            </div>
-                                            <small class="text-muted">Active posts are visible to users</small>
+                                        <div class="col-md-3">
+                                            <input type="file" name="mediaFile" class="form-control">
                                         </div>
-                                        
-                                        <!-- Remove Featured section -->
-                                        
-                                        <!-- Author Info (if viewing) -->
-                                        <c:if test="${post != null}">
-                                            <div class="created-info">
-                                                <p><strong>Author:</strong> ${post.authorName}</p>
-                                                <p><strong>Created:</strong> <fmt:formatDate value="${post.createdAt}" pattern="dd-MM-yyyy HH:mm" /></p>
-                                            </div>
-                                        </c:if>
-                                    </div>
+                                        <div class="col-md-4">
+                                            <input type="url" name="mediaUrl" class="form-control" placeholder="Hoặc Nhập URL (YouTube/Image)">
+                                        </div>
+                                        <div class="col-md-2 form-check" id="primary-checkbox-container">
+                                            <input type="checkbox" name="isPrimary" id="isPrimary" class="form-check-input">
+                                            <label for="isPrimary" class="form-check-label">Ưu tiên?</label>
+                                        </div>
+                                        <div class="col-md-1 text-end">
+                                            <button type="submit" class="btn btn-primary">Tải Lên</button>
+                                        </div>
+                                    </form>
                                 </div>
-                                
-                                <!-- Action Buttons -->
-                                <div class="mt-4 d-flex justify-content-between">
-                                    <a href="${pageContext.request.contextPath}/PostListController" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left"></i> Back to List
-                                    </a>
-                                    
-                                    <div>
-                                        <c:if test="${mode == 'view'}">
-                                            <a href="${pageContext.request.contextPath}/PostDetailController?action=edit&id=${post.postId}" class="btn btn-warning">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                        </c:if>
-                                        
-                                        <c:if test="${mode != 'view'}">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Save
-                                            </button>
-                                        </c:if>
-                                    </div>
-                                </div>
-                            </form>
+                            </c:if>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
-        <jsp:include page="dashboard-footer.jsp"/>
-        <!-- Bootstrap JS with Popper -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        
-        <c:if test="${mode != 'view'}">
-            <!-- Initialize CKEditor -->
-            <script>
-                ClassicEditor
-                    .create(document.querySelector('#editor'), {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'undo', 'redo']
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            </script>
-        </c:if>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+        <script>
+                                                       document.addEventListener('DOMContentLoaded', () => {
+                                                           ClassicEditor.create(document.querySelector('#descriptionEditor'), {
+                                                               toolbar: [
+                                                                   'heading', '|',
+                                                                   'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                                                                   'blockQuote', 'insertTable', 'undo', 'redo'
+                                                               ],
+                                                               table: {
+                                                                   contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                                                               }
+                                                           }).catch(error => {
+                                                               console.error(error);
+                                                           });
+                                                       });
+        </script>
     </body>
 </html>

@@ -2,15 +2,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Admin Dashboard</title>
-    <!-- Bootstrap CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
         /* Tùy chỉnh sidebar */
         .sidebar {
-            position: fixed;
             top: 0;
             bottom: 0;
             left: 0;
@@ -56,7 +52,7 @@
 </head>
 <body>
     <!-- Sidebar -->
-    <nav class="sidebar">
+    <nav class="sidebar col-2">
         <div class="px-3">
             <h5 class="text-primary mb-4">Menu Chính</h5>
             <ul class="nav flex-column">
@@ -105,13 +101,5 @@
             </ul>
         </div>
     </nav>
-
-    <!-- Main Content -->
-    <div class="content-wrapper container-fluid">
-        <!-- Nội dung chính sẽ xuất hiện ở đây -->
-    </div>
-
-    <!-- Bootstrap JS & Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
