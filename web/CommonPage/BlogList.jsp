@@ -88,7 +88,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">${post.title}</h5>
                                         <p class="card-text">
-                                            ${fn:length(post.content) > 150 ? fn:substring(post.content, 0, 150) + '...' : post.content}
+                                            ${fn:length(post.content) > 900 ? fn:substring(post.content, 0, 900) + '...' : post.content}
                                         </p>
                                         <p class="text-muted small">Cập nhật: ${post.createdAt}</p>
                                         <a href="${pageContext.request.contextPath}/BlogDetailController?id=${post.postId}" class="btn btn-primary btn-sm">Xem chi tiết</a>

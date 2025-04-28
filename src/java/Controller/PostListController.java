@@ -172,7 +172,7 @@ public class PostListController extends HttpServlet {
 
         // If not logged in, redirect to login page
         if (loggedInUser == null) {
-            session.setAttribute("errorMessage", "You must be logged in to perform this action.");
+            session.setAttribute("errorMessage", "Bạn phải đăng nhập để thực hiện hành động này.");
             response.sendRedirect(request.getContextPath() + "/logincontroller");
             return;
         }
@@ -192,9 +192,9 @@ public class PostListController extends HttpServlet {
 
                 // Set success/error message
                 if (success) {
-                    request.getSession().setAttribute("successMessage", "Post status updated successfully!");
+                    request.getSession().setAttribute("successMessage", "Trạng thái bài viết đã được cập nhật thành công!");
                 } else {
-                    request.getSession().setAttribute("errorMessage", "Failed to update post status.");
+                    request.getSession().setAttribute("errorMessage", "Xin lỗi, Không cập nhật được trạng thái bài đăng.");
                 }
 
                 // Redirect back to post list without filters but keep pagination

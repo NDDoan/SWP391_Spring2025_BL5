@@ -248,121 +248,132 @@
             }
         </style>
     </head>
-    <body>
-        <div class="container">
-            <div class="row page-header">
-                <div class="col-md-12 d-flex justify-content-between align-items-center">
-                    <h2><i class="fas fa-comment-dots me-2"></i>Chi Tiết Phản Hồi</h2>
-                    <a href="${pageContext.request.contextPath}/FeedbackList" class="btn btn-back btn-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
-                    </a>
+    <body class="bg-light" style="height: 100%;">
+        <div class="row" style="height: 95%;">
+            <!-- Sidebar -->
+            <jsp:include page="dashboard-sidebar.jsp"/>
+
+            <div class="content-container col-10">
+                <!-- Header -->
+                <div class="dashboard-header">
+                    <jsp:include page="dashboard-header.jsp"/>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Phản hồi cho sản phẩm ${feedback.productName}</h5>
-                            <span class="badge ${feedback.status ? 'bg-success' : 'bg-danger'}">
-                                ${feedback.status ? 'Kích hoạt' : 'Vô hiệu hóa'}
-                            </span>
-                        </div>
-                        <div class="card-body">
-                            <div class="customer-info">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><i class="fas fa-user me-2"></i><strong>Khách hàng:</strong> ${feedback.userFullName}</p>
-                                        <p><i class="fas fa-calendar-alt me-2"></i><strong>Ngày:</strong> <fmt:formatDate value="${feedback.createdAt}" pattern="MMMM dd, yyyy HH:mm" /></p>
-                                        <div class="star-rating">
-                                            <strong>Đánh giá: </strong>
-                                            <span class="ms-2">
-                                                <c:forEach begin="1" end="${feedback.rating}">
-                                                    <i class="fas fa-star text-warning"></i>
-                                                </c:forEach>
-                                                <c:forEach begin="${feedback.rating + 1}" end="5">
-                                                    <i class="far fa-star text-warning"></i>
-                                                </c:forEach>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                                        <a href="${pageContext.request.contextPath}/FeedbackList?action=changeStatus&id=${feedback.reviewId}&status=${!feedback.status}" 
-                                           class="status-action-btn btn ${feedback.status ? 'btn-danger' : 'btn-success'}"
-                                           onclick="return confirm('Bạn có chắc chắn muốn ${feedback.status ? 'vô hiệu hóa' : 'kích hoạt'} phản hồi này?')">
-                                            <i class="fas ${feedback.status ? 'fa-ban' : 'fa-check'} me-2"></i>
-                                            ${feedback.status ? 'Vô hiệu hóa' : 'Kích hoạt'} Phản hồi
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="comment-card">
-                                <h6 class="mb-3"><i class="fas fa-comment me-2"></i>Nhận xét</h6>
-                                <p class="mb-0">${feedback.comment}</p>
-                            </div>
-
-                            <c:if test="${not empty feedback.imageUrls}">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <i class="fas fa-images me-2"></i>Media đính kèm
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="feedback-images">
-                                            <c:forEach items="${feedback.imageUrls}" var="mediaUrl">
-                                                <c:set var="isVideo" value="${mediaUrl.toLowerCase().endsWith('.mp4') || mediaUrl.toLowerCase().endsWith('.webm') || mediaUrl.toLowerCase().endsWith('.ogg') || mediaUrl.toLowerCase().endsWith('.mov')}"/>
-                                                <c:choose>
-                                                    <c:when test="${isVideo}">
-                                                        <div class="feedback-video-container" id="media-container-${mediaUrl.hashCode()}">
-                                                            <video class="feedback-video" id="video-${mediaUrl.hashCode()}" preload="metadata" controls>
-                                                                <source src="${pageContext.request.contextPath}/${mediaUrl}" type="video/${mediaUrl.substring(mediaUrl.lastIndexOf('.')+1)}">
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                            <button class="media-expand-btn" onclick="toggleMedia('${mediaUrl.hashCode()}', true)">
-                                                                <i class="fas fa-play"></i>
-                                                            </button>
-                                                            <div class="image-loading">
-                                                                <div class="spinner-border text-primary" role="status">
-                                                                    <span class="visually-hidden">Loading...</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div class="feedback-image-container" id="media-container-${mediaUrl.hashCode()}">
-                                                            <img src="${pageContext.request.contextPath}/${mediaUrl}" alt="Feedback Image" class="feedback-image" 
-                                                                 onload="this.parentNode.classList.add('loaded')"
-                                                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'image-error\'><i class=\'fas fa-exclamation-circle mb-2\'></i><br>Image not available</div>'">
-                                                            <button class="media-expand-btn" onclick="toggleMedia('${mediaUrl.hashCode()}', false)">
-                                                                <i class="fas fa-search-plus"></i>
-                                                            </button>
-                                                            <div class="image-loading">
-                                                                <div class="spinner-border text-primary" role="status">
-                                                                    <span class="visually-hidden">Loading...</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:if>
+                <div class="container">
+                    <div class="row page-header">
+                        <div class="col-md-12 d-flex justify-content-between align-items-center">
+                            <h2><i class="fas fa-comment-dots me-2"></i>Chi Tiết Phản Hồi</h2>
+                            <a href="${pageContext.request.contextPath}/FeedbackList" class="btn btn-back btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+                            </a>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <i class="fas fa-box-open me-2"></i>Thông Tin Sản Phẩm
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Phản hồi cho sản phẩm ${feedback.productName}</h5>
+                                    <span class="badge ${feedback.status ? 'bg-success' : 'bg-danger'}">
+                                        ${feedback.status ? 'Kích hoạt' : 'Vô hiệu hóa'}
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="customer-info">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><i class="fas fa-user me-2"></i><strong>Khách hàng:</strong> ${feedback.userFullName}</p>
+                                                <p><i class="fas fa-calendar-alt me-2"></i><strong>Ngày:</strong> <fmt:formatDate value="${feedback.createdAt}" pattern="MMMM dd, yyyy HH:mm" /></p>
+                                                <div class="star-rating">
+                                                    <strong>Đánh giá: </strong>
+                                                    <span class="ms-2">
+                                                        <c:forEach begin="1" end="${feedback.rating}">
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        </c:forEach>
+                                                        <c:forEach begin="${feedback.rating + 1}" end="5">
+                                                            <i class="far fa-star text-warning"></i>
+                                                        </c:forEach>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                                                <a href="${pageContext.request.contextPath}/FeedbackList?action=changeStatus&id=${feedback.reviewId}&status=${!feedback.status}" 
+                                                   class="status-action-btn btn ${feedback.status ? 'btn-danger' : 'btn-success'}"
+                                                   onclick="return confirm('Bạn có chắc chắn muốn ${feedback.status ? 'vô hiệu hóa' : 'kích hoạt'} phản hồi này?')">
+                                                    <i class="fas ${feedback.status ? 'fa-ban' : 'fa-check'} me-2"></i>
+                                                    ${feedback.status ? 'Vô hiệu hóa' : 'Kích hoạt'} Phản hồi
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="comment-card">
+                                        <h6 class="mb-3"><i class="fas fa-comment me-2"></i>Nhận xét</h6>
+                                        <p class="mb-0">${feedback.comment}</p>
+                                    </div>
+
+                                    <c:if test="${not empty feedback.imageUrls}">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <i class="fas fa-images me-2"></i>Media đính kèm
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="feedback-images">
+                                                    <c:forEach items="${feedback.imageUrls}" var="mediaUrl">
+                                                        <c:set var="isVideo" value="${mediaUrl.toLowerCase().endsWith('.mp4') || mediaUrl.toLowerCase().endsWith('.webm') || mediaUrl.toLowerCase().endsWith('.ogg') || mediaUrl.toLowerCase().endsWith('.mov')}"/>
+                                                        <c:choose>
+                                                            <c:when test="${isVideo}">
+                                                                <div class="feedback-video-container" id="media-container-${mediaUrl.hashCode()}">
+                                                                    <video class="feedback-video" id="video-${mediaUrl.hashCode()}" preload="metadata" controls>
+                                                                        <source src="${pageContext.request.contextPath}/${mediaUrl}" type="video/${mediaUrl.substring(mediaUrl.lastIndexOf('.')+1)}">
+                                                                        Your browser does not support the video tag.
+                                                                    </video>
+                                                                    <button class="media-expand-btn" onclick="toggleMedia('${mediaUrl.hashCode()}', true)">
+                                                                        <i class="fas fa-play"></i>
+                                                                    </button>
+                                                                    <div class="image-loading">
+                                                                        <div class="spinner-border text-primary" role="status">
+                                                                            <span class="visually-hidden">Loading...</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="feedback-image-container" id="media-container-${mediaUrl.hashCode()}">
+                                                                    <img src="${pageContext.request.contextPath}/${mediaUrl}" alt="Feedback Image" class="feedback-image" 
+                                                                         onload="this.parentNode.classList.add('loaded')"
+                                                                         onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'image-error\'><i class=\'fas fa-exclamation-circle mb-2\'></i><br>Image not available</div>'">
+                                                                    <button class="media-expand-btn" onclick="toggleMedia('${mediaUrl.hashCode()}', false)">
+                                                                        <i class="fas fa-search-plus"></i>
+                                                                    </button>
+                                                                    <div class="image-loading">
+                                                                        <div class="spinner-border text-primary" role="status">
+                                                                            <span class="visually-hidden">Loading...</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body d-flex flex-column">
-                            <div class="product-info flex-grow-1">
-                                <h5>${feedback.productName}</h5>
-                                <div class="mt-auto">
 
+                        <div class="col-lg-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <i class="fas fa-box-open me-2"></i>Thông Tin Sản Phẩm
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="product-info flex-grow-1">
+                                        <h5>${feedback.productName}</h5>
+                                        <div class="mt-auto">
+
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

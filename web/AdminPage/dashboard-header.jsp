@@ -15,7 +15,7 @@
             border-bottom: 2px solid #0069d9;
         }
         .navbar-brand {
-            color: #fff;
+            color: #000000;
             font-weight: bold;
         }
         .navbar-nav .nav-link {
