@@ -27,11 +27,11 @@ public class CartDao {
     public List<CartItem> getCartItemsByCartId(int cartId) {
         List<CartItem> list = new ArrayList<>();
         String sql
-                = "SELECT ci.cart_item_id, ci.cart_id, ci.product_id, ci.quantity, p.product_name, pv.min_price AS price "
+                = "SELECT ci.cart_item_id, ci.cart_id, ci.product_id, ci.quantity, "
+                + "       p.product_name, v.price, ci.variant_id "
                 + "FROM Cart_Items ci "
-                + "JOIN Products p ON ci.product_id = p.product_id "
-                + "JOIN (SELECT product_id, MIN(price) AS min_price FROM ProductVariants GROUP BY product_id) pv "
-                + "  ON ci.product_id = pv.product_id "
+                + "  JOIN Products p ON ci.product_id = p.product_id "
+                + "  JOIN ProductVariants v ON ci.variant_id = v.variant_id "
                 + "WHERE ci.cart_id = ?";
         try {
             conn = new DBContext().getConnection();
@@ -58,7 +58,7 @@ public class CartDao {
 
     public List<CartItem> getCartItemsByOrderId(int orderId) {
         List<CartItem> list = new ArrayList<>();
-        String sql = "SELECT * FROM CartItem WHERE order_id = ?";
+        String sql = "SELECT * FROM Cart_Items WHERE order_id = ?";
 
         try {
             conn = new DBContext().getConnection();
@@ -156,11 +156,9 @@ public class CartDao {
      * @return tổng giá trị (price * quantity)
      */
     public double getTotalOrderPrice(int cartId) {
-        String sql
-                = "SELECT SUM(ci.quantity * pv.min_price) AS total_price "
+        String sql = "SELECT SUM(ci.quantity * pv.price) AS total_price "
                 + "FROM Cart_Items ci "
-                + "JOIN (SELECT product_id, MIN(price) AS min_price FROM ProductVariants GROUP BY product_id) pv "
-                + "  ON ci.product_id = pv.product_id "
+                + "JOIN ProductVariants pv ON ci.variant_id = pv.variant_id "
                 + "WHERE ci.cart_id = ?";
         double total = 0;
         try {
@@ -201,18 +199,19 @@ public class CartDao {
     }
 
     // Thêm sản phẩm vào giỏ hàng
-    public void addCartItem(int cartId, int productId, int quantity) {
-        String checkQuery = "SELECT cart_item_id FROM Cart_Items WHERE cart_id = ? AND product_id = ?";
-        String insertQuery = "INSERT INTO Cart_Items (cart_id, product_id, quantity) VALUES (?, ?, ?)";
-        String updateQuery = "UPDATE Cart_Items SET quantity = quantity + ? WHERE cart_id = ? AND product_id = ?";
+    public void addCartItem(int cartId, int productId, int quantity, int variantId) {
+        String checkQuery = "SELECT cart_item_id FROM Cart_Items WHERE cart_id = ? AND product_id = ? AND variant_id = ?";
+        String insertQuery = "INSERT INTO Cart_Items (cart_id, product_id, quantity, variant_id) VALUES (?, ?, ?, ?)";
+        String updateQuery = "UPDATE Cart_Items SET quantity = quantity + ? WHERE cart_id = ? AND product_id = ? AND variant_id = ?";
 
         try {
             conn = new DBContext().getConnection();
 
-            // Kiểm tra sản phẩm có trong giỏ hàng không
+            // Kiểm tra sản phẩm có trong giỏ hàng không, dựa trên cả variant_id
             ps = conn.prepareStatement(checkQuery);
             ps.setInt(1, cartId);
             ps.setInt(2, productId);
+            ps.setInt(3, variantId);
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -221,6 +220,7 @@ public class CartDao {
                 ps.setInt(1, quantity);
                 ps.setInt(2, cartId);
                 ps.setInt(3, productId);
+                ps.setInt(4, variantId);
                 ps.executeUpdate();
             } else {
                 // Nếu sản phẩm chưa có trong giỏ, thêm mới sản phẩm vào giỏ hàng
@@ -228,6 +228,7 @@ public class CartDao {
                 ps.setInt(1, cartId);
                 ps.setInt(2, productId);
                 ps.setInt(3, quantity);
+                ps.setInt(4, variantId);
                 ps.executeUpdate();
             }
         } catch (Exception e) {
@@ -236,6 +237,7 @@ public class CartDao {
             close();
         }
     }
+
 
     /**
      * Tạo giỏ hàng mới cho user và trả về cart_id.
@@ -261,6 +263,28 @@ public class CartDao {
             close();
         }
         return newCartId;
+    }
+
+    // Lấy tổng số lượng sản phẩm trong giỏ hàng
+    public int getCartItemCount(int cartId) {
+        int totalCount = 0;
+        String sql = "SELECT SUM(quantity) AS total_quantity "
+                + "FROM Cart_Items "
+                + "WHERE cart_id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, cartId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                totalCount = rs.getInt("total_quantity");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+        return totalCount;
     }
 
     // Đóng kết nối cơ sở dữ liệu

@@ -1,6 +1,7 @@
 package Controller;
 
 import Dao.CartDao;
+import Entity.CartItem;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,9 +29,10 @@ public class AddToCartController extends HttpServlet {
             productId = Integer.parseInt(request.getParameter("productId"));
             quantity = Integer.parseInt(request.getParameter("quantity"));
             if (quantity <= 0) {
-                quantity = 1;
+                quantity = 1; // Mặc định số lượng là 1 nếu nhập số lượng nhỏ hơn hoặc bằng 0
             }
         } catch (Exception e) {
+            // Nếu có lỗi, chuyển hướng về trang chi tiết giỏ hàng
             response.sendRedirect(request.getContextPath() + "/CartDetailController");
             return;
         }
@@ -39,19 +41,35 @@ public class AddToCartController extends HttpServlet {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
+            // Nếu chưa đăng nhập, chuyển hướng về trang login
             response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp");
             return;
         }
 
+        // Khởi tạo CartDao để thao tác với giỏ hàng
         CartDao cartDao = new CartDao();
-        // Lấy cartId, nếu chưa có thì tạo giỏ hàng mới
+
+        // Lấy cartId của người dùng, nếu không có thì tạo giỏ hàng mới
         int cartId = cartDao.getCartIdByUserId(userId);
         if (cartId < 0) {
             cartId = cartDao.createCartForUser(userId);
         }
 
+        int variantId = 0;
+        try {
+            if (request.getParameter("variantId") != null) {
+                variantId = Integer.parseInt(request.getParameter("variantId"));
+            }
+        } catch (Exception e) {
+            variantId = 0;
+        }
+
         // Thêm sản phẩm vào giỏ hàng
-        cartDao.addCartItem(cartId, productId, quantity);
+        cartDao.addCartItem(cartId, productId, quantity, variantId);
+
+        // Cập nhật số lượng sản phẩm trong giỏ hàng vào session
+        int cartCount = cartDao.getCartItemCount(cartId);
+        session.setAttribute("cartCount", cartCount);
 
         // Chuyển hướng về trang chi tiết giỏ hàng
         response.sendRedirect(request.getContextPath() + "/CartDetailController");
@@ -87,14 +105,28 @@ public class AddToCartController extends HttpServlet {
 
         // Khởi tạo CartDao để thao tác với giỏ hàng
         CartDao cartDao = new CartDao();
+
         // Lấy cartId, nếu chưa có giỏ hàng thì tạo giỏ hàng mới
         int cartId = cartDao.getCartIdByUserId(userId);
         if (cartId < 0) {
             cartId = cartDao.createCartForUser(userId);
         }
 
+        int variantId = 0;
+        try {
+            if (request.getParameter("variantId") != null) {
+                variantId = Integer.parseInt(request.getParameter("variantId"));
+            }
+        } catch (Exception e) {
+            variantId = 0;
+        }
+
         // Thêm sản phẩm vào giỏ hàng
-        cartDao.addCartItem(cartId, productId, quantity);
+        cartDao.addCartItem(cartId, productId, quantity, variantId);
+
+        // Cập nhật số lượng sản phẩm trong giỏ hàng vào session
+        int cartCount = cartDao.getCartItemCount(cartId);
+        session.setAttribute("cartCount", cartCount);
 
         // Chuyển hướng về trang chi tiết giỏ hàng sau khi thêm sản phẩm
         response.sendRedirect(request.getContextPath() + "/CartDetailController");

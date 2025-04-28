@@ -14,11 +14,17 @@ public class UpdateCartController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int cartId = 1; // Lấy từ session khi có user
-        CartDao dao = new CartDao();
-        List<CartItem> items = dao.getCartItemsByCartId(cartId);
+        HttpSession session = request.getSession(false);
+        Integer userId = (session != null) ? (Integer) session.getAttribute("userId") : null;
+        if (userId == null) {
+            response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp");
+            return;
+        }
 
-        // Duyệt qua từng item và lấy param quantity_<id>
+        CartDao dao = new CartDao();
+        int cartId = dao.getCartIdByUserId(userId);
+
+        List<CartItem> items = dao.getCartItemsByCartId(cartId);
         for (CartItem it : items) {
             String param = request.getParameter("quantity_" + it.getCartItemId());
             if (param != null) {
@@ -28,7 +34,12 @@ public class UpdateCartController extends HttpServlet {
                 } catch (NumberFormatException ignored) {}
             }
         }
-        // Quay lại trang chi tiết giỏ hàng
+
+        // Cập nhật lại cartCount nếu bạn hiển thị ở header
+        int cartCount = dao.getCartItemCount(cartId);
+        session.setAttribute("cartCount", cartCount);
+
         response.sendRedirect(request.getContextPath() + "/CartDetailController");
     }
 }
+

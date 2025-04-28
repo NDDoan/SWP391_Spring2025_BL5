@@ -20,7 +20,7 @@ public class CartDetailController extends HttpServlet {
 
         Integer userId = (Integer) request.getSession().getAttribute("userId");
         if (userId == null) {
-            response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp"); // hoặc về trang đăng nhập
+            response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp"); // chuyển hướng tới trang đăng nhập
             return;
         }
 
@@ -30,9 +30,11 @@ public class CartDetailController extends HttpServlet {
         List<CartItem> cartItems = cartDao.getCartItemsByCartId(cartId);
         double totalOrderPrice = cartDao.getTotalOrderPrice(cartId);
 
+        // Lưu danh sách sản phẩm và tổng tiền vào request để hiển thị trên trang
         request.setAttribute("cartItems", cartItems);
         request.setAttribute("totalOrderPrice", totalOrderPrice);
 
+        // Forward đến trang CartDetail.jsp để hiển thị giỏ hàng
         request.getRequestDispatcher("/CustomerPage/CartDetail.jsp").forward(request, response);
     }
 
@@ -42,21 +44,54 @@ public class CartDetailController extends HttpServlet {
 
         Integer userId = (Integer) request.getSession().getAttribute("userId");
         if (userId == null) {
-            response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp");
+            response.sendRedirect(request.getContextPath() + "/UserPage/Login.jsp"); // chuyển hướng tới trang đăng nhập
             return;
         }
 
-        int productId = Integer.parseInt(request.getParameter("productId"));
-        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        // Xử lý việc thêm sản phẩm vào giỏ hàng
+        if (request.getParameter("action") != null && request.getParameter("action").equals("add")) {
+            int productId = Integer.parseInt(request.getParameter("productId"));
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
 
-        CartDao cartDao = new CartDao();
-        int cartId = cartDao.getCartIdByUserId(userId);
+            CartDao cartDao = new CartDao();
+            int cartId = cartDao.getCartIdByUserId(userId);
 
-        cartDao.addCartItem(cartId, productId, quantity);  // Gọi DAO để thêm vào CSDL
+            int variantId = 0;
+            try {
+                if (request.getParameter("variantId") != null) {
+                    variantId = Integer.parseInt(request.getParameter("variantId"));
+                }
+            } catch (Exception e) {
+                variantId = 0;
+            }
 
-        response.sendRedirect(request.getContextPath() + "/CartDetailController"); // Load lại giỏ hàng sau khi thêm
+            // Thêm sản phẩm vào giỏ hàng
+            cartDao.addCartItem(cartId, productId, quantity, variantId);
+
+            // Sau khi thêm sản phẩm, chuyển hướng lại giỏ hàng
+            response.sendRedirect(request.getContextPath() + "/CartDetailController");
+        }
+
+        // Xử lý việc xóa sản phẩm khỏi giỏ hàng
+        if (request.getParameter("action") != null && request.getParameter("action").equals("delete")) {
+            int cartItemId = Integer.parseInt(request.getParameter("cartItemId"));
+
+            CartDao cartDao = new CartDao();
+            cartDao.deleteCartItem(cartItemId); // Gọi phương thức deleteCartItem từ CartDao
+
+            // Lấy lại cartId của người dùng
+            int cartId = cartDao.getCartIdByUserId(userId);
+
+            // Cập nhật số lượng sản phẩm trong giỏ hàng sau khi xóa
+            int cartCount = cartDao.getCartItemCount(cartId);
+
+            // Lưu lại số lượng giỏ hàng vào session để hiển thị ở header
+            request.getSession().setAttribute("cartCount", cartCount);
+
+            // Sau khi xóa sản phẩm, chuyển hướng lại trang giỏ hàng để hiển thị lại giỏ hàng đã thay đổi
+            response.sendRedirect(request.getContextPath() + "/CartDetailController");
+        }
     }
-
 
     @Override
     public String getServletInfo() {

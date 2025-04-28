@@ -50,7 +50,7 @@ public class BlogListController extends HttpServlet {
                         PAGE_SIZE,
                         null, // categoryId
                         null, // authorId
-                        null, // status => bỏ lọc status
+                        "1", // status => bỏ lọc status
                         null, // searchTitle
                         "created_at",
                         "DESC"
@@ -59,7 +59,7 @@ public class BlogListController extends HttpServlet {
                 totalPosts = dao.countPosts(
                         null, // categoryId
                         null, // authorId
-                        null, // status => bỏ lọc status
+                        "1", // status => bỏ lọc status
                         null // searchTitle
                 );
                 totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
