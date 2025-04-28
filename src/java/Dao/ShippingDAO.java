@@ -40,6 +40,17 @@ public class ShippingDAO {
         }
     }
 
+    public void insertShippingoke(Shipping s) throws SQLException {
+        String sql = "INSERT INTO Shipping (order_id, shipping_address, shipping_status, tracking_number) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, s.getOrderId());
+            ps.setString(2, s.getShippingAddress());
+            ps.setString(3, s.getShippingStatus());
+            ps.setString(4, s.getTrackingNumber());
+            ps.executeUpdate(); 
+        }
+    }
+
     public Shipping getShippingById(int id) throws SQLException {
         String sql = "SELECT * FROM Shipping WHERE shipping_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -346,6 +357,5 @@ public class ShippingDAO {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-
-    //}
+//    }
 }

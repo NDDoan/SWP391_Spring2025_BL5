@@ -31,9 +31,14 @@
 
         <!-- Main Content -->
         <div class="main-content container my-5" style="min-height: 500px;">
-            <h2 class="text-center mb-4">Chi tiết giỏ hàng</h2>
+            <h2 class="text-center mb-4">Đặt hàng</h2>
 
-            <form action="${pageContext.request.contextPath}/update-cart" method="post">
+
+            <form action="${pageContext.request.contextPath}/OrderController" method="post">
+                <div class="alert alert-info mt-4">
+                    <strong>Địa chỉ giao hàng:</strong>
+                    <input type="text" class="form-control mt-2" name="shippingAddress" value="${shippingAddress}" placeholder="Nhập địa chỉ giao hàng">
+                </div>
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle text-center">
                         <thead class="table-dark">
@@ -53,16 +58,11 @@
                                             <td>${item.productName}</td>
                                             <td><fmt:formatNumber value="${item.price}" type="number" groupingUsed="true"/> đ</td>
                                             <td>
-                                                <input type="number" name="quantity_${item.cartItemId}"
-                                                       value="${item.quantity}" min="1"
-                                                       class="form-control w-50 mx-auto">
+                                                <input type="number" name="quantity_${item.cartItemId}" value="${item.quantity}" min="1" class="form-control w-50 mx-auto">
                                             </td>
                                             <td><fmt:formatNumber value="${item.subtotal}" type="number" groupingUsed="true"/> đ</td>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/delete-cart-item?cartItemId=${item.cartItemId}" 
-                                                   class="btn btn-danger btn-sm">
-                                                    Xóa
-                                                </a>
+                                                <a href="${pageContext.request.contextPath}/delete-cart-item?cartItemId=${item.cartItemId}" class="btn btn-danger btn-sm">Xóa</a>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -82,28 +82,21 @@
                         Tổng cộng: 
                         <fmt:formatNumber value="${totalOrderPrice}" type="number" groupingUsed="true"/> đ
                     </h4>
-                    <button type="submit" class="btn btn-success">Cập nhật giỏ hàng</button>
+                    <div>
+                        <button type="submit" name="action" value="update" class="btn btn-success">Cập nhật giỏ hàng</button>
+                        <c:if test="${not empty cartItems}">
+                            <button type="submit" name="action" value="order" class="btn btn-primary btn-lg">Đặt hàng</button>
+                        </c:if>
+                    </div>
                 </div>
             </form>
 
-            <c:if test="${not empty cartItems}">
-                <div class="text-end">
-                    <a href="${pageContext.request.contextPath}/HomePageController" class="btn btn-primary btn-lg">
-                        Tiếp tục mua hàng
-                    </a>
-                    <form action="${pageContext.request.contextPath}/OrderController" method="get" style="display: inline;">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            Đặt hàng
-                        </button>
-                    </form>
-                </div>
-            </c:if>
-        </div>
 
-        <!-- Footer -->
-        <jsp:include page="/CommonPage/Footer.jsp" />
 
-        <!-- Bootstrap Bundle JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- Footer -->
+            <jsp:include page="/CommonPage/Footer.jsp" />
+
+            <!-- Bootstrap Bundle JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

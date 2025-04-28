@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,68 @@ public class CartDao {
         }
         return list;
     }
+
+    public List<CartItem> getCartItemsByOrderId(int orderId) {
+        List<CartItem> list = new ArrayList<>();
+        String sql = "SELECT * FROM CartItem WHERE order_id = ?";
+
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);  // Thực hiện set giá trị của orderId
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CartItem item = new CartItem();
+                item.setCartItemId(rs.getInt("cart_item_id"));
+                item.setCartItemId(rs.getInt("order_id"));  // Assuming you have orderId field
+                item.setProductId(rs.getInt("product_id"));
+                item.setProductName(null);
+                item.setQuantity(rs.getInt("quantity"));
+                item.setPrice(rs.getDouble("price"));
+                list.add(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();  // Đảm bảo đóng kết nối
+        }
+
+        return list;
+    }
+    
+    
+    
+    public void clearCart(int cartId) throws Exception {
+    String sqlDeleteItems = "DELETE FROM Cart_Items WHERE cart_id = ?";
+    String sqlCheckCartEmpty = "SELECT COUNT(*) FROM Cart_Items WHERE cart_id = ?";
+
+    try (Connection conn = new DBContext().getConnection()) {
+        // Xóa tất cả các mục trong giỏ hàng
+        try (PreparedStatement psDelete = conn.prepareStatement(sqlDeleteItems)) {
+            psDelete.setInt(1, cartId);
+            psDelete.executeUpdate();
+        }
+
+        // Kiểm tra xem giỏ hàng còn mục nào không
+        try (PreparedStatement psCheck = conn.prepareStatement(sqlCheckCartEmpty)) {
+            psCheck.setInt(1, cartId);
+            try (ResultSet rs = psCheck.executeQuery()) {
+                if (rs.next()) {
+                    int itemCount = rs.getInt(1);
+                    if (itemCount == 0) {
+                        System.out.println("Cart is empty.");
+                    } else {
+                        System.out.println("There are still items in the cart.");
+                    }
+                }
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();  // In ra lỗi nếu có
+        // Bạn có thể thay đổi đoạn này để log lỗi nếu cần thay vì ném lại SQLException
+    }
+}
 
     // Cập nhật số lượng sản phẩm trong giỏ hàng
     public void updateCartItemQuantity(int cartItemId, int newQuantity) {
@@ -116,6 +179,7 @@ public class CartDao {
         return total;
     }
 
+    
     // Lấy cart_id của người dùng dựa trên user_id
     public int getCartIdByUserId(int userId) {
         int cartId = -1;
@@ -202,9 +266,15 @@ public class CartDao {
     // Đóng kết nối cơ sở dữ liệu
     private void close() {
         try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (conn != null) conn.close();
+            if (rs != null) {
+                rs.close();
+            }
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

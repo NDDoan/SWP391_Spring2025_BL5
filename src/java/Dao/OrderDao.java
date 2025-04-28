@@ -1,6 +1,7 @@
 package Dao;
 
 import DBContext.DBContext;
+import Entity.CartItem;
 import Entity.OrderItems;
 import Entity.Orders;
 import java.sql.*;
@@ -83,37 +84,35 @@ public class OrderDao {
     }
 
     public List<OrderItemDto> getOrderItemsByOrderId(int orderId) {
-    List<OrderItemDto> orderItemsList = new ArrayList<>();
-    String sql = "SELECT oi.*, p.product_name " +
-                 "FROM Order_Items oi " +
-                 "JOIN Products p ON oi.product_id = p.product_id " +
-                 "WHERE oi.order_id = ?";
+        List<OrderItemDto> orderItemsList = new ArrayList<>();
+        String sql = "SELECT oi.*, p.product_name "
+                + "FROM Order_Items oi "
+                + "JOIN Products p ON oi.product_id = p.product_id "
+                + "WHERE oi.order_id = ?";
 
-    try (Connection conn = new DBContext().getConnection(); 
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-         
-        ps.setInt(1, orderId);
-        
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                OrderItemDto item = new OrderItemDto();
-                item.setOrderItemId(rs.getInt("order_item_id"));
-                item.setOrderId(rs.getInt("order_id"));           
-                item.setQuantity(rs.getInt("quantity"));
-                item.setPrice(rs.getDouble("price"));
-                item.setSubtotal(rs.getDouble("subtotal"));
-                item.setProductName(rs.getString("product_name")); // <-- lấy thêm product name
-                
-                orderItemsList.add(item);
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    OrderItemDto item = new OrderItemDto();
+                    item.setOrderItemId(rs.getInt("order_item_id"));
+                    item.setOrderId(rs.getInt("order_id"));
+                    item.setQuantity(rs.getInt("quantity"));
+                    item.setPrice(rs.getDouble("price"));
+                    item.setSubtotal(rs.getDouble("subtotal"));
+                    item.setProductName(rs.getString("product_name")); // <-- lấy thêm product name
+
+                    orderItemsList.add(item);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+
+        return orderItemsList;
     }
-
-    return orderItemsList;
-}
-
 
     //lấy order theo status
     public List<OrderDto> getOrdersByStatus(String status) {
@@ -181,6 +180,43 @@ public class OrderDao {
             LOGGER.log(Level.SEVERE, "Lỗi kết nối CSDL", e);
         }
         return new ArrayList<>(orderMap.values());
+    }
+
+    public int createOrder(Orders order) throws Exception {
+        String sql = "INSERT INTO orders (user_id, order_status, total_amount, created_at) VALUES (?, ?, ?, GETDATE())";  // Sử dụng GETDATE() thay vì NOW()
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, order.getUserId());
+            stmt.setString(2, order.getOrderStatus());
+            stmt.setDouble(3, order.getTotalAmount());
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1); // return order_id
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public void createOrderItem(int orderId, CartItem item) throws Exception {
+        String sql = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, orderId);
+            stmt.setInt(2, item.getProductId());
+            stmt.setInt(3, item.getQuantity());
+            stmt.setDouble(4, item.getPrice());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<OrderDto> getOrdersFiltered(Timestamp startDate, Timestamp endDate, int orderid, String sortBy, String sortDir, int offset, int limit, String staus) throws Exception {
@@ -459,7 +495,7 @@ public class OrderDao {
 
     public static void main(String[] args) {
         OrderDao orderDao = new OrderDao();
-           
+
 //    int testUserId = 3; // Thay bằng ID thực tế trong database
 //    List<OrderDto> orders = orderDao.getOrdersByUserId(testUserId);
 //
