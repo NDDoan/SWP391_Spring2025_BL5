@@ -144,7 +144,7 @@ public class ShippingDAO {
             sortDir = "asc";
         }
 
-        StringBuilder sql = new StringBuilder("SELECT * FROM Shipping WHERE shipperId = ?");
+        StringBuilder sql = new StringBuilder("SELECT * FROM Shipping WHERE (shipperId = ? OR shipperId IS NULL)");
         boolean hasStatus = status != null && !status.isEmpty();
         if (hasStatus) {
             sql.append(" AND shipping_status = ?");
@@ -341,13 +341,14 @@ public class ShippingDAO {
 //
 //            // Gọi phương thức: Lấy danh sách shipping theo user_id
 //            int customerId = 1;
-//            List<Shipping> shippingList = shippingDAO.getShippingByCustomerIdStatus(5, null, "shipping_id", "asc", 0, 5);
+//            List<Shipping> shippingList = shippingDAO.getShippingByStatusUserId(9,null, "shipping_id", "asc", 0, 15);
 //
 //            if (shippingList != null && !shippingList.isEmpty()) {
 //                for (Shipping shipping : shippingList) {
 //                    System.out.println("Shipping ID: " + shipping.getId());
 //                    System.out.println("Address: " + shipping.getShippingAddress());
 //                    System.out.println("Status: " + shipping.getShippingStatus());
+//                    System.out.println("Shipper: " + shipping.getShipperId());
 //                    System.out.println("-------------");
 //                }
 //            } else {

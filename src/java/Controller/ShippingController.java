@@ -14,6 +14,7 @@ import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -72,43 +73,80 @@ public class ShippingController extends HttpServlet {
                 }
 
             } else if (user.getRole_id() == 4) {
+                String action = request.getParameter("action");
                 // SHIPPER - xem đơn hàng được phân công
+                if (action == null) {
+                    String status = request.getParameter("status");
 
-                String status = request.getParameter("status");
+                    String sortBy = request.getParameter("sortBy");
+                    String sortDir = request.getParameter("sortDir");
+                    int page = 1;
+                    int limit = 5; // Số đơn hàng mỗi trang
 
-                String sortBy = request.getParameter("sortBy");
-                String sortDir = request.getParameter("sortDir");
-                int page = 1;
-                int limit = 5; // Số đơn hàng mỗi trang
-
-                // Parse trang hiện tại
-                String pageParam = request.getParameter("page");
-                if (pageParam != null && !pageParam.isEmpty()) {
-                    try {
-                        page = Integer.parseInt(pageParam);
-                    } catch (NumberFormatException e) {
-                        page = 1;
+                    // Parse trang hiện tại
+                    String pageParam = request.getParameter("page");
+                    if (pageParam != null && !pageParam.isEmpty()) {
+                        try {
+                            page = Integer.parseInt(pageParam);
+                        } catch (NumberFormatException e) {
+                            page = 1;
+                        }
                     }
-                }
-                int offset = (page - 1) * limit;
-                if (sortBy == null) {
-                    sortBy = "shipping_id";
-                }
-                if (sortDir == null) {
-                    sortDir = "asc";
-                }
-                int totalItems = shippingDAO.getTotalShippingCountId(user.getUser_id(), status);
-                int totalPages = (int) Math.ceil((double) totalItems / limit);
+                    int offset = (page - 1) * limit;
+                    if (sortBy == null) {
+                        sortBy = "shipping_id";
+                    }
+                    if (sortDir == null) {
+                        sortDir = "asc";
+                    }
+                    int totalItems = shippingDAO.getTotalShippingCountId(user.getUser_id(), status);
+                    int totalPages = (int) Math.ceil((double) totalItems / limit);
 
-                List<Shipping> list;
-                list = shippingDAO.getShippingByStatusUserId(user.getUser_id(), status, sortBy, sortDir, offset, limit);
-                String ShipOke = "shipper";
-                request.setAttribute("ShipOke", ShipOke);
-                request.setAttribute("currentPage", page);
-                request.setAttribute("totalPages", totalPages);
-                request.setAttribute("shippingList", list);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/shippingList.jsp");
-                dispatcher.forward(request, response);
+                    List<Shipping> list;
+                    list = shippingDAO.getShippingByStatusUserId(user.getUser_id(), status, sortBy, sortDir, offset, limit);
+                    String ShipOke = "shipper";
+                    request.setAttribute("ShipOke", ShipOke);
+                    request.setAttribute("currentPage", page);
+                    request.setAttribute("totalPages", totalPages);
+                    request.setAttribute("shippingList", list);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/ManagerShipping/shippingList.jsp");
+                    dispatcher.forward(request, response);
+                } else if (action.equals("receive")) {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    Shipping existing = shippingDAO.getShippingById(id);
+
+                    Shipping s = new Shipping();
+                    s.setOrderId(existing.getOrderId()); // đúng là lấy orderId chứ không phải id
+                    s.setShippingAddress(existing.getShippingAddress());
+                    s.setShippingStatus("Shipped"); // nhận đơn thì cập nhật trạng thái luôn (nếu cần)
+                    s.setTrackingNumber(existing.getTrackingNumber());
+
+                    // Set shippingDate = hôm nay
+                    Date today = new Date();
+                    s.setShippingDate(today);
+
+                    // Tính estimatedDelivery = hôm nay + 15 ngày
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(today);
+                    calendar.add(Calendar.DAY_OF_MONTH, 15);
+                    Date estimatedDelivery = calendar.getTime();
+                    s.setEstimatedDelivery(estimatedDelivery);
+
+                    s.setDeliveryNotes(existing.getDeliveryNotes());
+                    s.setUpdatedAt(new Date());
+
+                    // Lấy shipperId từ người dùng đăng nhập hoặc session, ví dụ:
+                    int shipperId = user.getUser_id();
+                    s.setShipperId(shipperId);
+
+                    String idStr = request.getParameter("id");
+
+                    s.setId(Integer.parseInt(idStr));
+                    shippingDAO.updateShipping(s);
+
+                    response.sendRedirect("shipping");
+
+                }
             } else {
                 response.sendRedirect("logincontroller");
             }
@@ -246,6 +284,31 @@ public class ShippingController extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
+//    private void showReceiveForm(HttpServletRequest request, HttpServletResponse response)
+//            throws SQLException, ServletException, IOException {
+//        int id = Integer.parseInt(request.getParameter("id"));
+//        Shipping existing = shippingDAO.getShippingById(id);
+//        Shipping s = new Shipping();
+//        s.setOrderId(existing.getOrderId());
+//        s.setShippingAddress(existing.getShippingAddress());
+//        s.setShippingStatus(existing.getShippingStatus());
+//        s.setTrackingNumber(existing.getTrackingNumber());
+//        s.setShippingDate(shippingDate);
+//        s.setEstimatedDelivery(estimatedDelivery);
+//        s.setDeliveryNotes(existing.getDeliveryNotes());
+//        s.setUpdatedAt(new Date());
+//        s.setShipperId(shipperId);
+//        String idStr = request.getParameter("id");
+//        if (idStr == null || idStr.isEmpty()) {
+//            shippingDAO.insertShipping(s);
+//        } else {
+//            s.setId(Integer.parseInt(idStr));
+//            shippingDAO.updateShipping(s);
+//        }
+//
+//        response.sendRedirect("shipping");
+//
+//    }
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {

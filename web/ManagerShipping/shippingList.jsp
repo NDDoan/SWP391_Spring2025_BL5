@@ -257,7 +257,7 @@
                                     <c:if test="${ShipOke == 'manager'}">
                                         <td>
                                             <c:choose>
-                                                <c:when test="${s.shipperId != null}">
+                                                <c:when test="${s.shipperId != 0}">
                                                     <c:forEach var="shipper" items="${shipperList}">
                                                         <c:if test="${s.shipperId == shipper.user_id}">
                                                             ${shipper.full_name}
@@ -290,17 +290,25 @@
                                                     <c:when test="${s.shippingStatus == 'Delivered'}">
                                                         <span>Đã giao hàng</span>
                                                     </c:when>
+                                                    <c:when test="${ s.shipperId==0}">
+                                                        <a href="shipping?action=receive&id=${s.id}" class="btn btn-sm btn-info">
+                                                            <i class="fas fa-hand-paper"></i> Nhận đơn
+                                                        </a>
+                                                    </c:when>
                                                     <c:otherwise>
                                                         <form action="shipper" method="post" style="display:inline-block;">
                                                             <input type="hidden" name="action" value="updateShippingStatus" />
                                                             <input type="hidden" name="id" value="${s.id}" />
                                                             <select name="status" class="form-select form-select-sm d-inline w-auto">
-                                                                <option value="Shipped" ${s.shippingStatus == 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                                                <option value="Delivered" ${s.shippingStatus == 'Delivered' ? 'selected' : ''}>Delivered</option>
-                                                                <option value="Returned" ${s.shippingStatus == 'Returned' ? 'selected' : ''}>Returned</option>
+                                                                <option value="Shipped" ${s.shippingStatus == 'Shipped' ? 'selected' : ''}>Đang giao</option>
+                                                                <option value="Delivered" ${s.shippingStatus == 'Canceled' ? 'selected' : ''}>Chuẩn bị giao hàng</option>
+                                                                <option value="Returned" ${s.shippingStatus == 'Returned' ? 'selected' : ''}>Trả lại hàng</option>
                                                             </select>
                                                             <button type="submit" class="btn btn-sm btn-success">Cập nhật</button>
                                                         </form>
+                                                        <a href="shipping?action=delivered&id=${s.id}" class="btn btn-sm btn-warning">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:when>
