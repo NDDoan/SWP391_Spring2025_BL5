@@ -306,6 +306,16 @@
 
         // 8) Khởi tạo: build & chọn mặc định
         attrs.forEach(attr => build(attr));
-                updateAll();
+        updateAll();
+        // highlight
+        document.querySelectorAll('.thumbnail-item').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.thumbnail-item').forEach(x => x.classList.remove('border-primary'));
+                el.classList.add('border-primary');
+            });
+        });
+        // khởi tạo highlight lần đầu
+        document.querySelector('.thumbnail-item[data-bs-slide-to="0"]')
+        .classList.add('border-primary');
     });
 </script>
