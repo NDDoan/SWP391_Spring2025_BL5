@@ -16,54 +16,39 @@
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
-            body {
-                background-color: #f4f6f9;
-                margin: 0;
-                padding: 0;
-                min-height: 100vh;
+            /* Sidebar Fixed to the left */
+            .sidebar {
+                margin-top: 75px;
+                position: fixed;
+                top: 80px; /* Start below the header */
+                left: 0;
+                bottom: 0;
+                width: 250px;
+                background-color: #f8f9fa;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+                z-index: 99; /* Below header */
+                height: calc(100% - 80px); /* Adjust height to account for header */
+                overflow-y: auto; /* Scroll if content overflows */
             }
+
+            /* Header Styling (fixed on top) */
             .dashboard-header {
                 position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
-                height: 80px;
+                z-index: 100; /* Above sidebar */
                 background-color: #ffffff;
-                border-bottom: 1px solid #dee2e6;
-                display: flex;
-                align-items: center;
-                padding: 0 20px;
-                z-index: 1000;
-            }
-            .main-layout {
-                display: flex;
-                flex-wrap: nowrap;
-                margin-top: 80px;
-                min-height: calc(100vh - 80px);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                height: 80px; /* Fixed height for header */
             }
 
-            .sidebar {
-                position: fixed;
-                top: 80px;
-                left: 0;
-                width: 20%; /* Changed to percentage */
-                background-color: #ffffff;
-                border-right: 1px solid #dee2e6;
-                padding: 20px;
-                height: calc(100vh - 80px);
-                overflow-y: auto;
-                z-index: 999;
-            }
+            /* Content container */
             .content-container {
-                margin-left: 20%; /* Match sidebar width */
-                padding: 20px;
-                background-color: #f4f6f9;
-                flex: 1;
-                min-height: calc(100vh - 80px);
-                margin-bottom: 20px;
-            }
-            .container {
-                max-width: 1100px;
+                margin-left: 250px; /* Match sidebar width */
+                padding-top: 80px; /* Clear the header */
+                min-height: calc(100vh - 80px); /* Full height minus header */
             }
             .modal-backdrop.show {
                 opacity: .1;
@@ -95,21 +80,18 @@
         </style>
     </head>
     <body>
-        <!-- Header -->
-        <div class="dashboard-header">
-            <jsp:include page="dashboard-header.jsp"/>
+        <div class="sidebar">
+            <jsp:include page="dashboard-sidebar.jsp"/>
         </div>
-        <!-- Sidebar + Content -->
-        <div class="main-layout">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <jsp:include page="dashboard-sidebar.jsp"/>
+        <!--Content -->
+        <div class="content-container">
+            <div class="dashboard-header">
+                <jsp:include page="dashboard-header.jsp"/>
             </div>
-            <div class="content-container">
-                <div class="container-fluid">
+                <div class="container bg-white p-4 rounded shadow">
 
                     <!-- HEADER -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <h1>
                             <c:choose>
                                 <c:when test="${mode == 'view'}">Xem Sản Phẩm</c:when>
@@ -521,11 +503,11 @@
                     </div>
                 </div>
             </div>
-            <!-- Bootstrap JS bundle -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-            <!-- CKEditor 5 Classic build CDN -->
-            <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-            <script>
+        <!-- Bootstrap JS bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- CKEditor 5 Classic build CDN -->
+        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+        <script>
                                                         document.addEventListener('DOMContentLoaded', function () {
                                                             // 1) Toggle cho phần upload media nếu có
                                                             const mediaTypeSelect = document.getElementById('mediaTypeSelect');
@@ -539,9 +521,9 @@
                                                             }
 
                                                             // 2) Nếu đang edit variant, show modal
-                <c:if test="${not empty variantToEdit}">
+            <c:if test="${not empty variantToEdit}">
                                                             new bootstrap.Modal(document.getElementById('variantModal')).show();
-                </c:if>
+            </c:if>
 
                                                             // 3) Khởi tạo CKEditor cho textarea description
                                                             const descEl = document.querySelector('#descriptionEditor');
@@ -558,6 +540,6 @@
                                                                         .catch(err => console.error(err));
                                                             }
                                                         });
-            </script>
+        </script>
     </body>
 </html>
