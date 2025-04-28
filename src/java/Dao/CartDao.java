@@ -27,11 +27,19 @@ public class CartDao {
     public List<CartItem> getCartItemsByCartId(int cartId) {
         List<CartItem> list = new ArrayList<>();
         String sql
+HEAD
                 = "SELECT ci.cart_item_id, ci.cart_id, ci.product_id, ci.quantity, "
                 + "       p.product_name, v.price, ci.variant_id "
                 + "FROM Cart_Items ci "
                 + "  JOIN Products p ON ci.product_id = p.product_id "
                 + "  JOIN ProductVariants v ON ci.variant_id = v.variant_id "
+
+                = "SELECT ci.cart_item_id, ci.cart_id, ci.product_id, ci.quantity, p.product_name, pv.price"
+                + "FROM Cart_Items ci "
+                + "JOIN Products p ON ci.product_id = p.product_id "
+                + "JOIN ProductVariants pv "
+                + "  ON ci.product_id = pv.product_id "
+ b2a8dda (fix cart and add Vnpay)
                 + "WHERE ci.cart_id = ?";
         try {
             conn = new DBContext().getConnection();
