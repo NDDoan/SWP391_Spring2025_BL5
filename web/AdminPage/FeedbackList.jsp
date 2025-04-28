@@ -117,7 +117,20 @@
         }
     </style>
 </head>
-<body>
+    <body class="bg-light p-4">
+        <!-- Sidebar -->
+        <div class="sidebar py-4">
+            <jsp:include page="dashboard-sidebar.jsp"/>
+        </div>
+
+        <div class="content-container">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <jsp:include page="dashboard-header.jsp"/>
+            </div>
+    
+    
+    
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-lg-11">
@@ -345,7 +358,7 @@
             </div>
         </div>
     </div>
-    
+    <jsp:include page="dashboard-footer.jsp"/>
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>

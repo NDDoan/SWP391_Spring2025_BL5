@@ -156,7 +156,17 @@
             }
         </style>
     </head>
-    <body>
+    <body class="bg-light p-4">
+        <!-- Sidebar -->
+        <div class="sidebar py-4">
+            <jsp:include page="dashboard-sidebar.jsp"/>
+        </div>
+
+        <div class="content-container">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <jsp:include page="dashboard-header.jsp"/>
+            </div>
         <div class="container mt-4">
             <div class="row">
                 <div class="col-md-12">
@@ -305,7 +315,7 @@
                 </div>
             </div>
         </div>
-        
+        <jsp:include page="dashboard-footer.jsp"/>
         <!-- Bootstrap JS with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         
