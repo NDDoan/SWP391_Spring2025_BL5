@@ -103,7 +103,14 @@ public class MyOrderController extends HttpServlet {
         int page = (pageStr != null) ? Integer.parseInt(pageStr) : 0;
         int pageSize = 10;
 
-        List<OrderDto> orders = new ArrayList<>();
+        List<OrderDto> orders = orderDAO.getOrdersWithPagination(page, pageSize);
+
+        // Lấy tổng số trang
+        int totalPages = orderDAO.getTotalPages(userId, pageSize);
+
+        request.setAttribute("orders", orders);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentPage", page);
 
         if (orderIdStr != null && !orderIdStr.isEmpty()) {
             int orderId = Integer.parseInt(orderIdStr);

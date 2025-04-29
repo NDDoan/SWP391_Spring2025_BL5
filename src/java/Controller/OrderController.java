@@ -130,7 +130,7 @@ public class OrderController extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect(request.getContextPath() + "/CustomerPage/CartDetail.jsp");
+            response.sendRedirect(request.getContextPath() + "/myordercontroller");
         } else {
             response.sendRedirect(request.getContextPath() + "/CartDetailController?error=orderfail");
         }

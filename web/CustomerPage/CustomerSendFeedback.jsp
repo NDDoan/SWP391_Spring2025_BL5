@@ -37,15 +37,6 @@
                 padding: 0;
             }
             
-            .container {
-                max-width: 1200px;
-                margin: 30px auto;
-                background: white;
-                padding: 25px;
-                border-radius: var(--border-radius);
-                box-shadow: var(--shadow);
-            }
-            
             h2 {
                 color: var(--text-color);
                 text-align: center;
@@ -619,8 +610,12 @@
         </style>
     </head>
     <body>
+        
+        <!-- Header -->
+        <jsp:include page="../CommonPage/Header.jsp"/>
+        
         <div class="container">
-            <h2>Product Feedback</h2>
+            <h2>Đánh giá sản phẩm</h2>
             
             <div class="message-container">
                 <c:if test="${not empty errorMessage}">
@@ -653,7 +648,7 @@
                             <img src="${product.imageUrl}" alt="${product.name}" class="product-image">
                             <div class="product-info">
                                 <div class="product-name">${product.name}</div>
-                                <p class="product-description">We'd love to hear your thoughts on this product!</p>
+                                <p class="product-description">Chúng tôi rất muốn nghe suy nghĩ của bạn về sản phẩm này!</p>
                                 <div class="product-details">
                                     <span class="product-price"><i class="fas fa-tag"></i> $${product.price}</span>
                                     <span class="product-quantity"><i class="fas fa-box"></i> Qty: ${product.quantity}</span>
@@ -663,15 +658,15 @@
                         
                         <div class="instructions">
                             <div class="section-title">
-                                <i class="fas fa-info-circle"></i> How to submit feedback
+                                <i class="fas fa-info-circle"></i> Hướng dẫn gửi phản hồi
                             </div>
                             <ol style="padding-left: 20px;">
-                                <li>Rate the product using the star rating</li>
-                                <li>Share your honest opinion in the comments</li>
-                                <li>Add photos or videos of the product (optional)</li>
-                                <li>Submit your feedback</li>
+                                <li>Đánh giá sản phẩm trao số sao</li>
+                                <li>Chia sẻ ý kiến chân thành của bạn trong phần bình luận</li>
+                                <li>Thêm ảnh hoặc video của sản phẩm (tùy chọn)</li>
+                                <li>Gửi phản hồi của bạn</li>
                             </ol>
-                            <p style="margin-top: 15px; font-style: italic;">Your feedback helps other customers make informed decisions!</p>
+                            <p style="margin-top: 15px; font-style: italic;">Phản hồi của bạn sẽ giúp những khách hàng khác đưa ra quyết định sáng suốt!</p>
                         </div>
                     </div>
                     
@@ -681,13 +676,13 @@
                             <c:when test="${not empty existingReview}">
                                 <!-- Edit/View Existing Feedback -->
                                 <div class="edit-mode-header">
-                                    <span><i class="fas fa-edit"></i> You have already provided feedback for this product</span>
+                                    <span><i class="fas fa-edit"></i> Bạn đã cung cấp phản hồi cho sản phẩm này</span>
                                     <div class="action-buttons">
                                         <button type="button" class="edit-btn" onclick="enableEditMode(${product.id})">
-                                            <i class="fas fa-pencil-alt"></i> Edit
+                                            <i class="fas fa-pencil-alt"></i> Chỉnh sửa
                                         </button>
                                         <button type="button" class="delete-btn" onclick="showDeleteConfirmation(${product.id}, ${existingReview.reviewId})">
-                                            <i class="fas fa-trash-alt"></i> Delete
+                                            <i class="fas fa-trash-alt"></i> Xóa
                                         </button>
                                     </div>
                                 </div>
@@ -697,7 +692,7 @@
                                     <div class="form-row">
                                         <div class="form-col">
                                             <div class="section-title">
-                                                <i class="fas fa-star"></i> Your rating
+                                                <i class="fas fa-star"></i> Xếp hạng của bạn
                                             </div>
                                             <div class="rating">
                                                 <div class="stars view-only">
@@ -707,11 +702,11 @@
                                                 </div>
                                                 <div class="stars-text">
                                                     <c:choose>
-                                                        <c:when test="${existingReview.rating == 5}">Excellent - I love it!</c:when>
-                                                        <c:when test="${existingReview.rating == 4}">Very Good - I like it</c:when>
-                                                        <c:when test="${existingReview.rating == 3}">Good - It's okay</c:when>
-                                                        <c:when test="${existingReview.rating == 2}">Fair - Not that great</c:when>
-                                                        <c:when test="${existingReview.rating == 1}">Poor - I didn't like it</c:when>
+                                                        <c:when test="${existingReview.rating == 5}">Mười điểm không có nhưng</c:when>
+                                                        <c:when test="${existingReview.rating == 4}">Tuyệt lắm nhưng chỉ được chín</c:when>
+                                                        <c:when test="${existingReview.rating == 3}">Dùng cũng được</c:when>
+                                                        <c:when test="${existingReview.rating == 2}">Xài thì được chứ tôi không thích lắm</c:when>
+                                                        <c:when test="${existingReview.rating == 1}">Phí tiền 💸💸💸</c:when>
                                                     </c:choose>
                                                 </div>
                                             </div>
@@ -721,7 +716,7 @@
                                     <div class="form-row">
                                         <div class="form-col">
                                             <div class="section-title">
-                                                <i class="fas fa-comment"></i> Your feedback
+                                                <i class="fas fa-comment"></i> Phản hồi của bạn
                                             </div>
                                             <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
                                                 ${existingReview.comment}
@@ -733,7 +728,7 @@
                                         <div class="form-row">
                                             <div class="form-col">
                                                 <div class="section-title">
-                                                    <i class="fas fa-images"></i> Your media
+                                                    <i class="fas fa-images"></i> Ảnh/Video của bạn
                                                 </div>
                                                 <div class="existing-image-preview">
                                                     <c:forEach items="${reviewImages}" var="image">
@@ -742,7 +737,7 @@
                                                                 <c:when test="${fn:endsWith(image.imageUrl, '.mp4') || fn:endsWith(image.imageUrl, '.webm') || fn:endsWith(image.imageUrl, '.mov')}">
                                                                     <video src="${image.imageUrl}" controlsList="nodownload" 
                                                                            onclick="playPauseVideo(this)" preload="metadata">
-                                                                        Your browser does not support the video tag.
+                                                                        Trình duyệt của bạn không hỗ trợ thẻ video.
                                                                     </video>
                                                                     <div class="play-icon"><i class="fas fa-play"></i></div>
                                                                     <div class="media-type-badge">VIDEO</div>
@@ -751,7 +746,7 @@
                                                                     <img src="${image.imageUrl}" alt="Review Image">
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <div class="file-name">Uploaded media</div>
+                                                            <div class="file-name">Đăng ảnh/video</div>
                                                         </div>
                                                     </c:forEach>
                                                 </div>
@@ -771,7 +766,7 @@
                                     <div class="form-row">
                                         <div class="form-col">
                                             <div class="section-title">
-                                                <i class="fas fa-star"></i> Update your rating
+                                                <i class="fas fa-star"></i> Cập nhật đánh giá của bạn
                                             </div>
                                             <div class="rating">
                                                 <div class="stars">
@@ -788,12 +783,12 @@
                                                 </div>
                                                 <div class="stars-text" id="ratingText${product.id}">
                                                     <c:choose>
-                                                        <c:when test="${existingReview.rating == 5}">Excellent - I love it!</c:when>
-                                                        <c:when test="${existingReview.rating == 4}">Very Good - I like it</c:when>
-                                                        <c:when test="${existingReview.rating == 3}">Good - It's okay</c:when>
-                                                        <c:when test="${existingReview.rating == 2}">Fair - Not that great</c:when>
-                                                        <c:when test="${existingReview.rating == 1}">Poor - I didn't like it</c:when>
-                                                        <c:otherwise>Click to rate</c:otherwise>
+                                                        <c:when test="${existingReview.rating == 5}">Mười điểm không có nhưng</c:when>
+                                                        <c:when test="${existingReview.rating == 4}">Tuyệt lắm nhưng chỉ được chín</c:when>
+                                                        <c:when test="${existingReview.rating == 3}">Dùng cũng được</c:when>
+                                                        <c:when test="${existingReview.rating == 2}">Xài thì được chứ tôi không thích lắm</c:when>
+                                                        <c:when test="${existingReview.rating == 1}">Phí tiền 💸💸💸</c:when>
+                                                        <c:otherwise>Nhấp để đánh giá</c:otherwise>
                                                     </c:choose>
                                                 </div>
                                             </div>
@@ -803,7 +798,7 @@
                                     <div class="form-row">
                                         <div class="form-col">
                                             <div class="section-title">
-                                                <i class="fas fa-comment"></i> Update your feedback
+                                                <i class="fas fa-comment"></i> Cập nhật phản hồi của bạn
                                             </div>
                                             <textarea name="comment" placeholder="Share your experience with this product. What did you like or dislike? Would you recommend it to others?" required>${existingReview.comment}</textarea>
                                         </div>
@@ -813,10 +808,10 @@
                                         <div class="form-row">
                                             <div class="form-col">
                                                 <div class="section-title">
-                                                    <i class="fas fa-images"></i> Current media
+                                                    <i class="fas fa-images"></i> Ảnh/Video hiện tại
                                                     <span style="margin-left: auto; font-size: 14px; color: #dc3545; cursor: pointer;" 
                                                           onclick="toggleDeleteImages(${product.id})">
-                                                        <i class="fas fa-trash-alt"></i> <span id="deleteImagesText${product.id}">Delete all media</span>
+                                                        <i class="fas fa-trash-alt"></i> <span id="deleteImagesText${product.id}">Xóa tất cả ảnh/video</span>
                                                     </span>
                                                 </div>
                                                 <input type="hidden" id="deleteImages${product.id}" name="deleteImages" value="false">
@@ -827,7 +822,7 @@
                                                                 <c:when test="${fn:endsWith(image.imageUrl, '.mp4') || fn:endsWith(image.imageUrl, '.webm') || fn:endsWith(image.imageUrl, '.mov')}">
                                                                     <video src="${image.imageUrl}" controlsList="nodownload" 
                                                                            onclick="playPauseVideo(this)" preload="metadata">
-                                                                        Your browser does not support the video tag.
+                                                                        Trình duyệt của bạn không hỗ trợ thẻ video.
                                                                     </video>
                                                                     <div class="play-icon"><i class="fas fa-play"></i></div>
                                                                     <div class="media-type-badge">VIDEO</div>
@@ -836,7 +831,7 @@
                                                                     <img src="${image.imageUrl}" alt="Review Image">
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <div class="file-name">Uploaded media</div>
+                                                            <div class="file-name">Cập nhật ảnh/video</div>
                                                         </div>
                                                     </c:forEach>
                                                 </div>
@@ -851,20 +846,20 @@
                                                     <i class="fas fa-camera"></i>
                                                     <span>
                                                         <c:choose>
-                                                            <c:when test="${empty reviewImages}">Add media (optional - up to 5 files)</c:when>
-                                                            <c:otherwise>Add more media (optional - up to 5 total)</c:otherwise>
+                                                            <c:when test="${empty reviewImages}">Thêm nhiều ảnh/video hơn (tùy chọn - tối đa 5 ảnh/video)</c:when>
+                                                            <c:otherwise>Thêm nhiều ảnh/video hơn (tùy chọn - tối đa 5 ảnh/video)</c:otherwise>
                                                         </c:choose>
                                                     </span>
                                                 </div>
                                                 
                                                 <div class="file-upload-container">
                                                     <label class="file-upload-btn">
-                                                        <i class="fas fa-cloud-upload-alt"></i> Choose Files
+                                                        <i class="fas fa-cloud-upload-alt"></i> Chọn tệp tin
                                                         <input type="file" name="media[]" id="mediaUpload${product.id}" multiple 
                                                                accept="image/*,video/mp4,video/webm,video/quicktime" 
                                                                onchange="previewMedia(this, ${product.id})" class="file-upload-input">
                                                     </label>
-                                                    <div class="file-info">Select up to 5 files (max 15MB for videos, 5MB for images)</div>
+                                                    <div class="file-info">Chọn tối đa 5 tệp (tối đa 15MB cho video, 5MB cho hình ảnh)</div>
                                                     <div id="imagePreview${product.id}" class="image-preview-container"></div>
                                                 </div>
                                             </div>
@@ -874,9 +869,9 @@
                                     <div style="display: flex; justify-content: space-between; margin-top: 20px;">
                                         <button type="button" class="edit-btn" style="background-color: #6c757d;" 
                                                 onclick="cancelEdit(${product.id})">
-                                            <i class="fas fa-times"></i> Cancel
+                                            <i class="fas fa-times"></i> Hủy bỏ
                                         </button>
-                                        <button type="submit"><i class="fas fa-save"></i> Update Feedback</button>
+                                        <button type="submit"><i class="fas fa-save"></i> Cập nhật phản hồi</button>
                                     </div>
                                 </form>
                                 
@@ -885,13 +880,13 @@
                                     <div class="modal-content">
                                         <div class="modal-title">
                                             <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
-                                            Confirm Deletion
+                                            Xác nhận xóa
                                         </div>
-                                        <p>Are you sure you want to delete your feedback for "${product.name}"?</p>
-                                        <p>This action cannot be undone.</p>
+                                        <p>Bạn có chắc chắn muốn xóa phản hồi "${product.name}" của bạn?</p>
+                                        <p>Bạn không thể hoàn tác hành động này.</p>
                                         <div class="modal-buttons">
                                             <button class="modal-btn cancel-btn" onclick="hideDeleteConfirmation(${product.id})">
-                                                Cancel
+                                                Hủy bỏ
                                             </button>
                                             <form action="CustomerSendFeedback" method="post">
                                                 <input type="hidden" name="orderId" value="${orderId}">
@@ -899,7 +894,7 @@
                                                 <input type="hidden" name="reviewId" value="${existingReview.reviewId}">
                                                 <input type="hidden" name="action" value="delete">
                                                 <button type="submit" class="modal-btn confirm-btn">
-                                                    Delete
+                                                    Xóa
                                                 </button>
                                             </form>
                                         </div>
@@ -916,7 +911,7 @@
                                     <div class="form-row">
                                         <div class="form-col">
                                             <div class="section-title">
-                                                <i class="fas fa-star"></i> Rate this product
+                                                <i class="fas fa-star"></i> Đánh giá sản phẩm này
                                             </div>
                                             <div class="rating">
                                                 <div class="stars">
@@ -931,7 +926,7 @@
                                                     <input type="radio" id="star1${product.id}" name="rating" value="1">
                                                     <label for="star1${product.id}" title="1 star - Poor"></label>
                                                 </div>
-                                                <div class="stars-text" id="ratingText${product.id}">Click to rate</div>
+                                                <div class="stars-text" id="ratingText${product.id}">Nhấp để đánh giá</div>
                                             </div>
                                         </div>
                                     </div>
@@ -939,7 +934,7 @@
                                     <div class="form-row">
                                         <div class="form-col">
                                             <div class="section-title">
-                                                <i class="fas fa-comment"></i> Your feedback
+                                                <i class="fas fa-comment"></i> Phản hồi của bạn
                                             </div>
                                             <textarea name="comment" placeholder="Share your experience with this product. What did you like or dislike? Would you recommend it to others?" required></textarea>
                                         </div>
@@ -950,24 +945,24 @@
                                             <div class="image-upload">
                                                 <div class="upload-title">
                                                     <i class="fas fa-camera"></i>
-                                                    <span>Add media (optional - up to 5 files)</span>
+                                                    <span>Thêm nhiều ảnh/video (tùy chọn - tối đa 5 ảnh/video)</span>
                                                 </div>
                                                 
                                                 <div class="file-upload-container">
                                                     <label class="file-upload-btn">
-                                                        <i class="fas fa-cloud-upload-alt"></i> Choose Files
+                                                        <i class="fas fa-cloud-upload-alt"></i> Chọn tệp tin
                                                         <input type="file" name="media[]" id="mediaUpload${product.id}" multiple 
                                                                accept="image/*,video/mp4,video/webm,video/quicktime" 
                                                                onchange="previewMedia(this, ${product.id})" class="file-upload-input">
                                                     </label>
-                                                    <div class="file-info">Select up to 5 files (max 15MB for videos, 5MB for images)</div>
+                                                    <div class="file-info">Chọn tới 5 ảnh/video (tối đa 15MB cho video, 5MB cho hình ảnh)</div>
                                                     <div id="imagePreview${product.id}" class="image-preview-container"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <button type="submit"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
+                                    <button type="submit"><i class="fas fa-paper-plane"></i> Gửi phản hồi</button>
                                 </form>
                             </c:otherwise>
                         </c:choose>
@@ -976,9 +971,12 @@
             </c:forEach>
             
             <a href="myordercontroller" class="back-link">
-                <i class="fas fa-arrow-left"></i> Back to My Orders
+                <i class="fas fa-arrow-left"></i> Quay lại đơn hàng của tôi
             </a>
         </div>
+        
+        <!-- Footer -->
+        <jsp:include page="../CommonPage/Footer.jsp"/>
         
         <script>
             // Media preview functionality
