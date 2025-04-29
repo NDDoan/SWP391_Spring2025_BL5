@@ -144,4 +144,13 @@
         <servlet-name>OrderController</servlet-name>
         <url-pattern>/OrderController</url-pattern>
     </servlet-mapping>
+    <!-- Avatar Upload -->
+    <servlet>
+        <servlet-name>UploadAvatarController</servlet-name>
+        <servlet-class>Controller.UploadAvatarController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadAvatarController</servlet-name>
+        <url-pattern>/uploadavatarcontroller</url-pattern>
+    </servlet-mapping>
 </web-app>

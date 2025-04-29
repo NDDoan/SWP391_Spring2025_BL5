@@ -110,7 +110,7 @@ public class UploadAvatarController extends HttpServlet {
             session.setAttribute("updateMessage", "Cập nhật ảnh thất bại.");
         }
 
-        response.sendRedirect("userprofile");
+        response.sendRedirect("UserProfile");
     }
     
 
