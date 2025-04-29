@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
     <head>
         <meta charset="UTF-8">
         <title>My Orders</title>
@@ -80,16 +80,6 @@
                 cursor: pointer;
                 border-radius: 5px;
             }
-            button#applySettings {
-                background: #28a745;
-                color: white;
-                border: none;
-                padding: 10px;
-                width: 100%;
-                margin-top: 15px;
-                border-radius: 5px;
-                cursor: pointer;
-            }
             .modal {
                 display: none;
                 position: fixed;
@@ -108,7 +98,7 @@
                 border-radius: 8px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
                 width: 400px;
-                text-align: center;
+                text-align: left;
             }
             .customize-container {
                 background: #286090;
@@ -132,7 +122,6 @@
             <h2>My Orders</h2>
 
             <!-- Search & Filter Section -->
-            <!-- Search & Filter Section -->
             <form action="${pageContext.request.contextPath}/myordercontroller" method="GET" class="search-form">
                 <div class="search-container">
                     <!-- Search by Order ID -->
@@ -153,8 +142,6 @@
                     <button type="submit" class="search-btn">Search by Date</button>
                 </div>
             </form>
-
-
 
             <!-- Orders Table -->
             <table>
@@ -182,14 +169,7 @@
                                 <td>${order.totalCost}</td>
                                 <td>${order.status}</td>
                                 <td>
-                                    <a href="OrderDetailsServlet?orderId=${order.orderId}">
-                                        <button class="detail-btn">View Details</button>
-                                    </a>
-                                    <c:if test="${order.status eq 'Completed'}">
-                                        <a href="CustomerSendFeedback?orderId=${order.orderId}">
-                                            <button class="detail-btn" style="background-color: #4CAF50;">Feedback</button>
-                                        </a>
-                                    </c:if>
+                                    <button class="detail-btn" onclick="viewOrderDetails(${order.orderId})">View Details</button>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -209,7 +189,7 @@
             <!-- Customize Button -->
             <button id="customizeTableBtn">Customize Table</button>
         </div>
-                    </div>
+
         <!-- Popup Customize Table -->
         <div id="customizeTableModal" class="modal">
             <div class="modal-content">
@@ -232,27 +212,61 @@
                 </div>
             </div>
         </div>
+
+        <!-- Popup for Order Details -->
+        <div id="popupContainer" class="modal">
+            <div class="modal-content">
+                <h2>Order Details</h2>
+                <div id="orderDetailsContent">
+                    <!-- Order details will be shown here -->
+                </div>
+                <button class="close-btn" onclick="closePopup()">Close</button>
+            </div>
+        </div>
     </body>
     <jsp:include page="../CommonPage/Footer.jsp"/>
 </html>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const customizeBtn = document.getElementById("customizeTableBtn"); // Nút mở popup
-    const popup = document.getElementById("customizeTableModal"); // Popup
+    // Function to open the order details popup
+    function viewOrderDetails(orderId) {
+        fetch(`/orderdetail?orderId=${orderId}`)
+            .then(response => response.json())
+            .then(data => {
+                const orderDetails = `
+                    <p><strong>Order ID:</strong> ${data.orderId}</p>
+                    <p><strong>Order Date:</strong> ${data.orderDate}</p>
+                    <p><strong>Products:</strong> ${data.productNames}</p>
+                    <p><strong>Total Cost:</strong> ${data.totalCost}</p>
+                    <p><strong>Status:</strong> ${data.status}</p>
+                `;
+                document.getElementById('orderDetailsContent').innerHTML = orderDetails;
+                document.getElementById('popupContainer').style.display = 'flex'; // Show the popup
+            });
+    }
 
-    // Đảm bảo popup ẩn khi trang tải lên
-    popup.style.display = "none";
+    // Function to close the popup
+    function closePopup() {
+        document.getElementById('popupContainer').style.display = 'none'; // Hide the popup
+    }
 
-    // Mở popup khi ấn vào nút Customize Table
-    customizeBtn.addEventListener("click", function () {
-        popup.style.display = "flex"; 
+    // Customize Table Modal functionality
+    document.addEventListener("DOMContentLoaded", function () {
+        const customizeBtn = document.getElementById("customizeTableBtn");
+        const popup = document.getElementById("customizeTableModal");
+
+        popup.style.display = "none"; // Initially hide the popup
+
+        // Open the popup when the Customize Table button is clicked
+        customizeBtn.addEventListener("click", function () {
+            popup.style.display = "flex";
+        });
+
+        // Close the popup when clicking outside the modal
+        window.addEventListener("click", function (event) {
+            if (event.target === popup) {
+                popup.style.display = "none";
+            }
+        });
     });
-
-    // Đóng popup khi click ra ngoài
-    window.addEventListener("click", function (event) {
-        if (event.target === popup) {
-            popup.style.display = "none";
-        }
-    });
-});
 </script>
