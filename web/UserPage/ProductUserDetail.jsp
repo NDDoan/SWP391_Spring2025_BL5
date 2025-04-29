@@ -139,17 +139,6 @@
                         </div>
                     </c:if>
 
-                    <c:if test="${fn:length(p.variants) == 1}">
-                        <!-- Nếu chỉ có 1 phiên bản, hiển thị giá & tồn kho ngay -->
-                        <script>
-                            document.addEventListener('DOMContentLoaded', () => {
-                                const v = ${p.variants[0].price}, s = ${p.variants[0].stockQuantity};
-                                document.getElementById('priceDisplay').textContent = Number(v).toLocaleString();
-                                document.getElementById('stockDisplay').textContent = s;
-                            });
-                        </script>
-                    </c:if>
-
                     <!-- Price & Stock -->
                     <div class="d-flex align-items-center mb-3">
                         <h4 class="text-danger mb-0 me-4">
@@ -160,9 +149,15 @@
                     </div>
 
                     <!-- Form Thêm vào giỏ -->
-                    <form action="${pageContext.request.contextPath}/AddToCartController" method="POST" class="d-flex align-items-center mb-5 gap-3">
+                    <form id="addCartForm" action="${pageContext.request.contextPath}/AddToCartController" method="POST" class="d-flex align-items-center mb-5 gap-3">
                         <input type="hidden" name="productId" value="${p.productId}"/>
-                        <input type="number" name="quantity" id="qtyInput" class="form-control" value="1" min="1" style="width:100px;"/>
+                        <div class="d-flex flex-column">
+                            <input type="number" name="quantity" id="qtyInput" class="form-control" value="1" min="1" style="width:100px;"/>
+                            <!-- Nơi hiển thị lỗi -->
+                            <div id="qtyError" class="text-danger small mt-1" style="display:none;">
+                                Số lượng không được vượt quá tồn kho!
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-lg btn-primary">
                             <i class="fas fa-cart-plus me-2"></i>Thêm vào giỏ
                         </button>
@@ -232,7 +227,7 @@
     </c:forEach>
         ];
 
-        // 2) Danh sách thuộc tính và containers
+        // 2) Các thuộc tính và container
         const attrs = ['cpu', 'ram', 'screen', 'storage', 'color'];
         const containers = {
             cpu: document.getElementById('cpuGroup'),
@@ -242,80 +237,98 @@
             color: document.getElementById('colorGroup')
         };
 
-        // 3) State lưu mỗi attr đã chọn
+        // 3) State lưu lựa chọn
         const state = {};
 
-        // 4) Giá và tồn kho
-        const priceEl = document.getElementById('priceDisplay');
-        const stockEl = document.getElementById('stockDisplay');
+        // 4) DOM refs
+        const priceEl = document.getElementById('priceDisplay'),
+                stockEl = document.getElementById('stockDisplay'),
+                form = document.getElementById('addCartForm'),
+                qtyIn = document.getElementById('qtyInput'),
+                errDiv = document.getElementById('qtyError');
 
-        // 5) Hàm tính tập giá trị hợp lệ của attr dựa vào state các attr khác
-        function allowedValues(attr) {
+        // 5) Helper: lấy giá trị hợp lệ cho 1 thuộc tính
+        function allowed(attr) {
             return [...new Set(
                         variants
-                        .filter(v =>
-                            attrs.every(a => a === attr || !state[a] || v[a] === state[a])
-                        )
+                        .filter(v => attrs.every(a => a === attr || !state[a] || v[a] === state[a]))
                         .map(v => v[attr])
                         )];
         }
 
-        // 6) Tạo nút cho mỗi attr
+        // 6) Build nút cho mỗi thuộc tính
         function build(attr) {
-            const vals = allowedValues(attr);
-            const div = containers[attr];
+            const vals = allowed(attr),
+                    div = containers[attr];
             div.innerHTML = '';
-            vals.forEach(val => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'btn btn-outline-primary';
-                btn.textContent = val;
-                btn.addEventListener('click', () => {
-                    state[attr] = val;
+            vals.forEach(v => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'btn btn-outline-primary';
+                b.textContent = v;
+                b.addEventListener('click', () => {
+                    state[attr] = v;
                     updateAll();
                 });
-                div.appendChild(btn);
+                div.appendChild(b);
             });
-            // Nếu state[attr] không còn hợp lệ thì reset về đầu
-            if (!state[attr] || !vals.includes(state[attr])) {
+            // Đặt mặc định nếu lựa chọn không còn hợp lệ
+            if (!state[attr] || !vals.includes(state[attr]))
                 state[attr] = vals[0];
-            }
         }
 
-        // 7) Cập nhật giao diện sau mỗi thay đổi
+        // 7) Cập nhật UI & giá/tồn kho
         function updateAll() {
-            // Re-build tất cả nhóm
-            attrs.forEach(attr => build(attr));
-            // Highlight
-            attrs.forEach(attr => {
-                Array.from(containers[attr].children).forEach(btn =>
-                    btn.classList.toggle('active', btn.textContent === state[attr])
-                );
+            // rebuild tất cả
+            attrs.forEach(a => build(a));
+            // highlight nút đang chọn
+            attrs.forEach(a => {
+                Array.from(containers[a].children)
+                        .forEach(b => b.classList.toggle('active', b.textContent === state[a]));
             });
-            // Khi đã đủ 5 attr (với >1 variant), tìm variant và show giá/tồn kho
-            if (attrs.every(a => state[a])) {
-                const found = variants.find(v =>
-                    attrs.every(a => v[a] === state[a])
-                );
-                if (found) {
-                    priceEl.textContent = Number(found.price).toLocaleString();
-                    stockEl.textContent = found.stock;
+            // nếu có variants
+            if (variants.length > 0 && attrs.every(a => state[a])) {
+                const f = variants.find(v => attrs.every(a => v[a] === state[a]));
+                if (f) {
+                    priceEl.textContent = Number(f.price).toLocaleString();
+                    stockEl.textContent = f.stock;
                 }
             }
         }
 
-        // 8) Khởi tạo: build & chọn mặc định
-        attrs.forEach(attr => build(attr));
-        updateAll();
-        // highlight
-        document.querySelectorAll('.thumbnail-item').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('.thumbnail-item').forEach(x => x.classList.remove('border-primary'));
-                el.classList.add('border-primary');
-            });
-        });
-        // khởi tạo highlight lần đầu
+        // 8) Khởi tạo
+        if (variants.length > 1) {
+            attrs.forEach(a => build(a));
+            updateAll();
+        } else {
+            // chỉ 1 phiên bản → show ngay
+            priceEl.textContent = Number(variants[0].price).toLocaleString();
+            stockEl.textContent = variants[0].stock;
+        }
+
+        // Thumbnail highlight
+        document.querySelectorAll('.thumbnail-item')
+                .forEach(el => el.addEventListener('click', () => {
+                        document.querySelectorAll('.thumbnail-item')
+                                .forEach(x => x.classList.remove('border-primary'));
+                        el.classList.add('border-primary');
+                    }));
         document.querySelector('.thumbnail-item[data-bs-slide-to="0"]')
-        .classList.add('border-primary');
+                .classList.add('border-primary');
+
+        // 9) Validate before submit
+        form.addEventListener('submit', e => {
+            const req = parseInt(qtyIn.value, 10),
+                    ava = parseInt(stockEl.textContent, 10) || 0;
+            if (req > ava) {
+                e.preventDefault();
+                errDiv.style.display = 'block';
+                qtyIn.classList.add('is-invalid');
+            }
+        });
+        qtyIn.addEventListener('input', () => {
+            errDiv.style.display = 'none';
+            qtyIn.classList.remove('is-invalid');
+        });
     });
 </script>

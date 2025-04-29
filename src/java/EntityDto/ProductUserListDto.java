@@ -4,6 +4,9 @@
  */
 package EntityDto;
 
+import Entity.ProductVariant;
+import java.util.List;
+
 /**
  *
  * @author LENOVO
@@ -16,17 +19,19 @@ public class ProductUserListDto {
     private String categoryName;
     private double price;
     private String primaryMediaUrl;
+    private List<ProductVariant> variants;
 
     public ProductUserListDto() {
     }
 
-    public ProductUserListDto(int productId, String productName, String brandName, String categoryName, double price, String primaryMediaUrl) {
+    public ProductUserListDto(int productId, String productName, String brandName, String categoryName, double price, String primaryMediaUrl, List<ProductVariant> variants) {
         this.productId = productId;
         this.productName = productName;
         this.brandName = brandName;
         this.categoryName = categoryName;
         this.price = price;
         this.primaryMediaUrl = primaryMediaUrl;
+        this.variants = variants;
     }
 
     public int getProductId() {
@@ -77,4 +82,11 @@ public class ProductUserListDto {
         this.primaryMediaUrl = primaryMediaUrl;
     }
 
+    public List<ProductVariant> getVariants() {
+        return variants;
+    }
+
+    public void setVariants(List<ProductVariant> variants) {
+        this.variants = variants;
+    }
 }

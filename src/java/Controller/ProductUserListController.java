@@ -62,16 +62,39 @@ public class ProductUserListController extends HttpServlet {
             throws ServletException, IOException {
         String category = request.getParameter("category");
         String search = request.getParameter("search");
+        String cpuParam = request.getParameter("cpu");
+        String ramParam = request.getParameter("ram");
+        String screenParam = request.getParameter("screen");
+        String storageParam = request.getParameter("storage");
+        String colorParam = request.getParameter("color");
+
         try {
-            List<ProductUserListDto> products = dao.getAllProductsSummary();
+            // 1) sản phẩm theo filter
+            List<ProductUserListDto> products = dao.getProductsSummary(
+                    search, category,
+                    cpuParam, ramParam,
+                    screenParam, storageParam, colorParam
+            );
             request.setAttribute("productList", products);
-            request.setAttribute("categoryList", dao.getAllCategories());
-            request.setAttribute("productList", products);
-            request.setAttribute("searchTerm", search == null ? "" : search);
+
+            // 2) danh sách dropdown
             request.setAttribute("brandList", dao.getAllBrands());
-            if (category != null) {
-                request.setAttribute("selectedCategory", category);
-            }
+            request.setAttribute("categoryList", dao.getAllCategories());
+            request.setAttribute("cpuList", dao.getAllCpuOptions());
+            request.setAttribute("ramList", dao.getAllRamOptions());
+            request.setAttribute("screenList", dao.getAllScreenOptions());
+            request.setAttribute("storageList", dao.getAllStorageOptions());
+            request.setAttribute("colorList", dao.getAllColorOptions());
+
+            // 3) trả lại giá trị đã chọn
+            request.setAttribute("searchTerm", search != null ? search : "");
+            request.setAttribute("selectedCategory", category);
+            request.setAttribute("selectedCpu", cpuParam);
+            request.setAttribute("selectedRam", ramParam);
+            request.setAttribute("selectedScreen", screenParam);
+            request.setAttribute("selectedStorage", storageParam);
+            request.setAttribute("selectedColor", colorParam);
+
             request.getRequestDispatcher("/UserPage/ProductUserList.jsp")
                     .forward(request, response);
         } catch (Exception e) {
