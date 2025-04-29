@@ -25,44 +25,36 @@ public class CartDao {
      * @return danh sách CartItem của giỏ hàng
      */
     public List<CartItem> getCartItemsByCartId(int cartId) {
-        List<CartItem> list = new ArrayList<>();
-        String sql
-HEAD
-                = "SELECT ci.cart_item_id, ci.cart_id, ci.product_id, ci.quantity, "
-                + "       p.product_name, v.price, ci.variant_id "
-                + "FROM Cart_Items ci "
-                + "  JOIN Products p ON ci.product_id = p.product_id "
-                + "  JOIN ProductVariants v ON ci.variant_id = v.variant_id "
-
-                = "SELECT ci.cart_item_id, ci.cart_id, ci.product_id, ci.quantity, p.product_name, pv.price"
+    List<CartItem> list = new ArrayList<>();
+    String sql
+                = "SELECT ci.cart_item_id, ci.cart_id, ci.product_id, ci.quantity, p.product_name, pv.min_price AS price "
                 + "FROM Cart_Items ci "
                 + "JOIN Products p ON ci.product_id = p.product_id "
-                + "JOIN ProductVariants pv "
+                + "JOIN (SELECT product_id, MIN(price) AS min_price FROM ProductVariants GROUP BY product_id) pv "
                 + "  ON ci.product_id = pv.product_id "
- b2a8dda (fix cart and add Vnpay)
                 + "WHERE ci.cart_id = ?";
-        try {
-            conn = new DBContext().getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, cartId);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                CartItem item = new CartItem();
-                item.setCartItemId(rs.getInt("cart_item_id"));
-                item.setCartId(rs.getInt("cart_id"));
-                item.setProductId(rs.getInt("product_id"));
-                item.setProductName(rs.getString("product_name"));
-                item.setQuantity(rs.getInt("quantity"));
-                item.setPrice(rs.getDouble("price"));
-                list.add(item);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            close();
+    try {
+        conn = new DBContext().getConnection();
+        ps = conn.prepareStatement(sql);
+        ps.setInt(1, cartId);
+        rs = ps.executeQuery();
+        while (rs.next()) {
+            CartItem item = new CartItem();
+            item.setCartItemId(rs.getInt("cart_item_id"));
+            item.setCartId(rs.getInt("cart_id"));
+            item.setProductId(rs.getInt("product_id"));
+            item.setProductName(rs.getString("product_name"));
+            item.setQuantity(rs.getInt("quantity"));
+            item.setPrice(rs.getDouble("price"));
+            list.add(item);
         }
-        return list;
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        close();
     }
+    return list;
+}
 
     public List<CartItem> getCartItemsByOrderId(int orderId) {
         List<CartItem> list = new ArrayList<>();
