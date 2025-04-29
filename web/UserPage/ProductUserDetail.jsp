@@ -183,7 +183,7 @@
                         <div class="card h-100 shadow-sm">
                             <a href="${pageContext.request.contextPath}/ProductDetailController?productId=${rp.productId}">
                                 <img src="${rp.primaryMediaUrl}"
-                                     class="card-img-top"
+                                     class="card-img-xtop"
                                      alt="${rp.productName}"
                                      style="height:150px; object-fit:cover;">
                             </a>

@@ -248,7 +248,7 @@ public class ShippingDAO {
 
     public int getTotalShippingCountId(int shiperid, String status) {
         int count = 0;
-        String sql = "SELECT COUNT(*) FROM shipping WHERE shipperId = ?";
+        String sql = "SELECT COUNT(*) FROM shipping WHERE (shipperId = ? OR shipperId IS NULL)";
         boolean hasStatus = status != null && !status.isEmpty();
         if (hasStatus) {
             sql += " AND shipping_status = ?";

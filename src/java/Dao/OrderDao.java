@@ -205,14 +205,14 @@ public class OrderDao {
     }
 
     public void createOrderItem(int orderId, CartItem item) throws Exception {
-        String sql = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, orderId);
             stmt.setInt(2, item.getProductId());
             stmt.setInt(3, item.getQuantity());
             stmt.setDouble(4, item.getPrice());
-
+            stmt.setDouble(5, item.getQuantity()*item.getPrice());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

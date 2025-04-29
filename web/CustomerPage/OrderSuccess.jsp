@@ -87,7 +87,9 @@
                         <c:if test="${not empty cartItems}">
                             <button type="submit" name="action" value="order" class="btn btn-primary btn-lg">Đặt hàng</button>
                         </c:if>
+                        
                     </div>
+                  
                 </div>
             </form>
 

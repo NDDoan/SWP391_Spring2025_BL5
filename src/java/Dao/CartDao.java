@@ -158,6 +158,10 @@ public class CartDao {
         }
         return cartId;
     }
+    public static void main(String[] args) {
+        CartDao c = new CartDao();
+        c.addCartItem(1, 1, 2, 0);
+    }
 
     public void clearCart(int cartId) throws Exception {
         String sqlDeleteItems = "DELETE FROM Cart_Items WHERE cart_id = ?";
@@ -273,3 +277,4 @@ public class CartDao {
         }
     }
 }
+    

@@ -18,6 +18,7 @@
 
             .sidebar {
                 margin-top: 75px;
+                margin-top: 70px;
                 position: fixed;
                 top: 80px; /* Start below the header */
                 left: 0;
@@ -35,13 +36,23 @@
                 top: 0;
                 left: 0;
                 right: 0;
-                height: 80px;
+                height: 60px;
                 background-color: #ffffff;
                 border-bottom: 1px solid #dee2e6;
                 display: flex;
                 align-items: center;
                 padding: 0 20px;
                 z-index: 101;
+            }
+             .dashboard-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%; /* Quan trọng */
+                height: 50px;
+                background-color: #ffffff;
+                border-top: 1px solid #dee2e6;
+                z-index: 1000;
             }
 
             .content-container {
@@ -106,8 +117,9 @@
                 }
 
                 .content-container {
-                    margin-left: 0;
-                    padding-top: 20px;
+                    margin-left: 250px;
+                    padding-top: 80px;
+                    padding-bottom: 80px;
                 }
             }
         </style>
@@ -301,8 +313,9 @@
                                                             <input type="hidden" name="id" value="${s.id}" />
                                                             <select name="status" class="form-select form-select-sm d-inline w-auto">
                                                                 <option value="Shipped" ${s.shippingStatus == 'Shipped' ? 'selected' : ''}>Đang giao</option>
-                                                                <option value="Delivered" ${s.shippingStatus == 'Canceled' ? 'selected' : ''}>Chuẩn bị giao hàng</option>
+                                                                <option value="Delivered" ${s.shippingStatus == 'Canceled' ? 'selected' : ''}>Đã giao thành công</option>
                                                                 <option value="Returned" ${s.shippingStatus == 'Returned' ? 'selected' : ''}>Trả lại hàng</option>
+
                                                             </select>
                                                             <button type="submit" class="btn btn-sm btn-success">Cập nhật</button>
                                                         </form>
@@ -325,8 +338,7 @@
                     </table>
                 </div>
             </div>
-        </div>
-        <c:if test="${totalPages > 1}">
+                                        <c:if test="${totalPages > 1}">
             <nav aria-label="Pagination">
                 <ul class="pagination justify-content-center mt-4">
 
@@ -360,7 +372,11 @@
             </nav>
         </c:if>
 
-
+        </div>
+        
+        <div class="dashboard-footer">
+            <jsp:include page="/AdminPage/dashboard-footer.jsp"/>
+        </div>
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>

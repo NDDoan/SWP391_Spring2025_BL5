@@ -14,6 +14,7 @@
 
             .sidebar {
                 margin-top: 75px;
+                margin-bottom: 70px;
                 position: fixed;
                 top: 80px; /* Start below the header */
                 left: 0;
@@ -39,10 +40,20 @@
                 padding: 0 20px;
                 z-index: 101;
             }
+            .dashboard-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%; /* Quan trọng */
+                height: 50px;
+                background-color: #ffffff;
+                border-top: 1px solid #dee2e6;
+                z-index: 1000;
+            }
 
             .content-container {
                 margin-left: 250px;
-                padding: 100px 20px 40px 20px;
+                padding: 100px 20px 60px 20px;
             }
 
             @media (max-width: 768px) {
@@ -144,7 +155,9 @@
                 </form>
             </div>
         </div>
-
+        <div class="dashboard-footer">
+            <jsp:include page="/AdminPage/dashboard-footer.jsp"/>
+        </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

@@ -7,6 +7,26 @@ public class CartItem {
     private String productName;
     private int quantity;
     private double price;
+    private int variant_id ;
+
+    public int getVariant_id() {
+        return variant_id;
+    }
+
+    public void setVariant_id(int variant_id) {
+        this.variant_id = variant_id;
+    }
+
+    public CartItem(int cartItemId, int cartId, int productId, String productName, int quantity, double price, int variant_id) {
+        this.cartItemId = cartItemId;
+        this.cartId = cartId;
+        this.productId = productId;
+        this.productName = productName;
+        this.quantity = quantity;
+        this.price = price;
+        this.variant_id = variant_id;
+    }
+
 
     public CartItem() {
     }

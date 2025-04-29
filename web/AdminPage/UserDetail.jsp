@@ -16,11 +16,12 @@
         <style>
             body {
                 margin: 0;
-                padding-top: 60px; /* Space for fixed header */
+                padding: 0;
                 min-height: 100vh;
                 display: flex;
                 flex-direction: column;
             }
+
             .main-layout {
                 display: flex;
                 flex-grow: 1;
@@ -41,8 +42,19 @@
                 margin: 0; /* Remove margins from child elements */
                 border: none; /* Ensure no borders on child elements */
             }
+            .dashboard-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%; /* Quan trọng */
+                height: 70px;
+                background-color: #ffffff;
+                border-top: 1px solid #dee2e6;
+                z-index: 1000;
+            }
             .sidebar {
                 margin-top: 70px;
+                margin-bottom: 70px;
                 width: 250px;
                 background-color: #f8f9fa;
                 padding: 20px;
@@ -53,11 +65,13 @@
                 z-index: 900; /* Below header but above content */
             }
             .container {
-                margin-left: 270px; /* Space for sidebar */
+                margin-left: 270px; /* đúng với sidebar */
                 padding: 20px;
                 flex-grow: 1;
-                margin-top: 20px; /* Additional spacing */
+                margin-top: 80px; /* header cao 60, cộng thêm 20 để thoải mái */
+                margin-bottom: 100px; /* footer cao 80 + thêm khoảng cách */
             }
+
         </style>
     </head>
     <body>
@@ -139,6 +153,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="dashboard-footer">
+            <jsp:include page="dashboard-footer.jsp"/>
         </div>
     </body>
 </html>

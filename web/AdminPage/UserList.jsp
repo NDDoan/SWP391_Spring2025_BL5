@@ -13,7 +13,8 @@
         <style>
             /* Sidebar Fixed to the left */
             .sidebar {
-                margin-top: 75px;
+                margin-top: 70px;
+                margin-bottom: 70px;
                 position: fixed;
                 top: 80px; /* Start below the header */
                 left: 0;
@@ -25,7 +26,16 @@
                 height: calc(100% - 80px); /* Adjust height to account for header */
                 overflow-y: auto; /* Scroll if content overflows */
             }
-
+            .dashboard-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%; /* Quan trọng */
+                height: 80px;
+                background-color: #ffffff;
+                border-top: 1px solid #dee2e6;
+                z-index: 1000;
+            }
             /* Header Styling (fixed on top) */
             .dashboard-header {
                 position: fixed;
@@ -42,7 +52,8 @@
             /* Content container */
             .content-container {
                 margin-left: 250px; /* Match sidebar width */
-                padding-top: 80px; /* Clear the header */
+                padding-top: 70px; /* Clear the header */
+                padding-bottom:  70px;
                 min-height: calc(100vh - 80px); /* Full height minus header */
             }
         </style>
@@ -307,12 +318,15 @@
             </div>
 
         </div>
+    </div>
+    <div class="dashboard-footer">
+        <jsp:include page="dashboard-footer.jsp"/>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Custom JS to handle form population -->
-        <script>
+    <!-- Custom JS to handle form population -->
+    <script>
                                                 function openAddModal() {
                                                     document.getElementById('userModalLabel').innerText = 'Add User';
                                                     document.getElementById('user_id').value = '';
@@ -343,6 +357,6 @@
                                                     var modal = new bootstrap.Modal(document.getElementById('userModal'));
                                                     modal.show();
                                                 }
-        </script>
-    </body>
+    </script>
+</body>
 </html>

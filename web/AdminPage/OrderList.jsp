@@ -29,6 +29,7 @@
             /* Định dạng sidebar */
             .sidebar {
                 margin-top: 70px;
+                margin-bottom: 70px;
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -37,10 +38,21 @@
                 background-color: #343a40;
                 padding-top: 20px;
             }
+            .dashboard-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%; /* Quan trọng */
+                height: 70px;
+                background-color: #ffffff;
+                border-top: 1px solid #dee2e6;
+                z-index: 1000;
+            }
             .qt{
-               
+
                 padding-top: 70px; /* né header */
                 padding-left: 60px; /* né sidebar */
+                padding-bottom: 70px;
             }
             /* Định dạng header */
             #header {
@@ -182,7 +194,7 @@
                                             <td>${order.orderId}</td>
                                             <td><fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy" /></td>
                                             <td>${order.productNames}</td>
-                                            <td>${order.totalCost}</td>
+                                            <td><fmt:formatNumber value="${order.totalCost}" type="currency" currencySymbol="₫" groupingUsed="true" maxFractionDigits="0"/></td>
                                             <td>${order.status}</td>
                                             <td class="d-flex justify-content-center gap-1">
                                                 <a href="orderlist?action=detail&orderId=${order.orderId}" class="btn btn-sm btn-primary text-dark"> <i class="fas fa-eye"></i> </a>
@@ -209,22 +221,20 @@
                     <!-- Nút Previous -->
                     <c:if test="${currentPage > 1}">
                         <li class="page-item">
-                            <a class="page-link" href="?page=1">First</a>
+                            <a class="page-link"
+                               href="?page=1&orderId=${param.orderId}&startDate=${param.startDate}&endDate=${param.endDate}&sortBy=${param.sortBy}&sortDir=${param.sortDir}">First</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page=${currentPage - 1}">Previous</a>
+                            <a class="page-link"
+                               href="?page=${currentPage - 1}&orderId=${param.orderId}&startDate=${param.startDate}&endDate=${param.endDate}&sortBy=${param.sortBy}&sortDir=${param.sortDir}">Previous</a>
                         </li>
                     </c:if>
 
                     <!-- Các số trang -->
                     <c:forEach begin="1" end="${totalPages}" var="i">
                         <li class="page-item ${i == currentPage ? 'active' : ''}">
-                            <a class="page-link" href="?page=${i}
-                               &orderId=${param.orderId}
-                               &startDate=${param.startDate}
-                               &endDate=${param.endDate}
-                               &sortBy=${param.sortBy}
-                               &sortDir=${param.sortDir}">
+                            <a class="page-link"
+                               href="?page=${i}&orderId=${param.orderId}&startDate=${param.startDate}&endDate=${param.endDate}&sortBy=${param.sortBy}&sortDir=${param.sortDir}">
                                 ${i}
                             </a>
                         </li>
@@ -233,10 +243,12 @@
                     <!-- Nút Next -->
                     <c:if test="${currentPage < totalPages}">
                         <li class="page-item">
-                            <a class="page-link" href="?page=${currentPage + 1}">Next</a>
+                            <a class="page-link"
+                               href="?page=${currentPage + 1}&orderId=${param.orderId}&startDate=${param.startDate}&endDate=${param.endDate}&sortBy=${param.sortBy}&sortDir=${param.sortDir}">Next</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page=${totalPages}">Last</a>
+                            <a class="page-link"
+                               href="?page=${totalPages}&orderId=${param.orderId}&startDate=${param.startDate}&endDate=${param.endDate}&sortBy=${param.sortBy}&sortDir=${param.sortDir}">Last</a>
                         </li>
                     </c:if>
                 </ul>
@@ -272,7 +284,9 @@
 
             </div>
         </div>
-
+        <div class="dashboard-footer">
+            <jsp:include page="dashboard-footer.jsp"/>
+        </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             var updateStatusModal = document.getElementById('updateStatusModal');
