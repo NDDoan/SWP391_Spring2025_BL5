@@ -1,156 +1,258 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Quản Lý Đơn Hàng</title>
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>My Orders</title>
         <style>
-            :root {
-                --primary-color: #4e73df;
-                --accent-color: #2e59d9;
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #4A90E2;
+                text-align: center;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                width: 80%;
+                margin: 30px auto;
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
             }
             h2 {
-                color: var(--primary-color);
-                border-bottom: 3px solid var(--primary-color);
+                color: #333;
+            }
+            .search-section {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding: 10px;
+                background: #f8f8f8;
+                border-radius: 5px;
+            }
+            .search-section input, .search-section select {
+                padding: 8px;
+                width: 20%;
+            }
+            .search-btn {
+                background-color: #28a745;
+                color: white;
+                padding: 10px;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: center;
+            }
+            th {
+                background-color: #007bff;
+                color: white;
+            }
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            .pagination {
+                margin-top: 20px;
+            }
+            .pagination button {
+                padding: 10px;
+                background-color: orange;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+            .detail-btn {
+                background-color: #ff9800;
+                color: white;
+                padding: 8px;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+            button#applySettings {
+                background: #28a745;
+                color: white;
+                border: none;
+                padding: 10px;
+                width: 100%;
+                margin-top: 15px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .modal-content {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                width: 400px;
+                text-align: center;
+            }
+            .customize-container {
+                background: #286090;
+                padding: 15px;
+                border-radius: 5px;
+                color: white;
+            }
+            .columns-container {
+                margin-top: 10px;
+            }
+            .checkbox-group {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
             }
         </style>
     </head>
-    <body class="bg-light py-4">
+    <body>
         <jsp:include page="../CommonPage/Header.jsp"/>
+        <div class="container">
+            <h2>My Orders</h2>
 
-        <div class="container bg-white rounded shadow-sm p-4">
-            <h2 class="text-center mb-4">Quản Lý Đơn Hàng</h2>
+            <!-- Search & Filter Section -->
+            <!-- Search & Filter Section -->
+            <form action="${pageContext.request.contextPath}/myordercontroller" method="GET" class="search-form">
+                <div class="search-container">
+                    <!-- Search by Order ID -->
+                    <input type="text" name="orderId" placeholder="Enter Order ID" value="${param.orderId}">
+                    <button type="submit" class="search-btn">Search by ID</button>
 
-            <!-- SEARCH & FILTER -->
-            <form action="${pageContext.request.contextPath}/myordercontroller" method="get" class="row g-2 mb-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label">Mã đơn hàng</label>
-                    <input type="text" name="orderId" class="form-control" placeholder="Nhập mã đơn" value="${param.orderId}">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Trạng thái</label>
-                    <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Tất cả</option>
+                    <!-- Filter by Order Status (Auto Submit) -->
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="">Order Status</option>
                         <c:forEach var="status" items="${orderStatuses}">
                             <option value="${status}" ${param.status == status ? 'selected' : ''}>${status}</option>
                         </c:forEach>
                     </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Từ ngày</label>
-                    <input type="date" name="startDate" class="form-control" value="${param.startDate}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Đến ngày</label>
-                    <input type="date" name="endDate" class="form-control" value="${param.endDate}">
-                </div>
-                <div class="col-md-2 d-grid">
-                    <button type="submit" class="btn btn-success">Tìm kiếm</button>
+
+                    <!-- Search by Date Range -->
+                    <input type="date" name="startDate" value="${param.startDate}">
+                    <input type="date" name="endDate" value="${param.endDate}">
+                    <button type="submit" class="search-btn">Search by Date</button>
                 </div>
             </form>
 
-            <!-- ORDERS TABLE -->
-            <div class="table-responsive">
-                <table class="table table-striped table-hover text-center">
-                    <thead class="table-primary">
+
+
+            <!-- Orders Table -->
+            <table>
+                <tr>
+                    <th>Id</th>
+                    <th>Order Date</th>
+                    <th>Product Name</th>
+                    <th>Total Cost</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+
+                <c:choose>
+                    <c:when test="${empty orders}">
                         <tr>
-                            <th>Id</th>
-                            <th>Ngày Đặt</th>
-                            <th>Sản Phẩm</th>
-                            <th>Tổng Chi Phí</th>
-                            <th>Trạng Thái</th>
-                            <th>Hành Động</th>
+                            <td colspan="6">No orders found</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <c:choose>
-                            <c:when test="${empty orders}">
-                                <tr><td colspan="6">Không tìm thấy đơn hàng</td></tr>
-                            </c:when>
-                            <c:otherwise>
-                                <c:forEach var="order" items="${orders}">
-                                    <tr>
-                                        <td>${order.orderId}</td>
-                                        <td><fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy"/></td>
-                                        <td>${order.productNames}</td>
-                                        <td><fmt:formatNumber value="${order.totalCost}" type="currency"/></td>
-                                        <td>${order.status}</td>
-                                        <td class="d-flex justify-content-center gap-1">
-                                            <a href="OrderDetailsServlet?orderId=${order.orderId}" class="btn btn-sm btn-warning">Chi tiết</a>
-                                            <c:if test="${order.status eq 'Completed'}">
-                                                <a href="CustomerSendFeedback?orderId=${order.orderId}" class="btn btn-sm btn-success">Phản hồi</a>
-                                            </c:if>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:otherwise>
-                        </c:choose>
-                    </tbody>
-                </table>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="order" items="${orders}">
+                            <tr>
+                                <td>${order.orderId}</td>
+                                <td>${order.orderDate}</td>
+                                <td>${order.productNames}</td>
+                                <td>${order.totalCost}</td>
+                                <td>${order.status}</td>
+                                <td>
+                                    <a href="OrderDetailsServlet?orderId=${order.orderId}">
+                                        <button class="detail-btn">View Details</button>
+                                    </a>
+                                    <c:if test="${order.status eq 'Completed'}">
+                                        <a href="CustomerSendFeedback?orderId=${order.orderId}">
+                                            <button class="detail-btn" style="background-color: #4CAF50;">Feedback</button>
+                                        </a>
+                                    </c:if>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button>&lt;</button>
+                <button>1</button>
+                <button>2</button>
+                <button>...</button>
+                <button>&gt;</button>
             </div>
 
-            <!-- PAGINATION -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><span class="page-link">…</span></li>
-                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                </ul>
-            </nav>
-
-            <!-- CUSTOMIZE BUTTON -->
-            <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#customizeModal">
-                Tùy chỉnh bảng
-            </button>
+            <!-- Customize Button -->
+            <button id="customizeTableBtn">Customize Table</button>
         </div>
+                    </div>
+        <!-- Popup Customize Table -->
+        <div id="customizeTableModal" class="modal">
+            <div class="modal-content">
+                <h2>Customize Table</h2>
+                <div class="customize-container">
+                    <label>Rows Per Table:</label>
+                    <input type="number" id="rowsPerTable" placeholder="Enter number of rows">
 
-        <!-- BOOTSTRAP MODAL -->
-        <div class="modal fade" id="customizeModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <form class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Tùy chỉnh bảng</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="rowsPerPage" class="form-label">Số dòng mỗi trang</label>
-                            <input type="number" id="rowsPerPage" class="form-control" placeholder="VD: 10">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Chọn cột hiển thị</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="colId" checked>
-                                <label class="form-check-label" for="colId">ID</label>
-                            </div>
-                            <!-- Thêm các checkbox khác tương tự -->
+                    <div class="columns-container">
+                        <label>Select Columns:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" checked> Column A</label>
+                            <label><input type="checkbox"> Column B</label>
+                            <label><input type="checkbox"> Column C</label>
+                            <label><input type="checkbox"> Column ...</label>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="button" id="applySettings" class="btn btn-primary">Áp dụng</button>
-                    </div>
-                </form>
+
+                    <button id="applySettings">Apply Settings</button>
+                </div>
             </div>
         </div>
-
-        <jsp:include page="../CommonPage/Footer.jsp"/>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-                  // JS tuỳ chỉnh: đọc rowsPerPage và checkbox, lưu vào localStorage hoặc gọi API
-                  document.getElementById('applySettings').addEventListener('click', () => {
-                      // TODO: xử lý tuỳ chỉnh
-                      const rows = document.getElementById('rowsPerPage').value;
-                      console.log('Rows per page:', rows);
-                      // Đóng modal
-                      bootstrap.Modal.getInstance(document.getElementById('customizeModal')).hide();
-                  });
-        </script>
     </body>
+    <jsp:include page="../CommonPage/Footer.jsp"/>
 </html>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const customizeBtn = document.getElementById("customizeTableBtn"); // Nút mở popup
+    const popup = document.getElementById("customizeTableModal"); // Popup
+
+    // Đảm bảo popup ẩn khi trang tải lên
+    popup.style.display = "none";
+
+    // Mở popup khi ấn vào nút Customize Table
+    customizeBtn.addEventListener("click", function () {
+        popup.style.display = "flex"; 
+    });
+
+    // Đóng popup khi click ra ngoài
+    window.addEventListener("click", function (event) {
+        if (event.target === popup) {
+            popup.style.display = "none";
+        }
+    });
+});
+</script>
