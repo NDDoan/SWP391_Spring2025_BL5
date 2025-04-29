@@ -4,7 +4,7 @@
  */
 package Controller;
 
-//import Dao.CartDetailDao;
+import Dao.CartDao;
 import Dao.UserDao;
 import Entity.User;
 import jakarta.servlet.RequestDispatcher;
@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import Util.HashUtil;
 
 /**
  *
@@ -79,8 +78,6 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        //lấy thông tin bên view từ trang home
         String email = request.getParameter("username");
         String password = request.getParameter("password");
         String rememberMe = request.getParameter("rememberMe");
@@ -100,105 +97,54 @@ public class LoginController extends HttpServlet {
         }
 
         UserDao userDAO = new UserDao();
-        //User user = userDAO.login(email, password);
-        User user = userDAO.getUserByEmail(email); // 🔥 Lấy user bằng email, không truyền password nữa
+        User user = userDAO.login(email, password);
 
-        // Kiểm tra user có tồn tại không và kiểm tra mật khẩu đã hash
-        if (user != null && HashUtil.checkPassword(password, user.getPassword_hash())) { // 🔥 Dùng checkpw() để kiểm tra mật khẩu
-
+        // Kiểm tra user có tồn tại không
+        if (user != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            session.setAttribute("userId", user.getUser_id());
 
-//            // Lấy số lượng sản phẩm trong giỏ hàng
-//            CartDetailDao cartDao = new CartDetailDao();
-//            int cartCount = cartDao.getCartItemCount(user.getUser_id());
-//            session.setAttribute("cartCount", cartCount);
-            // 🔥 Nếu Remember Me được chọn, lưu email + password + rememberMe vào cookie
+            session.setAttribute("user", user); // Đảm bảo lưu user object
+            session.setAttribute("userId", user.getUser_id()); // Lưu cả userId nếu cần
+            // 🔹 Lấy số lượng sản phẩm trong giỏ hàng
+            CartDao cartDao = new CartDao();
+            int cartCount = cartDao.getCartItemCount(user.getUser_id());
+            session.setAttribute("cartCount", cartCount); // Cập nhật session ngay khi đăng nhập
+
+            // Nếu chọn "Remember Me", lưu email vào cookie
             if ("on".equals(rememberMe)) {
-                Cookie emailCookie = new Cookie("rememberedEmail", email);
-                Cookie passwordCookie = new Cookie("rememberedPassword", password);
-                Cookie rememberCookie = new Cookie("rememberMe", "true");
-
-                emailCookie.setMaxAge(60 * 60 * 24 * 30); // Lưu trong 30 ngày
-                passwordCookie.setMaxAge(60 * 60 * 24 * 30);
-                rememberCookie.setMaxAge(60 * 60 * 24 * 30);
-
-                emailCookie.setPath("/"); // Áp dụng cho toàn bộ ứng dụng
-                passwordCookie.setPath("/");
-                rememberCookie.setPath("/");
-
-                response.addCookie(emailCookie);
-                response.addCookie(passwordCookie);
-                response.addCookie(rememberCookie);
+                Cookie cookie = new Cookie("rememberedEmail", email);
+                cookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
+                response.addCookie(cookie);
             } else {
-                // 🔥 Nếu không chọn Remember Me, xóa cookie cũ nếu có
-                Cookie emailCookie = new Cookie("rememberedEmail", "");
-                Cookie passwordCookie = new Cookie("rememberedPassword", "");
-                Cookie rememberCookie = new Cookie("rememberMe", "");
-
-                emailCookie.setMaxAge(0);
-                passwordCookie.setMaxAge(0);
-                rememberCookie.setMaxAge(0);
-
-                emailCookie.setPath("/"); // Áp dụng cho toàn bộ ứng dụng
-                passwordCookie.setPath("/");
-                rememberCookie.setPath("/");
-
-                response.addCookie(emailCookie);
-                response.addCookie(passwordCookie);
-                response.addCookie(rememberCookie);
+                Cookie cookie = new Cookie("rememberedEmail", "");
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
             }
 
+            // Redirect based on user role
             int roleId = user.getRole_id();
-
             if (roleId == 2) { // Customer role
-                response.sendRedirect(request.getContextPath() + "/HomePageController");
-                return;
-            } else if (roleId == 1 ||  roleId == 3) { // Admin , Marketing or shpippng role
-                response.sendRedirect(request.getContextPath() + "/AdminPage/AdminDashBoard.jsp"); // Chuyển hướng đến giao diện Admin
-                return;
-            } else if (roleId == 4) { 
-             response.sendRedirect(request.getContextPath() + "/ShippingController");
-                return;
+                response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
+            } else if (roleId == 1 || roleId == 4) { // Admin or Marketing role
+                response.sendRedirect(request.getContextPath() + "/admin/customers");
+            } else {
+                // Default redirect for any other role
+                response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
             }
-            else if (roleId == 5) { 
-             response.sendRedirect(request.getContextPath() + "/AdminPage/AdminDashBoard.jsp");
-                return;
-            }
-
-//        // Remember Me (lưu email vào cookie)
-//        if ("on".equals(rememberMe)) {
-//            Cookie cookie = new Cookie("rememberedEmail", email);
-//            cookie.setMaxAge(7 * 24 * 60 * 60);
-//            response.addCookie(cookie);
-//
-//        } else {
-//            Cookie cookie = new Cookie("rememberedEmail", "");
-//            cookie.setMaxAge(0);
-//            response.addCookie(cookie);
-//        }
-                    // response.sendRedirect(request.getContextPath() + "/UserPage/Home.jsp");
-                }
-                else {
+        } else {
             request.setAttribute("errorMessage", "Invalid email or password.");
             request.getRequestDispatcher("/UserPage/Login.jsp").forward(request, response);
         }
-            }
+    }
 
-            /**
-             * Returns a short description of the servlet.
-             *
-             * @return a String containing servlet description
-             */
-            @Override
-            public String getServletInfo
-            
-            
-                () {
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
         return "Short description";
-            }// </editor-fold>
+    }// </editor-fold>
 
-        }
-    
-
+}
