@@ -25,6 +25,10 @@
         <servlet-name>OrderController</servlet-name>
         <servlet-class>Controller.OrderController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ReportController</servlet-name>
+        <servlet-class>Controller.ReportController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ProductForManagerListController</servlet-name>
         <url-pattern>/ProductForManagerListController</url-pattern>
@@ -154,12 +158,15 @@
         <url-pattern>/uploadavatarcontroller</url-pattern>
     </servlet-mapping>
     <servlet>
-    <servlet-name>OrderDetailServlet</servlet-name>
-    <servlet-class>Controller.OrderDetailServlet</servlet-class>
-</servlet>
-<servlet-mapping>
-    <servlet-name>OrderDetailServlet</servlet-name>
-    <url-pattern>/orderdetail</url-pattern>
-</servlet-mapping>
-
+        <servlet-name>OrderDetailServlet</servlet-name>
+        <servlet-class>Controller.OrderDetailServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OrderDetailServlet</servlet-name>
+        <url-pattern>/orderdetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReportController</servlet-name>
+        <url-pattern>/ReportController</url-pattern>
+    </servlet-mapping>
 </web-app>

@@ -97,6 +97,11 @@
                                 <i class="bi bi-bar-chart-line me-2"></i> Quản lý phản hồi
                             </a>
                         </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ReportController">
+                                <i class="bi bi-bar-chart-line me-2"></i> Báo cáo thống kê
+                            </a>
+                        </li>
                     </c:if>
 
                     <!-- Nếu là Shipper -->
