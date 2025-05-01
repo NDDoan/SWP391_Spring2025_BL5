@@ -127,7 +127,6 @@
         </style>
     </head>
     <body>
-        <jsp:include page="../CommonPage/Header.jsp"/>
         <div class="container">
             <h2>My Orders</h2>
 
@@ -199,20 +198,11 @@
 
             <!-- Pagination -->
             <div class="pagination">
-                <c:if test="${currentPage > 1}">
-                    <button onclick="location.href = '${pageContext.request.contextPath}/myordercontroller?page=${currentPage - 1}'">&lt;</button>
-                </c:if>
-
-                <c:forEach var="i" begin="1" end="${totalPages}" varStatus="status">
-                    <button onclick="location.href = '${pageContext.request.contextPath}/myordercontroller?page=${i}'" 
-                            class="${i == currentPage ? 'active' : ''}">
-                        ${i}
-                    </button>
-                </c:forEach>
-
-                <c:if test="${currentPage < totalPages}">
-                    <button onclick="location.href = '${pageContext.request.contextPath}/myordercontroller?page=${currentPage + 1}'">&gt;</button>
-                </c:if>
+                <button>&lt;</button>
+                <button>1</button>
+                <button>2</button>
+                <button>...</button>
+                <button>&gt;</button>
             </div>
 
             <!-- Customize Button -->
