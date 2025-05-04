@@ -44,77 +44,179 @@
                                }">
                 </div>
             </form>
-            <h5>Thương hiệu</h5>
-            <c:forEach var="b" items="${brandList}">
-                <div class="form-check">
-                    <input class="form-check-input brand-filter" type="checkbox" value="${b}" id="brand_${b}">
-                    <label class="form-check-label" for="brand_${b}">${b}</label>
+
+            <div class="accordion" id="filterAccordion">
+
+                <!-- Thương hiệu -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingBrand">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseBrand" aria-expanded="true" aria-controls="collapseBrand">
+                            Thương hiệu
+                        </button>
+                    </h2>
+                    <div id="collapseBrand" class="accordion-collapse collapse show" aria-labelledby="headingBrand">
+                        <div class="accordion-body">
+                            <c:forEach var="b" items="${brandList}">
+                                <div class="form-check">
+                                    <input class="form-check-input brand-filter" type="checkbox" value="${b}" id="brand_${b}">
+                                    <label class="form-check-label" for="brand_${b}">${b}</label>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
-            </c:forEach>
 
-            <c:set var="selCat" value="${selectedCategory}" />
-
-            <h5>Danh mục</h5>
-            <c:forEach var="categ" items="${categoryList}">
-                <div class="form-check">
-                    <input class="form-check-input cat-filter"
-                           type="checkbox"
-                           value="${categ}"
-                           id="cat_${categ}"
-                           <c:if test="${categ == selCat}">checked</c:if>
-                               >
-                           <label class="form-check-label" for="cat_${categ}">${categ}</label>
+                <!-- Danh mục -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingCat">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseCat" aria-expanded="false" aria-controls="collapseCat">
+                            Danh mục
+                        </button>
+                    </h2>
+                    <div id="collapseCat" class="accordion-collapse collapse show" aria-labelledby="headingCat">
+                        <div class="accordion-body">
+                            <c:forEach var="categ" items="${categoryList}">
+                                <div class="form-check">
+                                    <input class="form-check-input cat-filter" type="checkbox" value="${categ}"
+                                           id="cat_${categ}" <c:if test="${categ == selectedCategory}">checked</c:if>>
+                                    <label class="form-check-label" for="cat_${categ}">${categ}</label>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
-            </c:forEach>
 
-            <h5>CPU</h5>
-            <c:forEach var="cpuName" items="${cpuList}">
-                <div class="form-check">
-                    <input class="form-check-input cpu-filter" type="checkbox" value="${cpuName}" id="cpu_${cpuName}">
-                    <label class="form-check-label" for="cpu_${cpuName}">${cpuName}</label>
+                <!-- CPU -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingCPU">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseCPU" aria-expanded="false" aria-controls="collapseCPU">
+                            CPU
+                        </button>
+                    </h2>
+                    <div id="collapseCPU" class="accordion-collapse collapse" aria-labelledby="headingCPU">
+                        <div class="accordion-body">
+                            <c:forEach var="cpuName" items="${cpuList}">
+                                <div class="form-check">
+                                    <input class="form-check-input cpu-filter" type="checkbox" value="${cpuName}"
+                                           id="cpu_${cpuName}">
+                                    <label class="form-check-label" for="cpu_${cpuName}">${cpuName}</label>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
-            </c:forEach>
 
-            <h5>RAM</h5>
-            <c:forEach var="ramSize" items="${ramList}">
-                <div class="form-check">
-                    <input class="form-check-input ram-filter" type="checkbox" value="${ramSize}" id="ram_${ramSize}">
-                    <label class="form-check-label" for="ram_${ramSize}">${ramSize}</label>
+                <!-- RAM -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingRAM">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseRAM" aria-expanded="false" aria-controls="collapseRAM">
+                            RAM
+                        </button>
+                    </h2>
+                    <div id="collapseRAM" class="accordion-collapse collapse" aria-labelledby="headingRAM">
+                        <div class="accordion-body">
+                            <c:forEach var="ramSize" items="${ramList}">
+                                <div class="form-check">
+                                    <input class="form-check-input ram-filter" type="checkbox" value="${ramSize}"
+                                           id="ram_${ramSize}">
+                                    <label class="form-check-label" for="ram_${ramSize}">${ramSize}</label>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
-            </c:forEach>
 
-            <h5>Màn hình</h5>
-            <c:forEach var="screenResolution" items="${screenList}">
-                <div class="form-check">
-                    <input class="form-check-input screen-filter" type="checkbox" value="${screenResolution}" id="screen_${screenResolution}">
-                    <label class="form-check-label" for="screen_${screenResolution}">${screenResolution}</label>
+                <!-- Màn hình -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingScreen">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseScreen" aria-expanded="false" aria-controls="collapseScreen">
+                            Màn hình
+                        </button>
+                    </h2>
+                    <div id="collapseScreen" class="accordion-collapse collapse" aria-labelledby="headingScreen">
+                        <div class="accordion-body">
+                            <c:forEach var="screenResolution" items="${screenList}">
+                                <div class="form-check">
+                                    <input class="form-check-input screen-filter" type="checkbox" value="${screenResolution}"
+                                           id="screen_${screenResolution}">
+                                    <label class="form-check-label" for="screen_${screenResolution}">${screenResolution}</label>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
-            </c:forEach>
 
-            <h5>Dung lượng</h5>
-            <c:forEach var="storageSize" items="${storageList}">
-                <div class="form-check">
-                    <input class="form-check-input storage-filter" type="checkbox" value="${storageSize}" id="storage_${storageSize}">
-                    <label class="form-check-label" for="storage_${storageSize}">${storageSize}</label>
+                <!-- Dung lượng -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingStorage">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseStorage" aria-expanded="false" aria-controls="collapseStorage">
+                            Dung lượng
+                        </button>
+                    </h2>
+                    <div id="collapseStorage" class="accordion-collapse collapse" aria-labelledby="headingStorage">
+                        <div class="accordion-body">
+                            <c:forEach var="storageSize" items="${storageList}">
+                                <div class="form-check">
+                                    <input class="form-check-input storage-filter" type="checkbox" value="${storageSize}"
+                                           id="storage_${storageSize}">
+                                    <label class="form-check-label" for="storage_${storageSize}">${storageSize}</label>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
-            </c:forEach>
 
-            <h5>Màu</h5>
-            <c:forEach var="colorName" items="${colorList}">
-                <div class="form-check">
-                    <input class="form-check-input color-filter" type="checkbox" value="${colorName}" id="color_${colorName}">
-                    <label class="form-check-label" for="color_${colorName}">${colorName}</label>
+                <!-- Màu -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingColor">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor">
+                            Màu
+                        </button>
+                    </h2>
+                    <div id="collapseColor" class="accordion-collapse collapse" aria-labelledby="headingColor">
+                        <div class="accordion-body">
+                            <c:forEach var="colorName" items="${colorList}">
+                                <div class="form-check">
+                                    <input class="form-check-input color-filter" type="checkbox" value="${colorName}"
+                                           id="color_${colorName}">
+                                    <label class="form-check-label" for="color_${colorName}">${colorName}</label>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
-            </c:forEach>
 
-            <h5>Thành tiền (₫)</h5>
-            <div class="d-flex gap-2 mb-3">
-                <input id="priceMin" type="number" class="form-control" placeholder="Min" min="0">
-                <input id="priceMax" type="number" class="form-control" placeholder="Max" min="0">
+                <!-- Thành tiền -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingPrice">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapsePrice" aria-expanded="false" aria-controls="collapsePrice">
+                            Thành tiền (₫)
+                        </button>
+                    </h2>
+                    <div id="collapsePrice" class="accordion-collapse collapse" aria-labelledby="headingPrice">
+                        <div class="accordion-body">
+                            <div class="d-flex gap-2 mb-3">
+                                <input id="priceMin" type="number" class="form-control" placeholder="Min" min="0">
+                                <input id="priceMax" type="number" class="form-control" placeholder="Max" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <button id="applyFilters" class="btn btn-primary">Áp dụng</button>
-            <button id="clearFilters" class="btn btn-secondary">Dọn Dẹp</button>
+            <div class="mt-3 d-flex justify-content-between">
+                <button id="applyFilters" class="btn btn-primary">Áp dụng</button>
+                <button id="clearFilters" class="btn btn-secondary">Dọn Dẹp</button>
+            </div>
         </div>
 
         <!-- PRODUCT GRID & PAGINATION -->
