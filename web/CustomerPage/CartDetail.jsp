@@ -1,424 +1,183 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="java.util.List, java.util.ArrayList" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
-    <head>
-        <meta charset="UTF-8">
-        <title>Cart Detail</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" href="styles.css">
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background: #f4f4f4;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-            }
+<head>
+  <meta charset="UTF-8">
+  <title>Cart Detail</title>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    /* Global & Layout */
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+    .cart-container { width: 80%; background: #fff; margin: 40px auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .btn { background: #007bff; color: #fff; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
+    .btn:hover { background: #0056b3; }
+    .btn-back { background: #28a745; }
+    .btn-back:hover { background: #218838; }
+    .search-box { padding: 6px 10px; border: 1px solid #ccc; border-radius: 5px; }
+    .cart-wrapper { display: flex; flex-direction: column; gap: 20px; }
+    @media (min-width: 992px) { .cart-wrapper { flex-direction: row; } }
+    .cart-content, .discount-info { padding: 15px; border-radius: 8px; }
+    .cart-content { flex: 6; background: #f9f9f9; }
+    .discount-info { flex: 4; background: #fffae6; }
 
-            .cart-container {
-                width: 80%;
-                background: #fff;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
+    /* Table */
+    .cart-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .cart-table th, .cart-table td { padding: 10px; border-bottom: 1px solid #ddd; text-align: center; }
+    .cart-table th { background: #007bff; color: #fff; }
+    .remove-btn { background: none; border: none; font-size: 18px; cursor: pointer; }
 
-            header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding-bottom: 20px;
-                border-bottom: 2px solid #ddd;
-            }
+    /* Update button */
+    .update-cart-container { text-align: center; margin-top: 10px; }
+    .update-cart-reminder { font-size: 14px; color: #666; margin-bottom: 8px; font-style: italic; }
+    .update-cart-btn { background: #ff6600; color: #fff; padding: 12px 20px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: background 0.3s, transform 0.2s; }
+    .update-cart-btn:hover { background: #e65c00; transform: scale(1.05); }
+    .update-cart-btn:active { transform: scale(0.98); }
 
-            .btn {
-                background: #007bff;
-                color: white;
-                padding: 8px 15px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
+    /* Discounts */
+    .discount-info h3 { color: #ff9800; margin-bottom: 10px; }
+    .discount-info ul { list-style: none; padding: 0; }
+    .discount-info li { margin: 5px 0; padding: 8px; border-radius: 5px; }
+    .green { background: #c8e6c9; }
+    .blue { background: #bbdefb; }
+    .red { background: #ffcdd2; }
 
-            .btn:hover {
-                background: #0056b3;
-            }
+    /* Price Summary */
+    .price-summary { background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0; line-height: 1.6; }
 
-            .cart-wrapper {
-                display: flex;
-                gap: 20px;
-            }
+    /* Pagination */
+    .pagination { display: flex; justify-content: center; gap: 5px; margin-top: 15px; }
+    .pagination button { background: #ddd; border: none; padding: 5px 10px; cursor: pointer; }
+    .pagination .active { background: #007bff; color: #fff; }
 
-            .cart-content {
-                flex: 6;
-                background: #f9f9f9;
-                padding: 15px;
-                border-radius: 8px;
-            }
+    /* Promo */
+    .promo-section { margin-top: 20px; text-align: center; }
+    .promo-section input { padding: 6px 10px; border: 1px solid #ccc; border-radius: 5px; margin-right: 5px; }
 
-            .cart-table {
-                width: 100%;
-                border-collapse: collapse;
-                background: white;
-            }
+    /* Checkout btn */
+    .checkout-btn { background: #28a745; color: #fff; padding: 12px 25px; font-size: 18px; border: none; border-radius: 5px; cursor: pointer; width: 100%; max-width: 300px; margin: 20px auto; display: block; }
+  </style>
+</head>
+<body>
+  <jsp:include page="../CommonPage/Header.jsp"/>
 
-            .cart-table th, .cart-table td {
-                padding: 10px;
-                border-bottom: 1px solid #ddd;
-                text-align: center;
-            }
+  <div class="cart-container">
+    <!-- Success Message -->
+    <c:if test="${not empty sessionScope.message}">
+      <div id="deleteAlert" class="alert alert-success" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:1000;">
+        <strong>Thông báo:</strong> ${sessionScope.message}
+        <button onclick="this.parentElement.style.display='none'" style="background:none; border:none; color:white; font-size:18px;">✖</button>
+      </div>
+      <script>setTimeout(()=>document.getElementById('deleteAlert').style.display='none',3000);</script>
+    </c:if>
 
-            .cart-table th {
-                background: #007bff;
-                color: white;
-            }
-
-            .discount-info {
-                flex: 4;
-                background: #fffae6;
-                padding: 15px;
-                border-radius: 8px;
-                text-align: center;
-            }
-
-            .discount-info h3 {
-                color: #ff9800;
-            }
-
-            .discount-info ul {
-                list-style: none;
-                padding: 0;
-            }
-
-            .discount-info li {
-                padding: 8px;
-                margin: 5px 0;
-                border-radius: 5px;
-            }
-
-            .green {
-                background: #c8e6c9;
-            }
-            .blue {
-                background: #bbdefb;
-            }
-            .red {
-                background: #ffcdd2;
-            }
-
-            .pagination {
-                display: flex;
-                justify-content: center;
-                margin-top: 10px;
-            }
-
-            .pagination button {
-                background: #ddd;
-                border: none;
-                padding: 5px 10px;
-                margin: 0 5px;
-                cursor: pointer;
-            }
-
-            .pagination .active {
-                background: #007bff;
-                color: white;
-            }
-            .btn-back {
-                display: inline-block;
-                background-color: #28a745; /* Màu xanh lá cây */
-                color: white;
-                padding: 10px 20px;
-                text-decoration: none;
-                border-radius: 5px;
-                font-size: 16px;
-                font-weight: bold;
-                border: none;
-                cursor: pointer;
-                margin-bottom: 15px;
-            }
-
-            .btn-back:hover {
-                background-color: #218838; /* Màu xanh đậm khi hover */
-            }
-            .update-cart-btn {
-                background-color: #ff6600; /* Màu cam nổi bật */
-                color: white;
-                font-size: 18px;
-                font-weight: bold;
-                padding: 12px 20px;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                display: block;
-                margin: 20px auto; /* Tạo khoảng trắng phía trên & căn giữa */
-                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-                transition: background 0.3s ease, transform 0.2s ease;
-            }
-
-            .update-cart-btn:hover {
-                background-color: #e65c00; /* Màu cam đậm hơn khi hover */
-                transform: scale(1.05);
-            }
-
-            .update-cart-btn:active {
-                transform: scale(0.98);
-            }
-
-            /* Thêm chú thích phía trên nút */
-            .update-cart-reminder {
-                text-align: center;
-                font-size: 14px;
-                color: #666;
-                margin-bottom: 10px;
-                font-style: italic;
-            }
-        </style>
-    </head>
-    <body>
-
-        <div class="cart-container">
-            <header>
-                <button onclick="window.location.href = 'homecontroller'" class="btn btn-back">
-                    ⬅ Back to Home
-                </button>
-                <div class="logo">Page Logo</div>
-                <button class="btn">Cart Detail</button>
-                <input type="text" class="search-box" placeholder="Search...">
-                <button class="btn">Search</button>
-            </header>
-            <%
-String message = (String) session.getAttribute("message");
-if (message != null) {
-            %>
-            <div id="deleteAlert" class="alert alert-success" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: white; padding: 15px; border-radius: 5px; z-index: 1000;">
-                <strong>Thông báo:</strong> <%= message %>
-                <button type="button" onclick="this.parentElement.style.display = 'none';" style="background: none; border: none; color: white; font-size: 18px; margin-left: 10px;">✖</button>
-            </div>
-
-            <script>
-                setTimeout(function () {
-                    var alertBox = document.getElementById('deleteAlert');
-                    if (alertBox) {
-                        alertBox.style.display = 'none';
-                    }
-                }, 3000);
-            </script>
-            <%
-                session.removeAttribute("message"); // Xóa thông báo sau khi hiển thị
-            }
-            %>
-            <div class="cart-wrapper">
-                <div class="cart-content">
-                    <form action="cartdetailcontroller" method="post" id="cartUpdateForm">
-                        <table class="cart-table">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)"><label for="selectAll"> Choose All!!!</label></th>
-                                    <th>ID</th>
-                                    <th>Product Name</th>
-                                    <th>Price</th>
-                                    <th>Discount Price</th>
-                                    <th>Qty</th>
-                                    <th>Total</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:choose>
-                                    <c:when test="${empty cartDetails}">
-                                        <tr>
-                                            <td colspan="7" style="text-align:center; color:red;">Your cart is empty!</td>
-                                        </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach var="item" items="${cartDetails}">
-                                            <tr>
-                                                <td>
-                                                    <input type="checkbox" name="selectedProducts" value="${item.productId}" 
-                                                           ${selectedProducts.contains(item.productId) ? "checked" : ""}>
-                                                </td>
-                                                <td>${item.productId}</td>
-                                                <td>${item.productName}</td>
-                                                <td><fmt:formatNumber value="${item.price}" type="number" groupingUsed="true"/> VND</td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${item.discountPrice == 0.0}">
-                                                            Not discounted yet ❌💰
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <fmt:formatNumber value="${item.discountPrice}" type="number" groupingUsed="true"/> VND
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </td>
-                                                <td>
-                                                    <form action="cartdetailcontroller" method="post">
-                                                        <input type="hidden" name="productId" value="${item.productId}">
-
-                                                        <div style="display: flex; align-items: center; gap: 5px;">
-                                                            <button type="submit" name="action" value="decrease">-</button>
-                                                            <input type="number" name="quantity" value="${item.quantity}" min="1" readonly 
-                                                                   style="width: 40px; text-align: center; font-size: 14px; padding: 2px;">
-                                                            <button type="submit" name="action" value="increase">+</button>
-                                                        </div>
-
-                                                        <input type="hidden" name="cartId" value="${item.cartId}">
-                                                    </form>
-                                                </td>
-                                                <td><fmt:formatNumber value="${item.totalPrice}" type="number" groupingUsed="true"/> VND</td>
-
-                                                <td>
-                                                    <form action="cartdetailcontroller" method="post">
-                                                        <input type="hidden" name="action" value="remove">
-                                                        <input type="hidden" name="productId" value="${item.productId}">
-                                                        <input type="hidden" name="cartId" value="${item.cartId}">
-                                                        <input type="hidden" name="quantity" value="${item.quantity}">
-                                                        <input type="hidden" name="cartItemId" value="${item.cartItemId}">
-                                                        <button type="submit" class="remove-btn">❌</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
-                            </tbody>
-                        </table>
-                        <input type="hidden" name="action" value="updateSelection">
-                        <div class="update-cart-container">
-                            <p class="update-cart-reminder">⚠️ Remember to update your cart to apply the latest discounts!</p>
-                            <button type="submit" class="update-cart-btn">Refresh Cart Prices</button>
-                        </div>
-                    </form>
-                    
-                    <div class="pagination">
-                        <button>&lt;</button>
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>...</button>
-                        <button>&gt;</button>
-                    </div>
-
-                    <div class="promo-section" style="margin-top: 20px;">
-                        🎁 Promotion Code: <input type="text" id="promo-code"> 
-                        <button class="btn">✅ Apply</button>
-                    </div>
-
-                    <div class="price-summary">
-                        <br>
-                        <%-- Hiển thị tổng giá trước giảm giá --%>
-                        💰 <b>Total Before Discount:</b> <fmt:formatNumber value="${beforePrice}" type="number" groupingUsed="true" /> VND
-
-                        <%-- Hiển thị mức giảm giá nếu có --%>
-                        <c:if test="${discountRate > 0}">
-                            <br>🎯 <b>You have reached a discount level!</b>
-                            <br> Your total is over 
-                            <c:choose>
-                                <c:when test="${beforePrice > 100000000}">100 million VND</c:when>
-                                <c:when test="${beforePrice > 50000000}">50 million VND</c:when>
-                                <c:when test="${beforePrice > 10000000}">10 million VND</c:when>
-                            </c:choose>
-                            → <b><fmt:formatNumber value="${discountRate}" type="number" maxFractionDigits="2"/>% Discount</b>
-
-                            <br>💰 Discount Applied: | -<fmt:formatNumber value="${discountAmount}" type="number" groupingUsed="true"/> VND
-                        </c:if>
-
-                        <br>
-                        🏷️ <b>Final Total Price:</b> <fmt:formatNumber value="${finalPrice}" type="number" groupingUsed="true"/> VND
-                    </div>
-
-                    <button class="btn" onclick="window.location.href='homecontroller'">➕ Choose More Products</button>
-                </div>
-
-                <div class="discount-info">
-                    <h3>DISCOUNTS FOR PURCHASES</h3>
-                    <ul>
-                        <li class="green">
-                            🟢 From 10 million VND → 5% Discount 
-                            <c:if test="${beforePrice >= 10000000 && beforePrice < 50000000}">✅ (You are here!)</c:if>
-                            <c:if test="${beforePrice < 10000000}">
-                                (Add <fmt:formatNumber value="${10000000 - beforePrice}" type="number" groupingUsed="true"/> VND more to reach! 🚀)
-                            </c:if>
-                        </li>
-                        <li class="blue">
-                            🔵 From 50 million VND → 7% Discount  
-                            <c:if test="${beforePrice >= 50000000 && beforePrice < 100000000}">✅ (You are here!)</c:if>
-                            <c:if test="${beforePrice < 50000000}">
-                                (Add <fmt:formatNumber value="${50000000 - beforePrice}" type="number" groupingUsed="true"/> VND more to reach! 🚀)
-                            </c:if>
-                        </li>
-                        <li class="red">
-                            🔴 From 100 million VND → 10% Discount  
-                            <c:if test="${beforePrice >= 100000000}">✅ (You are here!)</c:if>
-                            <c:if test="${beforePrice < 100000000}">
-                                (Add <fmt:formatNumber value="${100000000 - beforePrice}" type="number" groupingUsed="true"/> VND more to reach! 🚀)
-                            </c:if>
-                        </li>
-                    </ul>
-                </div>
-
-
-            </div>
-            
-            <!-- Place checkout form completely outside cart-wrapper -->
-            <div style="margin-top: 20px; text-align: center;">
-                <form id="checkoutForm" action="cartcontactcontroller" method="get" style="display: inline-block; width: 50%;" onsubmit="return prepareCheckout()">
-                    <!-- The selected products will be added by JavaScript before form submission -->
-                    <input type="hidden" name="beforePrice" value="${beforePrice}">
-                    <input type="hidden" name="discountRate" value="${discountRate}">
-                    <input type="hidden" name="discountAmount" value="${discountAmount}">
-                    <input type="hidden" name="finalPrice" value="${finalPrice}">
-                    <button type="submit" class="btn" style="background-color: #28a745; padding: 12px 25px; font-size: 18px; width: 100%;">
-                        ✅ Proceed to Checkout
-                    </button>
-                </form>
-            </div>
+    <div class="cart-wrapper">
+      <div class="cart-content">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <button onclick="location.href='homecontroller'" class="btn btn-back">⬅ Back to Home</button>
+          <div class="d-flex align-items-center">
+            <input type="text" class="search-box" placeholder="Search...">
+            <button class="btn ms-2"><i class="fas fa-search"></i></button>
+          </div>
         </div>
 
-    </body>
+        <!-- Cart Form -->
+        <form action="cartdetailcontroller" method="post" id="cartUpdateForm">
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)"><label for="selectAll"> Choose All</label></th>
+                <th>ID</th><th>Name</th><th>Price</th><th>Discount</th><th>Qty</th><th>Total</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <c:choose>
+                <c:when test="${empty cartDetails}">
+                  <tr><td colspan="8" style="color:red; text-align:center;">Your cart is empty!</td></tr>
+                </c:when>
+                <c:otherwise>
+                  <c:forEach var="item" items="${cartDetails}">
+                    <tr>
+                      <td><input type="checkbox" name="selectedProducts" value="${item.productId}" ${selectedProducts.contains(item.productId)?'checked':''}></td>
+                      <td>${item.productId}</td>
+                      <td>${item.productName}</td>
+                      <td><fmt:formatNumber value="${item.price}" type="number" groupingUsed="true"/> VND</td>
+                      <td><c:choose><c:when test="${item.discountPrice==0.0}">❌</c:when><c:otherwise><fmt:formatNumber value="${item.discountPrice}" type="number" groupingUsed="true"/> VND</c:otherwise></c:choose></td>
+                      <td>
+                        <div style="display:flex; align-items:center; gap:5px;">
+                          <form action="cartdetailcontroller" method="post"><input type="hidden" name="productId" value="${item.productId}"><button name="action" value="decrease">-</button></form>
+                          <span>${item.quantity}</span>
+                          <form action="cartdetailcontroller" method="post"><input type="hidden" name="productId" value="${item.productId}"><button name="action" value="increase">+</button></form>
+                        </div>
+                      </td>
+                      <td><fmt:formatNumber value="${item.totalPrice}" type="number" groupingUsed="true"/> VND</td>
+                      <td>
+                        <form action="cartdetailcontroller" method="post">
+                          <input type="hidden" name="action" value="remove"><input type="hidden" name="productId" value="${item.productId}">
+                          <button type="submit" class="remove-btn">❌</button>
+                        </form>
+                      </td>
+                    </tr>
+                  </c:forEach>
+                </c:otherwise>
+              </c:choose>
+            </tbody>
+          </table>
+          <div class="update-cart-container">
+            <p class="update-cart-reminder">⚠️ Remember to update your cart to apply latest discounts!</p>
+            <button type="submit" class="update-cart-btn">Refresh Cart Prices</button>
+          </div>
+        </form>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button>&lt;</button><button class="active">1</button><button>2</button><button>...</button><button>&gt;</button>
+        </div>
+
+        <!-- Promo -->
+        <div class="promo-section">
+          🎁 Promo Code: <input type="text" id="promo-code" placeholder="Enter code"> <button class="btn">Apply</button>
+        </div>
+
+        <!-- Price Summary -->
+        <div class="price-summary">
+          💰 <b>Total Before Discount:</b> <fmt:formatNumber value="${beforePrice}" type="number" groupingUsed="true"/> VND<br>
+          <c:if test="${discountRate>0}">🎯 <b>Discount:</b> <fmt:formatNumber value="${discountAmount}" type="number" groupingUsed="true"/> VND (<fmt:formatNumber value="${discountRate}" type="number"/>%)<br></c:if>
+          🏷️ <b>Final Total:</b> <fmt:formatNumber value="${finalPrice}" type="number" groupingUsed="true"/> VND
+        </div>
+
+        <!-- More Products -->
+        <button class="btn" onclick="location.href='homecontroller'">➕ Choose More Products</button>
+      </div>
+
+      <div class="discount-info">
+        <h3>DISCOUNTS FOR PURCHASES</h3>
+        <ul>
+          <li class="green">🟢 From 10M VND → 5% <c:if test="${beforePrice>=10000000 && beforePrice<50000000}">✅</c:if><c:if test="${beforePrice<10000000}">(Add <fmt:formatNumber value="${10000000-beforePrice}" type="number" groupingUsed="true"/> more)</c:if></li>
+          <li class="blue">🔵 From 50M VND → 7% <c:if test="${beforePrice>=50000000 && beforePrice<100000000}">✅</c:if><c:if test="${beforePrice<50000000}">(Add <fmt:formatNumber value="${50000000-beforePrice}" type="number" groupingUsed="true"/> more)</c:if></li>
+          <li class="red">🔴 From 100M VND → 10% <c:if test="${beforePrice>=100000000}">✅</c:if><c:if test="${beforePrice<100000000}">(Add <fmt:formatNumber value="${100000000-beforePrice}" type="number" groupingUsed="true"/> more)</c:if></li>
+        </ul>
+      </div>
+
+      <!-- Checkout Button -->
+      <form id="checkoutForm" action="cartcontactcontroller" method="get" onsubmit="return prepareCheckout()">
+        <input type="hidden" name="beforePrice" value="${beforePrice}">
+        <input type="hidden" name="discountRate" value="${discountRate}">
+        <input type="hidden" name="discountAmount" value="${discountAmount}">
+        <input type="hidden" name="finalPrice" value="${finalPrice}">
+        <button type="submit" class="checkout-btn">✅ Proceed to Checkout</button>
+      </form>
+    </div>
+  </div>
+
+  <jsp:include page="../CommonPage/Footer.jsp"/>
+
+  <script>
+    function toggleCheckboxes(src){ document.getElementsByName('selectedProducts').forEach(cb=>cb.checked=src.checked); }
+    function prepareCheckout(){ const sel=document.querySelectorAll('input[name="selectedProducts"]:checked'); if(sel.length===0){alert('Select at least one product');return false;} sel.forEach(cb=>{const i=document.createElement('input');i.type='hidden';i.name='selectedProducts';i.value=cb.value;document.getElementById('checkoutForm').append(i);});return true; }
+  </script>
+</body>
 </html>
-<script>
-    function toggleCheckboxes(source) {
-        let checkboxes = document.getElementsByName("selectedProducts");
-        for (let i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked = source.checked;
-        }
-    }
-    
-    // Function to prepare the checkout form before submission
-    function prepareCheckout() {
-        // Get all selected product checkboxes
-        const checkboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
-        
-        if (checkboxes.length === 0) {
-            alert('Please select at least one product before checkout');
-            return false;
-        }
-        
-        // Get the checkout form
-        const form = document.getElementById('checkoutForm');
-        
-        // Remove any existing selectedProducts inputs to avoid duplicates
-        const existingInputs = form.querySelectorAll('input[name="selectedProducts"]');
-        existingInputs.forEach(input => input.remove());
-        
-        // Create hidden inputs for each selected product
-        checkboxes.forEach(checkbox => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'selectedProducts';
-            input.value = checkbox.value;
-            form.appendChild(input);
-        });
-        
-        console.log('Form submitting to:', form.action);
-        console.log('Selected products:', Array.from(checkboxes).map(cb => cb.value));
-        
-        return true;
-    }
-</script>
