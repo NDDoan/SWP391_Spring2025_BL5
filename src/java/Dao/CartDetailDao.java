@@ -41,9 +41,9 @@ public class CartDetailDao {
                 // Now get the cart items
                 String sql = "SELECT ci.cart_item_id, ci.cart_id, ci.product_id, ci.quantity, " +
                              "p.product_name, p.price, p.discount_price, " +
-                             "pi.image_url FROM Cart_Items ci " +
+                             "pi.media_url FROM Cart_Items ci " +
                              "JOIN Products p ON ci.product_id = p.product_id " +
-                             "LEFT JOIN ProductImages pi ON p.product_id = pi.product_id AND pi.is_primary = 1 " +
+                             "LEFT JOIN ProductMedia pi ON p.product_id = pi.product_id AND pi.is_primary = 1 " +
                              "WHERE ci.cart_id = ?";
                 
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {

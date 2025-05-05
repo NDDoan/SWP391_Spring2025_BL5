@@ -127,6 +127,7 @@
         </style>
     </head>
     <body>
+        <jsp:include page="../CommonPage/Header.jsp"/>
         <div class="container">
             <h2>My Orders</h2>
 

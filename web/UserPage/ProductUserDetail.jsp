@@ -149,7 +149,7 @@
                     </div>
 
                     <!-- Form Thêm vào giỏ -->
-                    <form id="addCartForm" action="${pageContext.request.contextPath}/cartdetailcontroller" method="POST" class="d-flex align-items-center mb-5 gap-3">
+                    <form id="addCartForm" action="${pageContext.request.contextPath}/AddToCartController" method="POST" class="d-flex align-items-center mb-5 gap-3">
                         <input type="hidden" name="productId" value="${p.productId}"/>
                         <div class="d-flex flex-column">
                             <input type="number" name="quantity" id="qtyInput" class="form-control" value="1" min="1" style="width:100px;"/>
