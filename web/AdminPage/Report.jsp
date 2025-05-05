@@ -269,7 +269,6 @@
                                             plugins: {
                                             tooltip: {
                                             callbacks: {
-                                            label: c => `${c.label}: ${c.parsed}% (${stocks[c.dataIndex]} đơn vị)`
                                             }
                                             }
                                             }
