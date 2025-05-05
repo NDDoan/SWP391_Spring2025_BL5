@@ -153,10 +153,10 @@
                 </c:if>
 
                 <label for="orderId">Order ID:</label>
-                <input type="text" name="orderId" id="orderId" value="${shipping != null ? shipping.orderId : ''}" required />
+                <input type="text" name="orderId" id="orderId" value="${shipping != null ? shipping.orderId : ''}"  ${shipping != null ? 'readonly' : ''}  required />
 
                 <label for="shippingAddress">Địa chỉ giao hàng:</label>
-                <input type="text" name="shippingAddress" id="shippingAddress" value="${shipping != null ? shipping.shippingAddress : ''}" required />
+                <input type="text" name="shippingAddress" id="shippingAddress" value="${shipping != null ? shipping.shippingAddress : ''}"   ${shipping != null ? 'readonly' : ''} required />
 
                 <label for="shippingStatus">Trạng thái giao hàng:</label>
                 <select name="shippingStatus" id="shippingStatus" required>
@@ -169,7 +169,7 @@
                 </select>
 
                 <label for="trackingNumber">Tracking Number:</label>
-                <input type="text" name="trackingNumber" id="trackingNumber" value="${shipping != null ? shipping.trackingNumber : ''}" />
+                <input type="text" name="trackingNumber" id="trackingNumber" value="${shipping != null ? shipping.trackingNumber : ''}"  ${shipping != null ? 'readonly' : ''}  />
 
                 <label for="shippingDate">Ngày giao hàng:</label>
                 <input type="date" name="shippingDate" id="shippingDate" value="${shipping != null ? shipping.shippingDate : ''}" required />

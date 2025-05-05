@@ -47,7 +47,7 @@ public class ShippingController extends HttpServlet {
         }
 
         try {
-            if (user.getRole_id() == 1) {
+            if (user.getRole_id() == 5) {
                 // ADMIN - quản lý đơn hàng
                 String action = request.getParameter("action");
                 if (action == null) {

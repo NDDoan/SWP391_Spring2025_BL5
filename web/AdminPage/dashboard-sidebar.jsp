@@ -67,21 +67,13 @@
                                 <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
                             </a>
                         </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/OrderList">
-                                <i class="bi bi-cart-check me-2"></i> Quản lý đơn hàng
-                            </a>
-                        </li>
+                        
                         <li class="nav-item mb-2">
                             <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/UserController">
                                 <i class="bi bi-people me-2"></i> Quản lý người dùng
                             </a>
                         </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ShippingController">
-                                <i class="bi bi-truck me-2"></i> Quản lý giao hàng
-                            </a>
-                        </li>
+                       
                         <li class="nav-item mb-2">
                             <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ProductForManagerListController">
                                 <i class="bi bi-box-seam me-2"></i> Quản lý sản phẩm
@@ -103,7 +95,29 @@
                             </a>
                         </li>
                     </c:if>
-
+                    <c:if test="${sessionScope.user.role_id == 5}">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="${pageContext.request.contextPath}/AdminPage/AdminDashBoard.jsp">
+                                <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/OrderList">
+                                <i class="bi bi-cart-check me-2"></i> Quản lý đơn hàng
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/UserController">
+                                <i class="bi bi-people me-2"></i> Quản lý người dùng
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/Swp391_Spring2025_BL5/ShippingController">
+                                <i class="bi bi-truck me-2"></i> Quản lý giao hàng
+                            </a>
+                        </li>
+                      
+                    </c:if>
                     <!-- Nếu là Shipper -->
                     <c:if test="${sessionScope.user.role_id == 4}">
                         <li class="nav-item mb-2">
