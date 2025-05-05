@@ -212,123 +212,128 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // 1) Build array variants từ JSP
-        const variants = [
+    // 1) Build array variants từ JSP
+    const variants = [
     <c:forEach var="v" items="${p.variants}" varStatus="st">
-        {
-        cpu:    "${v.cpu}",
-                ram:    "${v.ram}",
-                screen: "${v.screen}",
-                storage:"${v.storage}",
-                color:  "${v.color}",
-                price:  ${v.price},
-                stock:  ${v.stockQuantity}
-        }<c:if test="${!st.last}">,</c:if>
+    {
+    cpu:    "${v.cpu}",
+            ram:    "${v.ram}",
+            screen: "${v.screen}",
+            storage:"${v.storage}",
+            color:  "${v.color}",
+            price:  ${v.price},
+            stock:  ${v.stockQuantity}
+    }<c:if test="${!st.last}">,</c:if>
     </c:forEach>
-        ];
-
-        // 2) Các thuộc tính và container
-        const attrs = ['cpu', 'ram', 'screen', 'storage', 'color'];
-        const containers = {
+    ];
+            // 2) Các thuộc tính và container
+            const attrs = ['cpu', 'ram', 'screen', 'storage', 'color'];
+            const containers = {
             cpu: document.getElementById('cpuGroup'),
-            ram: document.getElementById('ramGroup'),
-            screen: document.getElementById('screenGroup'),
-            storage: document.getElementById('storageGroup'),
-            color: document.getElementById('colorGroup')
-        };
+                    ram: document.getElementById('ramGroup'),
+                    screen: document.getElementById('screenGroup'),
+                    storage: document.getElementById('storageGroup'),
+                    color: document.getElementById('colorGroup')
+            };
+            // 3) Chỉ lưu lựa chọn do user click
+            const userSelected = {};
+            // 4) DOM refs
+            const priceEl = document.getElementById('priceDisplay'),
+            stockEl = document.getElementById('stockDisplay'),
+            form = document.getElementById('addCartForm'),
+            qtyIn = document.getElementById('qtyInput'),
+            errDiv = document.getElementById('qtyError');
+            // 5) Lấy các giá trị hợp lệ dựa trên lựa chọn của user
+                    function allowed(attr) {
+                    return [...new Set(
+                            variants
+                            .filter(v =>
+                                    attrs.every(a =>
+                                            a === attr
+                                            || !userSelected[a]
+                                            || v[a] === userSelected[a]
+                                            )
+                                    )
+                            .map(v => v[attr])
+                            )];
+                    }
 
-        // 3) State lưu lựa chọn
-        const state = {};
+            // 6) Build nút cho mỗi thuộc tính, có sort trước khi render
+            function build(attr) {
+            let vals = allowed(attr);
+                    // sort natural từ nhỏ đến lớn
+                    vals.sort((a, b) => {
+                    const na = parseFloat(a.replace(/[^\d.]/g, ''));
+                            const nb = parseFloat(b.replace(/[^\d.]/g, ''));
+                            if (!isNaN(na) && !isNaN(nb)) {
+                    return na - nb;
+                    }
+                    return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+                    });
+                    const div = containers[attr];
+                    div.innerHTML = '';
+                    vals.forEach(v => {
+                    const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = 'btn btn-outline-primary';
+                            btn.textContent = v;
+                            btn.addEventListener('click', () => {
+                            userSelected[attr] = v;
+                                    updateAll();
+                            });
+                            div.appendChild(btn);
+                    });
+            }
 
-        // 4) DOM refs
-        const priceEl = document.getElementById('priceDisplay'),
-                stockEl = document.getElementById('stockDisplay'),
-                form = document.getElementById('addCartForm'),
-                qtyIn = document.getElementById('qtyInput'),
-                errDiv = document.getElementById('qtyError');
-
-        // 5) Helper: lấy giá trị hợp lệ cho 1 thuộc tính
-        function allowed(attr) {
-            return [...new Set(
-                        variants
-                        .filter(v => attrs.every(a => a === attr || !state[a] || v[a] === state[a]))
-                        .map(v => v[attr])
-                        )];
-        }
-
-        // 6) Build nút cho mỗi thuộc tính
-        function build(attr) {
-            const vals = allowed(attr),
-                    div = containers[attr];
-            div.innerHTML = '';
-            vals.forEach(v => {
-                const b = document.createElement('button');
-                b.type = 'button';
-                b.className = 'btn btn-outline-primary';
-                b.textContent = v;
-                b.addEventListener('click', () => {
-                    state[attr] = v;
-                    updateAll();
-                });
-                div.appendChild(b);
-            });
-            // Đặt mặc định nếu lựa chọn không còn hợp lệ
-            if (!state[attr] || !vals.includes(state[attr]))
-                state[attr] = vals[0];
-        }
-
-        // 7) Cập nhật UI & giá/tồn kho
-        function updateAll() {
-            // rebuild tất cả
+            // 7) Cập nhật UI & giá/tồn kho
+            function updateAll() {
+            // rebuild từng nhóm nút
             attrs.forEach(a => build(a));
-            // highlight nút đang chọn
+                    // highlight nút active
+                    attrs.forEach(a => {
+                    Array.from(containers[a].children)
+                            .forEach(b => b.classList.toggle('active', b.textContent === userSelected[a]));
+                    });
+                    // nếu đã chọn đủ, cập nhật price & stock
+                    if (attrs.every(a => userSelected[a])) {
+            const found = variants.find(v =>
+                    attrs.every(a => v[a] === userSelected[a])
+                    );
+                    if (found) {
+            priceEl.textContent = Number(found.price).toLocaleString();
+                    stockEl.textContent = found.stock;
+            }
+            }
+            }
+
+            // 8) Khởi tạo: thiết lập mặc định lần đầu (không lưu thành userSelected)
             attrs.forEach(a => {
-                Array.from(containers[a].children)
-                        .forEach(b => b.classList.toggle('active', b.textContent === state[a]));
+            const defaultVal = allowed(a)[0];
+                    userSelected[a] = defaultVal;
             });
-            // nếu có variants
-            if (variants.length > 0 && attrs.every(a => state[a])) {
-                const f = variants.find(v => attrs.every(a => v[a] === state[a]));
-                if (f) {
-                    priceEl.textContent = Number(f.price).toLocaleString();
-                    stockEl.textContent = f.stock;
-                }
-            }
-        }
-
-        // 8) Khởi tạo
-        if (variants.length > 1) {
-            attrs.forEach(a => build(a));
-            updateAll();
-        } else {
-            // chỉ 1 phiên bản → show ngay
-            priceEl.textContent = Number(variants[0].price).toLocaleString();
-            stockEl.textContent = variants[0].stock;
-        }
-
-        // Thumbnail highlight
-        document.querySelectorAll('.thumbnail-item')
-                .forEach(el => el.addEventListener('click', () => {
-                        document.querySelectorAll('.thumbnail-item')
-                                .forEach(x => x.classList.remove('border-primary'));
-                        el.classList.add('border-primary');
+                    updateAll();
+                    // 9) Thumbnail highlight (giữ nguyên)
+                    document.querySelectorAll('.thumbnail-item')
+                    .forEach(el => el.addEventListener('click', () => {
+                    document.querySelectorAll('.thumbnail-item')
+                            .forEach(x => x.classList.remove('border-primary'));
+                            el.classList.add('border-primary');
                     }));
-        document.querySelector('.thumbnail-item[data-bs-slide-to="0"]')
-                .classList.add('border-primary');
-
-        // 9) Validate before submit
-        form.addEventListener('submit', e => {
-            const req = parseInt(qtyIn.value, 10),
-                    ava = parseInt(stockEl.textContent, 10) || 0;
-            if (req > ava) {
-                e.preventDefault();
-                errDiv.style.display = 'block';
-                qtyIn.classList.add('is-invalid');
-            }
-        });
-        qtyIn.addEventListener('input', () => {
-            errDiv.style.display = 'none';
-            qtyIn.classList.remove('is-invalid');
-        });
-    });
+                    document.querySelector('.thumbnail-item[data-bs-slide-to="0"]')
+                    .classList.add('border-primary');
+                    // 10) Validate before submit (giữ nguyên)
+                    form.addEventListener('submit', e => {
+                    const req = parseInt(qtyIn.value, 10),
+                            ava = parseInt(stockEl.textContent, 10) || 0;
+                            if (req > ava) {
+                    e.preventDefault();
+                            errDiv.style.display = 'block';
+                            qtyIn.classList.add('is-invalid');
+                    }
+                    });
+                    qtyIn.addEventListener('input', () => {
+                    errDiv.style.display = 'none';
+                            qtyIn.classList.remove('is-invalid');
+                    });
+            });
 </script>

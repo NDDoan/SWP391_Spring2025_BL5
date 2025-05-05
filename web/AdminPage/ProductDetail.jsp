@@ -219,7 +219,7 @@
                 <!-- VARIANT SECTION -->
                 <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>Variants</span>
+                        <span>Các phiên bản</span>
                         <!-- Chỉ hiện nút Add Variant khi đang ở edit hoặc add mode -->
                         <c:if test="${mode == 'edit'}">
                             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#variantModal">Thêm Phiên bản</button>
@@ -274,7 +274,7 @@
 
                 <!-- MEDIA SECTION -->
                 <div class="card mb-4">
-                    <div class="card-header">Media</div>
+                    <div class="card-header">Ảnh/Video</div>
                     <div class="card-body">
                         <div class="row g-3">
                             <!-- Loop through each media item -->
@@ -333,7 +333,7 @@
                         <!-- Only show upload form in edit/add mode -->
                         <c:if test="${mode == 'edit'}">
                             <div class="add-media-section mt-4">
-                                <h5>Add Media</h5>
+                                <h5>Thêm Ảnh/Video</h5>
                                 <form action="${pageContext.request.contextPath}/MediaUploadController" method="post" enctype="multipart/form-data" class="row g-3">
                                     <input type="hidden" name="productId" value="${product.productId}">
                                     <div class="col-md-2">
