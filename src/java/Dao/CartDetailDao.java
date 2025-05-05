@@ -1,7 +1,7 @@
 package Dao;
 
 import DBContext.DBContext;
-import EntityDto.CartDetailDto;
+import Entity.CartItem;
 import EntityDto.CartDetailDto;
 import java.sql.*;
 import java.util.ArrayList;
@@ -214,32 +214,32 @@ public class CartDetailDao {
         // Khởi tạo DAO
         CartDetailDao cartDetailDao = new CartDetailDao();
 
-//        // Chọn userId cần test
-//        int testUserId = 3;
-//
-//        // Gọi phương thức getCartDetails
-//        List<CartDetailDto> cartDetails = cartDetailDao.getCartDetails(testUserId);
-//
-//        // Kiểm tra kết quả
-//        if (cartDetails.isEmpty()) {
-//            System.out.println("Giỏ hàng của userId " + testUserId + " đang trống hoặc không tồn tại.");
-//        } else {
-//            System.out.println("Chi tiết giỏ hàng của userId " + testUserId + ":");
-//            for (CartDetailDto item : cartDetails) {
-//                System.out.println("Cart Item ID: " + item.getCartItemId());
-//                System.out.println("Cart ID: " + item.getCartId());
-//                System.out.println("Product ID: " + item.getProductId());
-//                System.out.println("Product Name: " + item.getProductName());
-//                System.out.println("Image URL: " + item.getImageUrl());
-//                System.out.println("Quantity: " + item.getQuantity());
-//                System.out.println("Price: " + item.getPrice() + " VND");
-//                System.out.println("Discount Price: " + item.getDiscountPrice() + " VND");
-//                System.out.println("Total Price: " + item.getTotalPrice() + " VND");
-//                System.out.println("-----------------------------");
-//            }
-//        }
-// Kiểm tra thêm sản phẩm vào giỏ hàng
-        int userId = 3; // Giả sử user có ID = 1
+        // Chọn userId cần test
+        int testUserId = 2;
+
+        // Gọi phương thức getCartDetails
+        List<CartDetailDto> cartDetails = cartDetailDao.getCartDetails(testUserId);
+
+        // Kiểm tra kết quả
+        if (cartDetails.isEmpty()) {
+            System.out.println("Giỏ hàng của userId " + testUserId + " đang trống hoặc không tồn tại.");
+        } else {
+            System.out.println("Chi tiết giỏ hàng của userId " + testUserId + ":");
+            for (CartDetailDto item : cartDetails) {
+                System.out.println("Cart Item ID: " + item.getCartItemId());
+                System.out.println("Cart ID: " + item.getCartId());
+                System.out.println("Product ID: " + item.getProductId());
+                System.out.println("Product Name: " + item.getProductName());
+                System.out.println("Image URL: " + item.getImageUrl());
+                System.out.println("Quantity: " + item.getQuantity());
+                System.out.println("Price: " + item.getPrice() + " VND");
+                System.out.println("Discount Price: " + item.getDiscountPrice() + " VND");
+                System.out.println("Total Price: " + item.getTotalPrice() + " VND");
+                System.out.println("-----------------------------");
+            }
+        }
+
+        int userId = 2; // Giả sử user có ID = 1
         int productId = 2; // Giả sử sản phẩm có ID = 2
 
         boolean result = cartDetailDao.addToCart(userId, productId);

@@ -120,7 +120,7 @@
                                         ₫
                                     </strong>
                                 </p>
-                                <a href="${pageContext.request.contextPath}/AddToCartController?productId=${p.productId}&quantity=1"
+                                <a href="${pageContext.request.contextPath}/cartdetailcontroller?productId=${p.productId}&quantity=1"
                                    class="btn btn-sm btn-success">
                                     <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
                                 </a>
@@ -157,7 +157,7 @@
                                                                   minFractionDigits="0"
                                                                   maxFractionDigits="0"/>₫
                                             </p>
-                                            <a href="${pageContext.request.contextPath}/CartDetailController?productId=${p.productId}&quantity=1" 
+                                            <a href="${pageContext.request.contextPath}/cartdetailcontroller?productId=${p.productId}&quantity=1" 
                                                class="btn btn-success btn-sm me-2">
                                                 <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
                                             </a>

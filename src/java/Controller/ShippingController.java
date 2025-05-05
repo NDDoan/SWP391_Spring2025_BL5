@@ -27,8 +27,8 @@ public class ShippingController extends HttpServlet {
     @Override
     public void init() {
         try {
-            Connection conn = new DBContext().getConnection();
-            shippingDAO = new ShippingDAO(conn);
+            
+            shippingDAO = new ShippingDAO();
             userDao = new UserDao();
         } catch (Exception e) {
             throw new RuntimeException("Cannot connect to database", e);

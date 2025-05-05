@@ -12,6 +12,13 @@ public class ShippingDAO {
     public ShippingDAO(Connection conn) {
         this.conn = conn;
     }
+     public ShippingDAO() {
+        try {
+            this.conn = new DBContext().getConnection();
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting DB connection", e);
+        }
+    }
 
     public List<Shipping> getAllShipping() throws SQLException {
         List<Shipping> list = new ArrayList<>();
