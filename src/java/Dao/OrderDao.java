@@ -52,7 +52,7 @@ public class OrderDao {
 
         return new ArrayList<>(orderMap.values());
     }
-
+    
     //lấy order theo order id
     public OrderDto getOrderById(int orderId) {
         OrderDto order = null;
@@ -326,12 +326,11 @@ public class OrderDao {
                 + "FROM Orders o "
                 + "JOIN Order_Items oi ON o.order_id = oi.order_id "
                 + "JOIN Products p ON oi.product_id = p.product_id "
-                + "ORDER BY o.order_id "
-                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                + "ORDER BY o.order_id ";
+              
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, offset);
-            stmt.setInt(2, limit);
+           
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int orderId = rs.getInt("order_id");

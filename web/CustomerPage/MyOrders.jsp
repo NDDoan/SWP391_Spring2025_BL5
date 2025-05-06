@@ -1,5 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -179,12 +182,10 @@
                                 <td>${order.orderId}</td>
                                 <td>${order.orderDate}</td>
                                 <td>${order.productNames}</td>
-                                <td>${order.totalCost}</td>
+                                <td><fmt:formatNumber value="${order.totalCost}" type="currency" currencySymbol="₫" groupingUsed="true" maxFractionDigits="0"/></td>
                                 <td>${order.status}</td>
                                 <td>
-                                    <a href="OrderDetailsServlet?orderId=${order.orderId}">
-                                        <button class="detail-btn">View Details</button>
-                                    </a>
+
                                     <c:if test="${order.status eq 'Completed'}">
                                         <a href="CustomerSendFeedback?orderId=${order.orderId}">
                                             <button class="detail-btn" style="background-color: #4CAF50;">Feedback</button>
@@ -197,14 +198,7 @@
                 </c:choose>
             </table>
 
-            <!-- Pagination -->
-            <div class="pagination">
-                <button>&lt;</button>
-                <button>1</button>
-                <button>2</button>
-                <button>...</button>
-                <button>&gt;</button>
-            </div>
+           
 
             <!-- Customize Button -->
             <button id="customizeTableBtn">Customize Table</button>

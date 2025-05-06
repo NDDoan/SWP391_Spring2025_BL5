@@ -23,7 +23,7 @@ public class UserController extends HttpServlet {
         HttpSession session = request.getSession();
         User users = (User) session.getAttribute("user");
 
-        if (users == null || users.getRole_id() != 1 && users.getRole_id()!=5) {
+        if (users == null || users.getRole_id() != 1 && users.getRole_id() != 5) {
             response.sendRedirect("logincontroller");
             return;
         }
@@ -99,14 +99,17 @@ public class UserController extends HttpServlet {
         int offset = (page - 1) * limit;
         List<User> userList = null;
         String Useroke = null;
+        int totalUsers = 0;
         if (users.getRole_id() == 1) {
-            userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit, sortBy, sortOrder,genderFilter);
+            userList = dao.getFilteredUsers(keyword, roleFilter, offset, limit, sortBy, sortOrder, genderFilter);
+            totalUsers = dao.countFilteredUsers(keyword, roleFilter);
             Useroke = "manager";
         } else if (users.getRole_id() == 5) {
-            userList = dao.getFilteredCustomer(keyword, roleFilter, offset, limit, sortBy, sortOrder,genderFilter);
+            userList = dao.getFilteredCustomer(keyword, roleFilter, offset, limit, sortBy, sortOrder, genderFilter);
+            totalUsers = dao.countFilteredCustomer(keyword, roleFilter);
             Useroke = "staff";
         }
-        int totalUsers = dao.countFilteredUsers(keyword, roleFilter);
+       // int totalUsers = dao.countFilteredCustomer(keyword, roleFilter);
         int totalPages = (int) Math.ceil((double) totalUsers / limit);
 
         request.setAttribute("Useroke", Useroke);
