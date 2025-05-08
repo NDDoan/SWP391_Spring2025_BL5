@@ -24,52 +24,63 @@ import jakarta.servlet.http.Part;
 
 @WebServlet(name = "CustomerSendFeedbackController", urlPatterns = {"/CustomerSendFeedback"})
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 1024, // 1MB
-        maxFileSize = 1024 * 1024 * 15, // 15MB (increased to accommodate videos)
-        maxRequestSize = 1024 * 1024 * 50 // 50MB
+        fileSizeThreshold = 1024 * 1024, // ngưỡng kích thước file 1MB
+        maxFileSize = 1024 * 1024 * 15, // giới hạn file tải lên 15MB
+        maxRequestSize = 1024 * 1024 * 50 // tổng kích thước request 50MB
 )
 public class CustomerSendFeedbackController extends HttpServlet {
 
+    /**
+     * Xử lý chung cho cả GET và POST (nếu cần mở rộng)
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        // Implement common processing if needed
+        // TODO: thêm xử lý chung (nếu có)
     }
 
+    /**
+     * Xử lý HTTP GET: hiển thị form gửi feedback
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // Get order ID from request
+            // Lấy orderId từ tham số URL
             String orderIdStr = request.getParameter("orderId");
             if (orderIdStr == null || orderIdStr.isEmpty()) {
+                // Nếu không có orderId, chuyển về trang danh sách đơn
                 response.sendRedirect("myordercontroller");
                 return;
             }
 
             int orderId = Integer.parseInt(orderIdStr);
 
-            // Get session and user ID
+            // Kiểm tra session và user đã đăng nhập
             HttpSession session = request.getSession();
             Integer userId = (Integer) session.getAttribute("userId");
             if (userId == null) {
-                response.sendRedirect("login");
+                // Chưa đăng nhập, chuyển đến trang login
+                response.sendRedirect("logincontroller");
                 return;
             }
 
-            // Get the order and check if it belongs to the current user and is completed
+            // Lấy đơn hàng từ DB
             OrderDao orderDao = new OrderDao();
             Orders order = orderDao.getOrderByIdd(orderId);
 
-            if (order == null || order.getUserId() != userId || !order.getOrderStatus().equals("Completed")) {
+            // Kiểm tra đơn hàng hợp lệ: tồn tại, thuộc người dùng, đã hoàn thành
+            if (order == null || order.getUserId() != userId
+                    || !"Completed".equals(order.getOrderStatus())) {
+                // Không hợp lệ -> quay về trang danh sách
                 response.sendRedirect("myordercontroller");
                 return;
             }
 
-            // Get order items
+            // Lấy chi tiết các sản phẩm trong đơn
             List<OrderItems> orderItems = orderDao.getOrderItems(orderId);
 
-            // Convert to ProductFeedbackDto for display
+            // Chuẩn bị DTO để hiển thị feedback
             ProductDao productDao = new ProductDao();
             ReviewDao reviewDao = new ReviewDao();
             List<ProductFeedbackDto> products = new ArrayList<>();
@@ -77,23 +88,19 @@ public class CustomerSendFeedbackController extends HttpServlet {
             for (OrderItems item : orderItems) {
                 ProductFeedbackDto dto = new ProductFeedbackDto();
                 dto.setId(item.getProductId());
+                // TODO: set thêm tên, ảnh, giá, số lượng nếu cần
 
-//                // Get product details
-//                dto.setName(productDao.getProductNameById(item.getProductId()));
-//                dto.setPrice(item.getPrice());
-//                dto.setQuantity(item.getQuantity());
-//                
-//                // Get product image
-//                dto.setImageUrl(productDao.getProductMainImageById(item.getProductId()));
-                // Check if user has already reviewed this product in this order
-                int existingReviewId = reviewDao.getUserReviewForProductInOrder(userId, item.getProductId(), orderId);
+                // Kiểm tra user đã review sản phẩm này trong đơn chưa
+                int existingReviewId = reviewDao.getUserReviewForProductInOrder(
+                        userId, item.getProductId(), orderId);
                 if (existingReviewId > 0) {
-                    // Get existing review to pre-fill the form
+                    // Nếu đã có review, lấy review để pre-fill form
+                    //Nếu đã có, thì giao diện hiển thị ở chế độ xem-only, không cho gửi thêm nữa.
                     Review existingReview = reviewDao.getReviewById(existingReviewId);
                     if (existingReview != null) {
                         request.setAttribute("existingReview_" + item.getProductId(), existingReview);
 
-                        // Get review images
+                        // Lấy ảnh review nếu có
                         List<FeedbackImage> images = reviewDao.getImagesByReviewId(existingReviewId);
                         request.setAttribute("reviewImages_" + item.getProductId(), images);
                     }
@@ -102,43 +109,46 @@ public class CustomerSendFeedbackController extends HttpServlet {
                 products.add(dto);
             }
 
-            // Set attributes for the JSP
+            // Đẩy dữ liệu sang JSP để hiển thị form feedback
             request.setAttribute("orderId", orderId);
             request.setAttribute("products", products);
-
-            // Forward to the feedback JSP
-            request.getRequestDispatcher("CustomerPage/CustomerSendFeedback.jsp").forward(request, response);
+            request.getRequestDispatcher("CustomerPage/CustomerSendFeedback.jsp")
+                    .forward(request, response);
 
         } catch (Exception e) {
+            // In lỗi và chuyển về trang danh sách đơn
             e.printStackTrace();
             response.sendRedirect("myordercontroller");
         }
     }
 
+    /**
+     * Xử lý HTTP POST: thêm/cập nhật/xóa feedback
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // Get parameters from form
+            // Lấy các tham số từ form
             String orderIdStr = request.getParameter("orderId");
             String productIdStr = request.getParameter("productId");
             String ratingStr = request.getParameter("rating");
             String comment = request.getParameter("comment");
-            String action = request.getParameter("action"); // 'add', 'update', or 'delete'
-            String reviewIdStr = request.getParameter("reviewId"); // For updates/deletes
+            String action = request.getParameter("action"); // 'add', 'update', hoặc 'delete'
+            String reviewIdStr = request.getParameter("reviewId"); // Dùng cho cập nhật/xóa
 
-            // Validate required fields
+            // Kiểm tra các trường bắt buộc
             if (orderIdStr == null || productIdStr == null) {
                 request.setAttribute("errorMessage", "Tham số yêu cầu không hợp lệ");
                 doGet(request, response);
                 return;
             }
 
-            // Parse values
+            // Chuyển chuỗi sang số
             int orderId = Integer.parseInt(orderIdStr);
             int productId = Integer.parseInt(productIdStr);
 
-            // Get user ID from session
+            // Lấy userId từ session
             HttpSession session = request.getSession();
             Integer userId = (Integer) session.getAttribute("userId");
             if (userId == null) {
@@ -149,22 +159,22 @@ public class CustomerSendFeedbackController extends HttpServlet {
             ReviewDao reviewDao = new ReviewDao();
             ProductDao productDao = new ProductDao();
 
-            // Handle delete action
+            // Xử lý hành động xóa
             if ("delete".equals(action) && reviewIdStr != null) {
                 int reviewId = Integer.parseInt(reviewIdStr);
 
-                // Verify ownership before deletion
+                // Kiểm tra quyền sở hữu trước khi xóa
                 Review review = reviewDao.getReviewById(reviewId);
                 if (review != null && review.getUserId() == userId) {
-                    // Delete images first
+                    // Xóa hình ảnh trước
                     reviewDao.deleteReviewImages(reviewId);
 
-                    // Then delete the review
+                    // Rồi xóa phản hồi
                     if (reviewDao.deleteReview(reviewId)) {
                         request.setAttribute("successMessage", "Phản hồi của bạn đã được xóa thành công.");
 
-                        // Update product average rating
-//                        productDao.updateProductAverageRating(productId);
+                        // Cập nhật đánh giá trung bình của sản phẩm
+//                  productDao.updateProductAverageRating(productId);
                     } else {
                         request.setAttribute("errorMessage", "Không xóa được phản hồi. Vui lòng thử lại.");
                     }
@@ -176,7 +186,7 @@ public class CustomerSendFeedbackController extends HttpServlet {
                 return;
             }
 
-            // For add/update actions, validate rating and comment
+            // Với hành động thêm hoặc cập nhật, kiểm tra rating và comment
             if (ratingStr == null || comment == null) {
                 request.setAttribute("errorMessage", "Đánh giá và bình luận là bắt buộc");
                 doGet(request, response);
@@ -185,33 +195,33 @@ public class CustomerSendFeedbackController extends HttpServlet {
 
             int rating = Integer.parseInt(ratingStr);
 
-            // Handle update action
+            // Xử lý hành động cập nhật
             if ("update".equals(action) && reviewIdStr != null) {
                 int reviewId = Integer.parseInt(reviewIdStr);
 
-                // Verify ownership before update
+                // Kiểm tra quyền sở hữu trước khi cập nhật
                 Review existingReview = reviewDao.getReviewById(reviewId);
                 if (existingReview != null && existingReview.getUserId() == userId) {
-                    // Update the review
+                    // Cập nhật nội dung phản hồi
                     existingReview.setRating(rating);
                     existingReview.setComment(comment);
                     existingReview.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-                    existingReview.setStatus(false); // Reset status for re-approval
+                    existingReview.setStatus(false); // Reset trạng thái chờ duyệt lại
 
                     if (reviewDao.updateReview(existingReview)) {
-                        // Handle image updates if needed
+                        // Xử lý cập nhật hình ảnh nếu cần
                         boolean deleteImages = "true".equals(request.getParameter("deleteImages"));
                         if (deleteImages) {
                             reviewDao.deleteReviewImages(reviewId);
                         }
 
-                        // Upload new images
+                        // Tải lên hình ảnh mới
                         handleImageUploads(request, reviewId, reviewDao);
 
                         request.setAttribute("successMessage", "Phản hồi của bạn đã được cập nhật và đang chờ phê duyệt.");
 
-                        // Update product average rating
-//                        productDao.updateProductAverageRating(productId);
+                        // Cập nhật đánh giá trung bình của sản phẩm
+//                  productDao.updateProductAverageRating(productId);
                     } else {
                         request.setAttribute("errorMessage", "Không cập nhật được phản hồi. Vui lòng thử lại.");
                     }
@@ -223,31 +233,31 @@ public class CustomerSendFeedbackController extends HttpServlet {
                 return;
             }
 
-            // Handle add new review
+            // Xử lý thêm mới phản hồi
             Review review = new Review();
             review.setProductId(productId);
             review.setUserId(userId);
             review.setRating(rating);
             review.setComment(comment);
             review.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            review.setStatus(false); // Set to false initially, admin will approve later
+            review.setStatus(false); // Ban đầu để false, admin sẽ duyệt sau
 
-            // Save review to database
+            // Lưu phản hồi vào cơ sở dữ liệu
             int reviewId = reviewDao.addReview(review);
 
             if (reviewId > 0) {
-                // Handle image uploads
+                // Xử lý tải hình ảnh
                 handleImageUploads(request, reviewId, reviewDao);
 
                 request.setAttribute("successMessage", "Phản hồi của bạn đã được gửi và đang chờ phê duyệt. Cảm ơn bạn!");
 
-                // Update product average rating
-//                productDao.updateProductAverageRating(productId);
+                // Cập nhật đánh giá trung bình của sản phẩm
+//          productDao.updateProductAverageRating(productId);
             } else {
                 request.setAttribute("errorMessage", "Không thể gửi phản hồi. Vui lòng thử lại.");
             }
 
-            // Redirect back to the feedback page
+            // Quay lại trang hiển thị phản hồi
             doGet(request, response);
 
         } catch (Exception e) {
@@ -258,17 +268,17 @@ public class CustomerSendFeedbackController extends HttpServlet {
     }
 
     /**
-     * Helper method to handle image and video uploads
+     * Phương thức trợ giúp để xử lý việc tải lên hình ảnh và video
      */
     private void handleImageUploads(HttpServletRequest request, int reviewId, ReviewDao reviewDao) throws Exception {
-        // Handle media uploads if any
+        // Danh sách các phần multipart chứa file
         List<Part> fileParts = new ArrayList<>();
 
-        // Debug information
+        // In thông tin debug tổng số phần
         System.out.println("Total parts: " + request.getParts().size());
         for (Part part : request.getParts()) {
             System.out.println("Part name: " + part.getName() + ", size: " + part.getSize());
-            // Match both "media" and "media[]" names (previously "images" and "images[]")
+            // Lọc các phần có tên "media" hoặc "media[]" và có kích thước > 0
             if ((part.getName().equals("media") || part.getName().equals("media[]")) && part.getSize() > 0) {
                 fileParts.add(part);
                 System.out.println("Added file part: " + getFileName(part) + ", size: " + part.getSize());
@@ -277,20 +287,21 @@ public class CustomerSendFeedbackController extends HttpServlet {
 
         System.out.println("Total file parts: " + fileParts.size());
 
-        // Validate number of files
+        // Giới hạn số lượng file tối đa là 5
         if (fileParts.size() > 5) {
-            throw new Exception("You can only upload a maximum of 5 media files.");
+            throw new Exception("Bạn chỉ được phép tải tối đa 5 tệp media.");
         }
 
         if (!fileParts.isEmpty()) {
-            // Define upload directory with absolute path to ensure it exists
+            // Xác định thư mục upload (đường dẫn tuyệt đối)
             String uploadPath = request.getServletContext().getRealPath("/") + "uploads/feedback";
             File uploadDir = new File(uploadPath);
 
+            // Nếu thư mục chưa tồn tại, tạo mới
             if (!uploadDir.exists()) {
                 if (!uploadDir.mkdirs()) {
                     System.out.println("Failed to create directory: " + uploadPath);
-                    throw new Exception("Failed to create upload directory.");
+                    throw new Exception("Tạo thư mục upload thất bại.");
                 }
             }
 
@@ -299,71 +310,75 @@ public class CustomerSendFeedbackController extends HttpServlet {
             int successfulUploads = 0;
             StringBuilder errorMessages = new StringBuilder();
 
-            // Save each file (image or video)
+            // Xử lý từng file trong danh sách
             for (Part filePart : fileParts) {
                 try {
                     String fileName = getFileName(filePart);
                     String contentType = filePart.getContentType();
                     boolean isVideo = false;
 
-                    // Determine if the file is a video
+                    // Xác định đây có phải file video không
                     if (contentType != null) {
                         isVideo = contentType.startsWith("video/");
                     } else {
-                        // Fallback to extension check if content type is null
+                        // Nếu contentType rỗng, kiểm tra dựa vào phần mở rộng
                         String extension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
                         isVideo = extension.equals(".mp4") || extension.equals(".webm") || extension.equals(".mov");
                     }
 
-                    // Validate file size based on type (5MB for images, 15MB for videos)
+                    // Giới hạn dung lượng: 5MB cho ảnh, 15MB cho video
                     long maxSize = isVideo ? 15 * 1024 * 1024 : 5 * 1024 * 1024;
                     if (filePart.getSize() > maxSize) {
-                        errorMessages.append("File ").append(fileName)
-                                .append(" exceeds ").append(isVideo ? "15MB" : "5MB")
-                                .append(" size limit. Skipped.\n");
-                        continue; // Skip this file if it's too large
+                        errorMessages.append("Tệp ").append(fileName)
+                                .append(" vượt quá giới hạn ").append(isVideo ? "15MB" : "5MB")
+                                .append(". Bỏ qua.\n");
+                        continue; // Tạm bỏ qua file này
                     }
 
-                    // Validate video file type
+                    // Kiểm tra định dạng video hợp lệ
                     if (isVideo && !isValidVideoType(contentType)) {
-                        errorMessages.append("File ").append(fileName)
-                                .append(" có định dạng video không được hỗ trợ. Chỉ cho phép các định dạng MP4, WebM và QuickTime. Đã bỏ qua.\n");
+                        errorMessages.append("Tệp ").append(fileName)
+                                .append(" là định dạng video không được hỗ trợ. Chỉ cho phép MP4, WebM, QuickTime.\n");
                         continue;
                     }
 
-                    // Generate a unique filename to prevent conflicts
+                    // Tạo tên file duy nhất tránh trùng lặp
                     String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
                     String uniqueFileName = System.currentTimeMillis() + "_" + successfulUploads + fileExtension;
                     String filePath = uploadPath + File.separator + uniqueFileName;
 
-                    // Write the file
+                    // Ghi file xuống ổ đĩa
                     filePart.write(filePath);
                     System.out.println("File saved to: " + filePath);
 
-                    // Save media info to database (using existing FeedbackImage table for both images and videos)
+                    // Lưu thông tin file vào database (dùng bảng FeedbackImage chung)
+                    // Sau khi file đã được ghi vào ổ đĩa
                     FeedbackImage media = new FeedbackImage();
                     media.setReviewId(reviewId);
+                    // **Đây là chỗ bạn gán URL sẽ lưu vào DB**
                     media.setImageUrl("uploads/feedback/" + uniqueFileName);
                     media.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
                     if (reviewDao.addFeedbackImage(media)) {
                         successfulUploads++;
-                        System.out.println("Bản ghi phương tiện đã được thêm vào cơ sở dữ liệu");
+                        System.out.println("Đã lưu bản ghi media vào CSDL");
                     } else {
-                        errorMessages.append("Không lưu được bản ghi phương tiện cho ").append(fileName).append("\n");
+                        errorMessages.append("Không lưu được bản ghi media cho ").append(fileName).append("\n");
                     }
                 } catch (Exception e) {
-                    errorMessages.append("Lỗi xử lý tập tin ").append(getFileName(filePart))
+                    errorMessages.append("Lỗi xử lý tệp ").append(getFileName(filePart))
                             .append(": ").append(e.getMessage()).append("\n");
                     e.printStackTrace();
                 }
             }
 
-            // Handle error messages if any
+            // Xử lý thông báo lỗi nếu có
             if (errorMessages.length() > 0) {
                 if (successfulUploads == 0) {
-                    throw new Exception("Failed to upload media: " + errorMessages.toString());
+                    // Nếu không file nào thành công thì ném Exception
+                    throw new Exception("Tải media thất bại: " + errorMessages.toString());
                 } else {
+                    // Nếu chỉ một số file thất bại thì hiển thị cảnh báo
                     request.setAttribute("warningMessage", errorMessages.toString());
                 }
             }
@@ -371,7 +386,7 @@ public class CustomerSendFeedbackController extends HttpServlet {
     }
 
     /**
-     * Check if the video file type is supported
+     * Kiểm tra xem định dạng video có được hỗ trợ không
      */
     private boolean isValidVideoType(String contentType) {
         if (contentType == null) {
@@ -382,7 +397,9 @@ public class CustomerSendFeedbackController extends HttpServlet {
                 || contentType.equals("video/quicktime");
     }
 
-    // Improved helper method to get file name from Part
+    /**
+     * Phương thức lấy tên file từ Part
+     */
     private String getFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         System.out.println("Content-Disposition: " + contentDisp);
@@ -391,7 +408,7 @@ public class CustomerSendFeedbackController extends HttpServlet {
         for (String token : tokens) {
             if (token.trim().startsWith("filename")) {
                 String fileName = token.substring(token.indexOf("=") + 2, token.length() - 1);
-                // Return a default name if empty
+                // Nếu tên file rỗng thì trả về "unknown_file"
                 return fileName.isEmpty() ? "unknown_file" : fileName;
             }
         }

@@ -182,7 +182,7 @@
                                     </div>
                                     <div class="col-md-2 d-flex align-items-end">
                                         <button type="submit" class="btn btn-primary me-2"><i class="fas fa-filter me-2"></i>Filter</button>
-                                        <a href="${pageContext.request.contextPath}FeedbackList" class="btn btn-secondary"><i class="fas fa-undo me-2"></i>Reset</a>
+                                        <a href="${pageContext.request.contextPath}/FeedbackList" class="btn btn-secondary"><i class="fas fa-undo me-2"></i>Reset</a>
                                     </div>
                                 </form>
                             </div>
