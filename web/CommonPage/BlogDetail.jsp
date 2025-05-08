@@ -20,6 +20,7 @@
     </style>
 </head>
 <body>
+    <jsp:include page="/CommonPage/Header.jsp" />
     <div class="blog-container">
         <h1 class="blog-title"><c:out value="${post.title}" /></h1>
         <!-- Display Post ID -->
@@ -38,5 +39,6 @@
         </div>
         <a href="${pageContext.request.contextPath}/BlogListController" class="back-link">← Quay về danh sách bài viết</a>
     </div>
+    <jsp:include page="/CommonPage/Footer.jsp" />
 </body>
 </html>

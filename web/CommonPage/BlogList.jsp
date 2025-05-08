@@ -1,6 +1,7 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.util.List,EntityDto.PostDto" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -9,130 +10,111 @@
         <title>Danh sách bài viết</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
         <style>
-            html, body {
-                height: 100%;
-                margin: 0;
-                display: flex;
-                flex-direction: column;
-            }
-
-            body {
-                font-family: Arial, sans-serif;
-            }
-
-            .main-content {
-                flex: 1;
-                padding: 40px 20px;
-                background-color: #f9f9f9;
-            }
-
-            .thumb {
-                width: 150px;
-                height: 100px;
-                object-fit: cover;
-            }
-
-            .card-post {
-                margin-bottom: 20px;
-                background-color: #fff;
-                border: 1px solid #ddd;
-                border-radius: 6px;
-            }
-
-            .sidebar .list-unstyled a {
-                text-decoration: none;
-                color: #007bff;
-            }
-
-            .sidebar .list-unstyled a:hover {
-                text-decoration: underline;
-            }
-
-            .pagination {
-                justify-content: center;
-            }
+            body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; }
+            .container-main { padding: 60px 15px; min-height: 70vh; }
+            .list-item { display: flex; background: #fff; margin-bottom: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+            .item-thumb { flex: 0 0 180px; height: 120px; object-fit: cover; }
+            .item-content { padding: 15px; flex: 1; }
+            .item-content h5 { margin: 0 0 10px; }
+            .item-meta { font-size: 0.875rem; color: #6c757d; margin-bottom: 10px; }
+            .post-excerpt { max-height: 120px; overflow: hidden; }
+            .pagination { justify-content: center; margin-top: 30px; }
         </style>
     </head>
     <body>
-        <!-- Header -->
         <jsp:include page="/CommonPage/Header.jsp" />
-
-        <div class="main-content container">
+        <div class="container container-main">
             <div class="row">
-                <!-- List posts -->
-                <div class="col-md-8">
-                    <h2>Danh sách bài viết</h2>
-
-                    <!-- Search form -->
-                    <form action="${pageContext.request.contextPath}/BlogListController" method="get" class="mb-4">
-                        <div class="input-group">
-                            <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm bài viết..."
-                                   value="${keyword != null ? keyword : ''}" />
-                            <button class="btn btn-outline-secondary" type="submit">Tìm</button>
-                        </div>
-                    </form>
-
-                    <!-- No posts alert -->
-                    <c:if test="${empty posts}">
-                        <div class="alert alert-warning">Không tìm thấy bài viết nào.</div>
+                <div class="col-md-8 mx-auto">
+                    <c:if test="${not empty errorMessage}">
+                        <div class="alert alert-danger">${errorMessage}</div>
                     </c:if>
-
-                    <!-- Posts loop -->
-                    <c:forEach var="post" items="${posts}">
-                        <div class="card card-post">
-                            <div class="row g-0">
-                                <div class="col-md-4">
-                                    <img src="${post.thumbnailUrl}" alt="${post.title}" class="thumb img-fluid" />
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${post.title}</h5>
-                                        <p class="card-text">
-                                            ${fn:length(post.content) > 900 ? fn:substring(post.content, 0, 900) + '...' : post.content}
-                                        </p>
-                                        <p class="text-muted small">Cập nhật: ${post.createdAt}</p>
-                                        <a href="${pageContext.request.contextPath}/BlogDetailController?id=${post.postId}" class="btn btn-primary btn-sm">Xem chi tiết</a>
-                                    </div>
+                    <!-- List layout: single column -->
+                    <c:forEach var="p" items="${blogList}">
+                        <div class="list-item">
+                            <c:choose>
+                                <c:when test="${not empty p.thumbnailUrl}">
+                                    <img src="${pageContext.request.contextPath}/${fn:escapeXml(p.thumbnailUrl)}" alt="${fn:escapeXml(p.title)}" class="item-thumb" />
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/default-thumb.png" alt="No image" class="item-thumb" />
+                                </c:otherwise>
+                            </c:choose>
+                            <div class="item-content">
+                                <h5><a href="${pageContext.request.contextPath}/BlogDetailController?postId=${p.postId}" class="text-dark text-decoration-none">${fn:escapeXml(p.title)}</a></h5>
+                                <p class="item-meta">${p.categoryName} | bởi ${p.authorName} | <fmt:formatDate value="${p.createdAt}" pattern="dd/MM/yyyy HH:mm"/></p>
+                                <div class="post-excerpt">
+                                    <!-- Render CKEditor HTML output without escaping -->
+                                    <c:out value="${p.content}" escapeXml="false"/>
                                 </div>
                             </div>
                         </div>
                     </c:forEach>
-
                     <!-- Pagination -->
-                    <c:if test="${totalPages > 1 && empty keyword}">
-                        <nav>
-                            <ul class="pagination">
-                                <c:forEach begin="1" end="${totalPages}" var="i">
-                                    <c:url var="pageUrl" value="/BlogListController">
-                                        <c:param name="page" value="${i}" />
-                                    </c:url>
-                                    <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                        <a class="page-link" href="${pageContext.request.contextPath}${pageUrl}">${i}</a>
-                                    </li>
+                    <nav>
+                        <ul id="pagination" class="pagination"></ul>
+                    </nav>
+                </div>
+                <div class="col-md-4 sidebar">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Tìm kiếm</h5>
+                            <form action="${pageContext.request.contextPath}/BlogListController" method="get">
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm bài viết..." value="${fn:escapeXml(searchKeyword)}" />
+                                    <button class="btn btn-warning" type="submit"><i class="fas fa-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Bài mới nhất</h5>
+                            <ul class="list-unstyled">
+                                <c:forEach var="p" items="${newestList}">
+                                    <li><a href="${pageContext.request.contextPath}/BlogDetailController?postId=${p.postId}">${fn:escapeXml(p.title)}</a></li>
                                 </c:forEach>
                             </ul>
-                        </nav>
-                    </c:if>
-
-                </div>
-
-                <!-- Sidebar -->
-                <div class="col-md-4 sidebar">
-                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
-                        <h5>Bài viết nổi bật</h5>
-                        <ul class="list-unstyled">
-                            <c:forEach var="lp" items="${latestPosts}">
-                                <li>
-                                    <a href="${pageContext.request.contextPath}/BlogDetailController?id=${lp.postId}">${lp.title}</a>
-                                </li>
-                            </c:forEach>
-                        </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Footer -->
         <jsp:include page="/CommonPage/Footer.jsp" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Pagination script -->
+        <script>
+            var pageSize = 5;
+            var currentPage = 1;
+            function showPage(page) {
+                currentPage = page;
+                renderList();
+            }
+            function renderList() {
+                var listEls = document.getElementsByClassName('list-item');
+                for (var i = 0; i < listEls.length; i++) {
+                    listEls[i].style.display = (i >= (currentPage-1)*pageSize && i < currentPage*pageSize) ? 'flex' : 'none';
+                }
+                renderPagination();
+            }
+            function renderPagination() {
+                var listEls = document.getElementsByClassName('list-item');
+                var totalPages = Math.ceil(listEls.length / pageSize);
+                var ul = document.getElementById('pagination');
+                ul.innerHTML = '';
+                for (var i = 1; i <= totalPages; i++) {
+                    var li = document.createElement('li');
+                    li.className = 'page-item' + (i === currentPage ? ' active' : '');
+                    var a = document.createElement('a');
+                    a.className = 'page-link';
+                    a.href = '#';
+                    a.innerText = i;
+                    a.onclick = (function(page) { return function() { showPage(page); return false; }; })(i);
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function() { showPage(1); });
+        </script>
     </body>
 </html>

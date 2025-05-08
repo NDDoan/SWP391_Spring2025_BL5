@@ -211,21 +211,56 @@
 <jsp:include page="/CommonPage/Footer.jsp"/>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Build variants array
-        const variants = [
-        <c:forEach var="v" items="${p.variants}" varStatus="st">
-        {
-            cpu:    "${v.cpu}",
-            ram:    "${v.ram}",
-            screen: "${v.screen}",
-            storage:"${v.storage}",
-            color:  "${v.color}",
-            price:  ${v.price},
-            stock:  ${v.stockQuantity}
-        }<c:if test="${!st.last}">,</c:if>
-        </c:forEach>
-        ];
+document.addEventListener('DOMContentLoaded', () => {
+    // Build variants array
+    const variants = [
+    <c:forEach var="v" items="${p.variants}" varStatus="st">
+    {
+        cpu:    "${fn:escapeXml(v.cpu)}", // Thêm escapeXml để an toàn hơn
+        ram:    "${fn:escapeXml(v.ram)}",
+        screen: "${fn:escapeXml(v.screen)}",
+        storage:"${fn:escapeXml(v.storage)}",
+        color:  "${fn:escapeXml(v.color)}",
+        price:  ${v.price},
+        stock:  ${v.stockQuantity}
+    }<c:if test="${!st.last}">,</c:if>
+    </c:forEach>
+    ];
+
+    const priceEl = document.getElementById('priceDisplay');
+    const stockEl = document.getElementById('stockDisplay');
+    const qtyIn = document.getElementById('qtyInput');
+    const form = document.getElementById('addCartForm');
+    const errDiv = document.getElementById('qtyError');
+
+    function formatNumber(num) {
+        return num.toLocaleString('vi-VN'); // Sử dụng định dạng số Việt Nam
+    }
+
+    function updatePriceAndStockDisplay(variant) {
+        if (variant) {
+            const unitPrice = variant.price;
+            priceEl.dataset.unit = unitPrice;
+            const qty = parseInt(qtyIn.value, 10) || 1;
+            priceEl.textContent = formatNumber(unitPrice * qty);
+            stockEl.textContent = variant.stock;
+            qtyIn.max = variant.stock; // Cập nhật max cho input số lượng
+        } else {
+            priceEl.dataset.unit = "0";
+            priceEl.textContent = "N/A";
+            stockEl.textContent = "N/A";
+            qtyIn.max = 0;
+        }
+    }
+
+    if (variants && variants.length === 1) {
+        // --- TRƯỜNG HỢP CHỈ CÓ MỘT BIẾN THỂ ---
+        // Các div chọn lựa (cpuGroup, ramGroup,...) không được render bởi JSP.
+        // Cập nhật thẳng giá và tồn kho từ biến thể duy nhất.
+        updatePriceAndStockDisplay(variants[0]);
+
+    } else if (variants && variants.length > 1) {
+        // --- TRƯỜNG HỢP CÓ NHIỀU BIẾN THỂ (Logic cũ của bạn) ---
         const attrs = ['cpu', 'ram', 'screen', 'storage', 'color'];
         const containers = {
             cpu: document.getElementById('cpuGroup'),
@@ -235,31 +270,35 @@
             color: document.getElementById('colorGroup')
         };
         const userSelected = {};
-        const priceEl = document.getElementById('priceDisplay');
-        const stockEl = document.getElementById('stockDisplay');
-        const qtyIn = document.getElementById('qtyInput');
-        const form = document.getElementById('addCartForm');
-        const errDiv = document.getElementById('qtyError');
 
         function allowed(attr) {
             return [...new Set(
                 variants
-                    .filter(v => attrs.every(a => a === attr || !userSelected[a] || v[a] === userSelected[a]))
+                    .filter(v => attrs.every(a => a === attr || !userSelected[a] || String(v[a]) === String(userSelected[a])))
                     .map(v => v[attr])
+                    .filter(val => val !== null && val !== undefined && val.trim() !== "") // Bỏ qua giá trị rỗng
             )];
         }
 
         function build(attr) {
+            const div = containers[attr];
+            // Quan trọng: Kiểm tra div có tồn tại không (sẽ luôn tồn tại trong trường hợp > 1 variant)
+            if (!div) return;
+
             let vals = allowed(attr);
             vals.sort((a, b) => {
-                const na = parseFloat(a.replace(/[^\d.]/g, ''));
-                const nb = parseFloat(b.replace(/[^\d.]/g, ''));
+                const strA = String(a);
+                const strB = String(b);
+                const na = parseFloat(strA.replace(/[^\d.]/g, ''));
+                const nb = parseFloat(strB.replace(/[^\d.]/g, ''));
                 if (!isNaN(na) && !isNaN(nb)) return na - nb;
-                return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+                return strA.localeCompare(strB, undefined, {numeric: true, sensitivity: 'base'});
             });
-            const div = containers[attr];
+            
             div.innerHTML = '';
             vals.forEach(v => {
+                if (v === null || v === undefined || String(v).trim() === "") return; // Bỏ qua nếu giá trị rỗng
+
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'btn btn-outline-primary';
@@ -273,52 +312,113 @@
         }
 
         function updateAll() {
-            attrs.forEach(a => build(a));
             attrs.forEach(a => {
-                Array.from(containers[a].children)
-                    .forEach(b => b.classList.toggle('active', b.textContent === userSelected[a]));
+                if (containers[a]) build(a); // Chỉ build nếu container tồn tại
             });
-            if (attrs.every(a => userSelected[a])) {
-                const found = variants.find(v => attrs.every(a => v[a] === userSelected[a]));
-                if (found) {
-                    const unitPrice = found.price;
-                    priceEl.dataset.unit = unitPrice;
-                    const qty = parseInt(qtyIn.value, 10) || 1;
-                    priceEl.textContent = (unitPrice * qty).toLocaleString();
-                    stockEl.textContent = found.stock;
+
+            attrs.forEach(a => {
+                const container = containers[a];
+                if (container) { // Kiểm tra container trước khi thao tác
+                    Array.from(container.children)
+                        .forEach(b => b.classList.toggle('active', b.textContent === userSelected[a]));
                 }
+            });
+
+            if (attrs.every(a => userSelected[a] !== undefined && userSelected[a] !== null)) {
+                const found = variants.find(v => attrs.every(a => String(v[a]) === String(userSelected[a])));
+                updatePriceAndStockDisplay(found);
+            } else {
+                updatePriceAndStockDisplay(null); // Nếu chưa chọn đủ các thuộc tính
             }
         }
 
-        // Initialize default selections
-        attrs.forEach(a => { userSelected[a] = allowed(a)[0]; });
-        updateAll();
-
-        // Thumbnail highlight
-        document.querySelectorAll('.thumbnail-item').forEach(el => el.addEventListener('click', () => {
-            document.querySelectorAll('.thumbnail-item').forEach(x => x.classList.remove('border-primary'));
-            el.classList.add('border-primary');
-        }));
-        document.querySelector('.thumbnail-item[data-bs-slide-to="0"]').classList.add('border-primary');
-
-        // Quantity change: recalculate price
-        qtyIn.addEventListener('input', () => {
-            errDiv.style.display = 'none';
-            qtyIn.classList.remove('is-invalid');
-            const unitPrice = parseInt(priceEl.dataset.unit, 10) || 0;
-            const qty = parseInt(qtyIn.value, 10) || 1;
-            priceEl.textContent = (unitPrice * qty).toLocaleString();
-        });
-
-        // Validate before submit
-        form.addEventListener('submit', e => {
-            const req = parseInt(qtyIn.value, 10);
-            const ava = parseInt(stockEl.textContent, 10) || 0;
-            if (req > ava) {
-                e.preventDefault();
-                errDiv.style.display = 'block';
-                qtyIn.classList.add('is-invalid');
+        // Initialize default selections cho trường hợp nhiều biến thể
+        let allAttrsHaveInitialOptions = true;
+        attrs.forEach(a => {
+            const initialOptions = allowed(a);
+            if (initialOptions.length > 0) {
+                userSelected[a] = initialOptions[0];
+            } else {
+                // Nếu một thuộc tính không có lựa chọn nào (ví dụ: tất cả các biến thể có cùng màu sắc)
+                // thì không cần đặt userSelected[a] hoặc đặt là một giá trị đặc biệt.
+                // Tuy nhiên, logic `allowed` và `variants.find` hiện tại dựa trên việc tất cả `attrs` được chọn.
+                // Nếu có những sản phẩm mà một số `attrs` không áp dụng, cần điều chỉnh logic này.
+                // Tạm thời, nếu một attr không có option (ví dụ, tất cả variant đều có màu Xám, thì allowed('color') sẽ chỉ trả về ['Xám'])
+                // và userSelected['color'] sẽ là 'Xám'. Điều này là ổn.
+                // Nếu `allowed(a)` trả về mảng rỗng, đó có thể là một vấn đề trong dữ liệu hoặc logic `allowed`.
+                // For now, assume `allowed(a)` will always return something if `variants.length > 1` and variants have values for `a`.
             }
         });
+        updateAll();
+
+    } else {
+        // --- TRƯỜNG HỢP KHÔNG CÓ BIẾN THỂ NÀO ---
+        updatePriceAndStockDisplay(null);
+    }
+
+    // Thumbnail highlight (giữ nguyên)
+    document.querySelectorAll('.thumbnail-item').forEach(el => el.addEventListener('click', () => {
+        document.querySelectorAll('.thumbnail-item').forEach(x => x.classList.remove('border-primary'));
+        el.classList.add('border-primary');
+    }));
+    // Kiểm tra firstThumbnail có tồn tại không trước khi thêm class
+    const firstThumbnail = document.querySelector('.thumbnail-item[data-bs-slide-to="0"]');
+    if (firstThumbnail) {
+        firstThumbnail.classList.add('border-primary');
+    }
+
+
+    // Quantity change: recalculate price (giữ nguyên, nhưng dùng formatNumber)
+    qtyIn.addEventListener('input', () => {
+        errDiv.style.display = 'none';
+        qtyIn.classList.remove('is-invalid');
+        const unitPrice = parseInt(priceEl.dataset.unit, 10) || 0;
+        let qty = parseInt(qtyIn.value, 10) || 1;
+        const currentStock = parseInt(stockEl.textContent, 10) || 0;
+
+        if (qty < 1) {
+            qty = 1;
+            qtyIn.value = qty;
+        }
+        if (currentStock > 0 && qty > currentStock) { // Giới hạn số lượng theo tồn kho
+             qty = currentStock;
+             qtyIn.value = qty;
+        }
+        
+        priceEl.textContent = formatNumber(unitPrice * qty);
     });
+
+    // Validate before submit (giữ nguyên)
+    form.addEventListener('submit', e => {
+        const req = parseInt(qtyIn.value, 10);
+        const ava = parseInt(stockEl.textContent, 10) || 0;
+        const unitPrice = parseInt(priceEl.dataset.unit, 10) || 0;
+
+        if (unitPrice === 0 || ava === 0 || !variants || variants.length === 0) {
+            e.preventDefault();
+            errDiv.textContent = 'Sản phẩm không hợp lệ hoặc đã hết hàng.';
+            errDiv.style.display = 'block';
+            qtyIn.classList.add('is-invalid');
+            return;
+        }
+        
+        if (req <= 0) {
+            e.preventDefault();
+            errDiv.textContent = 'Số lượng phải lớn hơn 0.';
+            errDiv.style.display = 'block';
+            qtyIn.classList.add('is-invalid');
+            return;
+        }
+
+        if (req > ava) {
+            e.preventDefault();
+            errDiv.textContent = 'Số lượng không được vượt quá tồn kho!';
+            errDiv.style.display = 'block';
+            qtyIn.classList.add('is-invalid');
+        } else {
+            errDiv.style.display = 'none';
+            qtyIn.classList.remove('is-invalid');
+        }
+    });
+});
 </script>

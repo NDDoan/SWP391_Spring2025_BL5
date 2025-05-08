@@ -1,6 +1,6 @@
 package Controller;
 
-import Dao.PostDao;
+import Dao.BlogDao;
 import EntityDto.PostDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,47 +12,42 @@ import java.util.List;
 @WebServlet(name = "BlogDetailController", urlPatterns = {"/BlogDetailController"})
 public class BlogDetailController extends HttpServlet {
 
-    private static final int LATEST_BLOG_LIMIT = 5;
+    private final BlogDao blogDao = new BlogDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String idParam = request.getParameter("id");
-        if (idParam == null || idParam.isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/BlogListController");
-            return;
-        }
-
-        PostDto post;
+        String postIdParam = request.getParameter("postId");
         try {
-            int postId = Integer.parseInt(idParam);
-            PostDao dao = new PostDao();
-            post = dao.getPostById(postId);
+            if (postIdParam == null) {
+                throw new IllegalArgumentException("Thiếu tham số postId.");
+            }
+
+            int postId = Integer.parseInt(postIdParam);
+            // Lấy chi tiết bài viết (có thể là draft hoặc published tuỳ nhu cầu)
+            PostDto post = blogDao.getBlogById(postId);
+            if (post == null) {
+                request.setAttribute("errorMessage", "Không tìm thấy bài viết với ID=" + postId);
+            } else {
+                request.setAttribute("post", post);
+            }
+
         } catch (NumberFormatException ex) {
-            // ID không hợp lệ
-            response.sendRedirect(request.getContextPath() + "/BlogListController");
-            return;
+            request.setAttribute("errorMessage", "postId phải là số nguyên hợp lệ.");
         } catch (Exception ex) {
-            // Lỗi khi truy vấn dữ liệu
-            response.sendRedirect(request.getContextPath() + "/BlogListController");
-            return;
+            request.setAttribute("errorMessage", "Không thể tải chi tiết bài viết: " + ex.getMessage());
         }
 
-        if (post == null) {
-            response.sendRedirect(request.getContextPath() + "/BlogListController");
-            return;
-        }
-
-        List<PostDto> latestPosts;
+        // Luôn lấy danh sách 5 bài mới nhất cho sidebar
         try {
-            latestPosts = new PostDao().getLatestBlogs(LATEST_BLOG_LIMIT);
+            List<PostDto> newestList = blogDao.getNewestBlogPosts(5);
+            request.setAttribute("newestList", newestList);
         } catch (Exception ex) {
-            throw new ServletException("Lỗi khi lấy bài viết nổi bật", ex);
+            // Nếu lỗi thì ta vẫn forward, chỉ không có newestList
+            log("Lỗi khi lấy bài mới nhất", ex);
         }
 
-        request.setAttribute("post", post);
-        request.setAttribute("latestPosts", latestPosts);
-
+        // Chuyển tiếp tới JSP chi tiết
         RequestDispatcher rd = request.getRequestDispatcher("/CommonPage/BlogDetail.jsp");
         rd.forward(request, response);
     }
