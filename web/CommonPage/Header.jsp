@@ -101,7 +101,7 @@
                     <a href="${pageContext.request.contextPath}/ProductUserListController">Sản phẩm</a>
                     <a href="${pageContext.request.contextPath}/BlogListController">Bài viết</a>
                     <a href="${pageContext.request.contextPath}/myordercontroller">Đơn Hàng</a>
-                    <a href="${pageContext.request.contextPath}/contact">Liên hệ</a>
+                    <a href="${pageContext.request.contextPath}/CommonPage/contact.jsp">Liên hệ</a>
                 </nav>
 
                 <!-- Cart + User -->
