@@ -53,36 +53,36 @@ public class UserProfile extends HttpServlet {
 
         // Regex kiểm tra dữ liệu nhập vào
         //String emailRegex = "^[a-zA-Z0-9]+@(fpt\\.edu\\.vn|gmail\\.com)$";
-        String phoneRegex = "^(0|\\+84)[3-9][0-9]{8}$";
+        String phoneRegex = "^(0|\\+84)[1-9][0-9]{8}$";
         String addressRegex = "^.{5,}$";
         String fullNameRegex = "^[A-Za-zÀ-Ỹà-ỹ\\s]{1,50}$";
 
 //        // Kiểm tra hợp lệ
 //        if (!email.matches(emailRegex)) {
 //            session.setAttribute("updateMessage", "❌ Email không hợp lệ! Chỉ chấp nhận email FPT hoặc Gmail.");
-//            response.sendRedirect("userprofile");
+//            response.sendRedirect("UserProfile");
 //            return;
 //        }
         if (!fullName.matches(fullNameRegex)) {
             session.setAttribute("updateMessage", "❌ Tên chứa số, ký tự đặc biệt hoặc quá dài!");
-            response.sendRedirect("userprofile");
+            response.sendRedirect("UserProfile");
             return;
         }
         
         if (!phoneNumber.matches(phoneRegex)) {
             session.setAttribute("updateMessage", "❌ Số điện thoại không hợp lệ!");
-            response.sendRedirect("userprofile");
+            response.sendRedirect("UserProfile");
             return;
         }
         if (userDAO.isPhoneNumberRegistered(phoneNumber, userId)) {
     session.setAttribute("updateMessage", "❌ Số điện thoại đã được sử dụng bởi tài khoản khác!");
-    response.sendRedirect("userprofile");
+    response.sendRedirect("UserProfile");
     return;
 }
         
         if (!address.matches(addressRegex)) {
             session.setAttribute("updateMessage", "❌ Địa chỉ phải có ít nhất 5 ký tự!");
-            response.sendRedirect("userprofile");
+            response.sendRedirect("UserProfile");
             return;
         }
         
@@ -97,7 +97,7 @@ public class UserProfile extends HttpServlet {
             session.setAttribute("updateMessage", "Cập nhật thất bại, vui lòng thử lại!");
         }
         
-        response.sendRedirect("userprofile");
+        response.sendRedirect("UserProfile");
     }
     
     @Override
